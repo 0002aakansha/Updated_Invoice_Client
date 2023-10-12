@@ -3,9 +3,9 @@ import ClientTable from '@/components/tables/clientTable'
 
 const Dashboard = () => {
     return (
-        <Layout>
+        // <Layout>
             <ClientTable />
-        </Layout>
+        // </Layout>
     )
 }
 

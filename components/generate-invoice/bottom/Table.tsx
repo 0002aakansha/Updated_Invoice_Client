@@ -1,9 +1,21 @@
-import CheckedModal from '@/components/modals/checkedModal'
 import { InvoiceContext } from '@/state-management/context/context'
-import { useContext } from 'react'
+import { useContext, useEffect, useState } from 'react'
+import TableTr from './TableTr'
+import { data } from '@/utils/data'
+import CheckedModal from '@/components/modals/checkedModal'
 
 const Table = () => {
-    const { invoiceType, isChecked, setisChecked, setCheckedProject } = useContext(InvoiceContext)
+    const { invoiceType, setisChecked, isChecked, projectDataType, setterOfProjectDataType, calculateSubtotal } = useContext(InvoiceContext)
+    const [projectData, setProjectDataType] = useState(data.allListedProjects[0].projects)
+    const [uniqueKey, setUniqueKey] = useState<number>(0)
+
+    useEffect(() => {
+        const projects = projectData.map((project) => {
+            return { _id: project._id, period: '0', description: project.description, workingDays: '0', totalWorkingDays: '0', hours: '0.0', projectAmount: project.projectAmount, amount: '0,0.0', rate: project.rate, conversionRate: project.conversionRate, checked: false }
+        })
+
+        setterOfProjectDataType(projects)
+    }, [projectData])
 
     return (
         <>
@@ -30,37 +42,36 @@ const Table = () => {
                         </tr>
                     </thead>
                     <tbody>
-                        <tr>
-                            <td>
-                                <input type="checkbox" onChange={(e) => {
-                                    if (e.target.checked) {
-                                        setisChecked(true)
-                                        invoiceType === 'monthly' ? setCheckedProject({ description: 'QA on Builder (Ashsih)', amount: '0.0', period: '0', workingDays: '0', totalWorkingDays: '0' }) : setCheckedProject({ description: 'QA on Builder (Ashsih)', amount: '0.0', rate: '0', hours: '0', conversionRate: '82.05' })
-                                    }
-                                    else setisChecked(false)
-                                }} />
-                            </td>
-                            {invoiceType === 'monthly' ? (
-                                <>
-                                    <td>QA on Builder</td>
-                                    <td>0 Days</td>
-                                    <td>0</td>
-                                    <td>INR 0,00</td>
-                                </>
-                            ) : (
-                                <>
-                                    <td>QA on Builder</td>
-                                    <td>0 $/Hour</td>
-                                    <td>17:28</td>
-                                    <td>1$ = 82.05 INR</td>
-                                    <td>INR 0,00</td>
-                                </>
-                            )}
-                        </tr>
+                        {
+                            projectData.map((project, indx) => {
+                                return (
+                                    <>
+                                        <tr key={project?._id}>
+                                            <td>
+                                                <input type="checkbox" onChange={(e) => {
+                                                    if (e.target.checked) {
+                                                        setisChecked(true)
+                                                        setUniqueKey(indx)
+                                                        projectDataType[indx].checked = true
+                                                    }
+                                                    else {
+                                                        setisChecked(false)
+                                                        projectDataType[indx].checked = false
+                                                    }
+                                                    calculateSubtotal()
+                                                }} />
+                                            </td>
+                                            <TableTr key={project._id} indx={indx} project={project} />
+                                        </tr>
+                                        {isChecked && <CheckedModal key={project._id} indx={uniqueKey} />}
+                                    </>
+
+                                )
+                            })
+                        }
                     </tbody>
                 </table>
             </div>
-            {isChecked && <CheckedModal />}
         </>
     )
 }
