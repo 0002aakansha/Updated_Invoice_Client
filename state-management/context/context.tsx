@@ -18,7 +18,7 @@ export const InvoiceContext = createContext<invoiceContextType>(invoiceContextDe
 export default function InvoiceProvider({ children }: childrenProps) {
     const [type, setType] = useState('monthly');
     const [isChecked, setChecked] = useState(false);
-    const [subtotal, setSubtotal] = useState(0);
+    const [subtotal, setSubtotal] = useState(0.0);
     const [projectDataType, setProjectDataType] = useState<dataProps[]>([])
 
     const setInvoiceType = (type: string) => {

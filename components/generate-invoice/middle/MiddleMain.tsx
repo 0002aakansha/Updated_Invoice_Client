@@ -4,7 +4,7 @@ import SelectClient from './SelectClient'
 
 const MiddleMain = () => {
   return (
-    <div className='flex justify-between'>
+    <div className='grid  grid-cols-2 my-[2rem]'>
         <InvoiceNumber />
         <SelectClient />
     </div>

@@ -1,13 +1,15 @@
+import { UserContext } from '@/state-management/context/user'
 import { useRouter } from 'next/router'
-import React from 'react'
+import React, { useContext } from 'react'
 
 const Sidebar = () => {
     const router = useRouter()
+    const { user } = useContext(UserContext)
 
     return (
         <div className='h-screen bg-stone-50 p-4 w-72'>
             <div>
-                <h1 className='text-2xl font-bold text-stone-800'>GAMMAEDGE</h1>
+                <h1 className='text-2xl uppercase font-bold text-stone-800'>{user?.name.split(' ')[0]}</h1>
             </div>
 
             <nav className='my-8'>
