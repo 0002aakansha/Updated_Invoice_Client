@@ -7,7 +7,8 @@ const Home = () => {
       <div className='bg-[#fff] grid grid-cols-2 w-3/4 shadow-sm p-4'>
         <div className='flex flex-col justify-center items-center'>
           <h1 className='text-4xl font-bold mt-8'>Welcome Back</h1>
-          <p className='text-center text-stone-500 p-4'>Sample text. Click to select the text box. Click again or double click to start editing the text.</p>
+          <p className='text-center text-stone-500 p-4'>Hi there! We’re so glad you’re here! We’ve got something for you.
+            Let’s go!</p>
           <img src="/images/login.png" alt="" className='w-3/4' />
         </div>
         <div className='flex flex-col justify-center px-8 py-4'>

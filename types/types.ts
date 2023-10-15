@@ -12,18 +12,6 @@ export interface dataProps {
     checked: boolean
 }
 
-export interface invoiceContextType {
-    invoiceType: string;
-    isChecked: boolean,
-    setisChecked: (value: boolean) => void
-    setInvoiceType: (type: string) => void
-    projectDataType: dataProps[],
-    setDataOnChecked: (value: dataProps) => void,
-    setterOfProjectDataType: (value: dataProps[]) => void
-    calculateSubtotal: () => void,
-    subtotal: number
-};
-
 export interface childrenProps {
     children: JSX.Element | JSX.Element[] | string
 }
@@ -34,6 +22,7 @@ export interface loginType {
 }
 
 export interface userType {
+    _id: string,
     name: string,
     email: string,
     gstin: string,
@@ -51,13 +40,6 @@ export interface userType {
         country: string
     },
     contact: number | string
-}
-
-export interface userContextType {
-    user: userType | undefined,
-    isLoading: boolean,
-    setUser: (value: string | null) => void,
-    setIsLoading: (value: boolean) => void
 }
 
 export interface clientType {
@@ -84,11 +66,32 @@ export interface projectType {
     conversionRate: number,
 }
 
-export interface projectContextType {
-    projects: projectType[] | undefined,
+export interface userStateType {
+    user: userType,
     isLoading: boolean,
-    hidden: boolean,
-    fetchProjects: (value: string) => void,
-    setHidden: (value: boolean) => void,
-    setIsLoading: (value: boolean) => void
+    error: string
 }
+
+export interface projectStateType {
+    projects: projectType[],
+    isLoading: boolean,
+    error: { status: number | string, message: string }
+}
+
+export interface clientStateType {
+    clients: clientType[],
+    isLoading: boolean,
+    error?: { status: number | string, message: string }
+}
+
+export interface invoiceStateType {
+    invoiceType: string;
+    isChecked: boolean,
+    setisChecked: (value: boolean) => void
+    setInvoiceType: (type: string) => void
+    projectDataType: dataProps[],
+    setDataOnChecked: (value: dataProps) => void,
+    setterOfProjectDataType: (value: dataProps[]) => void
+    calculateSubtotal: () => void,
+    subtotal: number
+};

@@ -3,12 +3,7 @@ import { childrenProps, projectContextType, projectType } from "@/types/types";
 import { createContext, useState } from "react";
 
 const projectContextDefaultValues: projectContextType = {
-    projects: [],
-    isLoading: false,
-    hidden: true,
-    fetchProjects: () => { },
-    setHidden: () => { },
-    setIsLoading: () => { }
+    
 };
 
 export const ProjectContext = createContext<projectContextType>(projectContextDefaultValues);

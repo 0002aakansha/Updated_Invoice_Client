@@ -1,33 +1,37 @@
-import login from '@/axios/api/login'
-import setCookie from '@/utils/cookies'
 import { useRouter } from 'next/router'
-import React, { FormEvent, useState } from 'react'
+import { FormEvent, useState } from 'react'
 import toast from 'react-hot-toast'
+import { useSelector, useDispatch } from 'react-redux'
+import { AppDispatch, AppState } from '../store/store'
+import { userAsync } from '../store/user'
+import { userStateType } from '@/types/types'
+import ButtonLoading from '../spinners/buttonLoading'
 
 const Login = () => {
 
+    const user = useSelector<AppState>(state => state.user) as userStateType
+
     const [email, setEmail] = useState<string | null>(null)
     const [password, setPassword] = useState<string | null>(null)
-    const [loading, setisLoading] = useState<boolean>(false)
     const router = useRouter()
+    const dispatch = useDispatch<AppDispatch>()
 
     async function submitHandler(e: FormEvent) {
         e.preventDefault()
 
-        if (email && password) {
-            setisLoading(true)
-            const response = await login({ email, password });
+        try {
+            if (email && password) {
+                const { error } = await dispatch(userAsync({ email, password }))
 
-            if (response) {
+                if (error?.message === 'Rejected') throw new Error(user.error)
+
                 router.push('/dashboard')
-                setCookie(response.token)
-                localStorage.setItem('user', response.user._id)
-                toast.success(response.message)
+                toast.success('Login Successfull!')
             }
-
-            setisLoading(false)
+            else throw new Error('All fields are required!')
+        } catch (error: any) {
+            toast.error(error.message)
         }
-        else toast.error('All fields are required!')
     }
 
     return (
@@ -49,9 +53,9 @@ const Login = () => {
                 </div>
                 <div className='flex justify-center'>
                     <button
-                        className={`bg-[#5a51be] text-stone-100 w-full py-2 text-lg font-semibold my-4 cursor-${loading ? 'not-allowed': 'pointer'}`}
+                        className={`bg-[#5a51be] text-stone-100 rounded-sm w-full py-2 text-lg font-semibold my-4 cursor-${user.isLoading ? 'not-allowed' : 'pointer'}`}
                     >
-                        {loading ? 'Logging...' : 'Login'}
+                        {user.isLoading ? <ButtonLoading /> : 'Login'}
                     </button>
                 </div>
             </form>
