@@ -1,23 +1,14 @@
-import CheckedModal from '@/components/modals/checkedModal'
-import { InvoiceContext } from '@/state-management/context/context'
-import React, { useContext } from 'react'
+import { AppState } from '@/components/store/store'
+import { invoiceStateType, projectType } from '@/types/types'
+import { useSelector } from 'react-redux'
 
 interface Props {
-    project: {
-        _id: string,
-        description: string,
-        rate: {
-            currency: string,
-            rate: string | number
-        },
-        projectAmount: number,
-        conversionRate: number
-    },
+    project: projectType,
     indx: number
 }
 
 const TableTr = ({ project, indx }: Props) => {
-    const { invoiceType, projectDataType, setDataOnChecked } = useContext(InvoiceContext)
+    const { invoiceType, detailedProject } = useSelector<AppState>(state => state.invoice) as invoiceStateType
 
     return (
         <>
@@ -25,18 +16,18 @@ const TableTr = ({ project, indx }: Props) => {
             <td className='border-2 border-[#9d96e4] px-4 py-1'>{project?.description}</td>
             {invoiceType === 'monthly' ? (
                 <>
-                    <td className='border-2 border-[#9d96e4] px-4 py-1 text-center'>{projectDataType[indx]?.period}</td>
-                    <td className='border-2 border-[#9d96e4] px-4 py-1 text-center'>{projectDataType[indx]?.workingDays}</td>
-                    <td className='border-2 border-[#9d96e4] px-4 py-1 text-center'>{projectDataType[indx]?.totalWorkingDays}</td>
+                    <td className='border-2 border-[#9d96e4] px-4 py-1 text-center'>{detailedProject[indx]?.period}</td>
+                    <td className='border-2 border-[#9d96e4] px-4 py-1 text-center'>{detailedProject[indx]?.workingDays}</td>
+                    <td className='border-2 border-[#9d96e4] px-4 py-1 text-center'>{detailedProject[indx]?.totalWorkingDays}</td>
                 </>
             ) : (
                 <>
                     <td className='border-2 border-[#9d96e4] px-4 py-1 text-center'>{project?.rate?.rate} $/Hour</td>
-                    <td className='border-2 border-[#9d96e4] px-4 py-1 text-center'>{projectDataType[indx]?.hours}</td>
+                    <td className='border-2 border-[#9d96e4] px-4 py-1 text-center'>{detailedProject[indx]?.hours}</td>
                     <td className='border-2 border-[#9d96e4] px-4 py-1 text-center'>1$ = {project?.conversionRate}</td>
                 </>
             )}
-            <td className='border-2 border-[#9d96e4] px-4 py-1 text-center font-semibold'>INR {projectDataType[indx]?.amount}</td>
+            <td className='border-2 border-[#9d96e4] px-4 py-1 text-center font-semibold'>INR {detailedProject[indx]?.amount}</td>
         </>
     )
 }

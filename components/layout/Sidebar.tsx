@@ -17,17 +17,12 @@ const SideBar = () => {
     const uname = useSelector<AppState>(state => state.user.user?.name) as string
     const loading = useSelector<AppState>(state => state.user.isLoading) as boolean
     const dispatch = useDispatch<AppDispatch>()
-    const [hidden, setHidden] = useState<boolean>(true)
     const { collapseSidebar } = useProSidebar();
 
     useEffect(() => {
         const userId = localStorage.getItem('user') as string
         dispatch(fetchUserById(userId))
     }, [])
-
-    function menuHandler() {
-        setHidden(!hidden)
-    }
 
     return (
         <>

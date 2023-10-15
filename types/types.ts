@@ -1,97 +1,108 @@
 export interface dataProps {
-    _id: string,
-    description: string,
-    period?: string,
-    workingDays?: string,
-    totalWorkingDays?: string,
-    hours?: string,
-    amount?: string | number,
-    projectAmount?: number,
-    rate?: { currency: string, rate: string },
-    conversionRate?: number,
-    checked: boolean
+  _id: string;
+  id: number;
+  description: string;
+  period?: string;
+  workingDays?: string;
+  totalWorkingDays?: string;
+  hours?: string;
+  amount?: string | number;
+  projectAmount?: number;
+  rate?: { currency: string; rate: string };
+  conversionRate?: number;
+  checked: boolean;
+  projectBelongsTo?: string;
+}
+export interface rateType {
+  currency: string;
+  rate: number;
 }
 
 export interface childrenProps {
-    children: JSX.Element | JSX.Element[] | string
+  children: JSX.Element | JSX.Element[] | string;
 }
 
 export interface loginType {
-    email: string,
-    password: string
+  email: string;
+  password: string;
 }
 
 export interface userType {
-    _id: string,
-    name: string,
-    email: string,
-    gstin: string,
-    pan: string,
-    account: {
-        acc_no: number | string,
-        bank: string,
-        ifsc: string
-    },
-    address: {
-        street: string,
-        city: string,
-        state: string,
-        pin: number | string,
-        country: string
-    },
-    contact: number | string
+  _id: string;
+  name: string;
+  email: string;
+  gstin: string;
+  pan: string;
+  account: {
+    acc_no: number | string;
+    bank: string;
+    ifsc: string;
+  };
+  address: {
+    street: string;
+    city: string;
+    state: string;
+    pin: number | string;
+    country: string;
+  };
+  contact: number | string;
+}
+export interface addressType {
+  street: string;
+  city: string;
+  pin: string;
+  state: string;
+  country: string;
 }
 
 export interface clientType {
-    _id: string,
-    name: string,
-    gstin: string,
-    address: {
-        street: string,
-        city: string,
-        pin: number,
-        state: string,
-        country: string
-    }
+  _id?: string;
+  name: string;
+  gstin: string;
+  address: addressType;
 }
 
 export interface projectType {
-    _id: string,
-    description: string,
-    rate: {
-        currency: string,
-        rate: string | number
-    },
-    projectAmount: number,
-    conversionRate: number,
+  _id: string;
+  description: string;
+  rate: {
+    currency: string;
+    rate: number;
+  };
+  projectAmount: number;
+  conversionRate: number;
+  projectBelongsTo?: string;
 }
 
 export interface userStateType {
-    user: userType,
-    isLoading: boolean,
-    error: string
+  user: userType;
+  isLoading: boolean;
+  error: string;
 }
 
 export interface projectStateType {
-    projects: projectType[],
-    isLoading: boolean,
-    error: { status: number | string, message: string }
+  projects: projectType[];
+  created: boolean;
+  isLoading: boolean;
+  error: { status: number | string; message: string };
 }
 
 export interface clientStateType {
-    clients: clientType[],
-    isLoading: boolean,
-    error?: { status: number | string, message: string }
+  clients: clientType[];
+  created: boolean;
+  clientById: clientType;
+  clientState: string;
+  projects: projectType[];
+  isLoading: boolean;
+  isHidden: boolean;
+  error?: { status: number | string; message: string };
 }
 
 export interface invoiceStateType {
-    invoiceType: string;
-    isChecked: boolean,
-    setisChecked: (value: boolean) => void
-    setInvoiceType: (type: string) => void
-    projectDataType: dataProps[],
-    setDataOnChecked: (value: dataProps) => void,
-    setterOfProjectDataType: (value: dataProps[]) => void
-    calculateSubtotal: () => void,
-    subtotal: number
-};
+  invoiceType: string;
+  isChecked: boolean;
+  detailedProject: dataProps[];
+  subtotal: number;
+  GST: { CGST: number; SGST: number } | number;
+  GrandTotal: number;
+}
