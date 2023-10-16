@@ -2,9 +2,6 @@ import { useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { fetchProjects } from '../store/project'
 import { AppDispatch, AppState } from '../store/store'
-import { projectStateType } from '@/types/types'
-import toast from 'react-hot-toast'
-import { useRouter } from 'next/router'
 import { fetchClient } from '../store/client'
 import ClientTable from './clientTable'
 import ProjectTable from './projectTable'
@@ -12,23 +9,11 @@ import ProjectTable from './projectTable'
 const MainTable = () => {
 
   const [select, setSelect] = useState('clients')
-  const [Error, setError] = useState<string | null>()
-  const clients = useSelector<AppState>(state => state.project) as projectStateType
   const dispatch = useDispatch<AppDispatch>()
-  const router = useRouter()
 
   const changeHandler = async (e: { target: { value: string } }) => {
-    setSelect(e.target.value)
-    const { error } = await e.target.value === 'clients' ? dispatch(fetchClient()) : dispatch(fetchProjects())
-
-    if (error?.message === 'Rejected') {
-      if (clients.error?.status == 401) {
-        toast.error('Please login first!')
-        router.push('/')
-      }
-      else setError(clients.error?.message)
-
-    }
+    setSelect(e.target.value);
+    (e.target.value === 'clients') ? await dispatch(fetchClient()) : await dispatch(fetchProjects())
   }
 
   return (

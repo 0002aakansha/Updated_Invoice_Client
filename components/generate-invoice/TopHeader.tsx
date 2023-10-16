@@ -11,7 +11,9 @@ const TopHeader = () => {
   return (
     <div className="grid grid-cols-[50%_50%] my-4">
       <div>
-        <img src="/images/logo.png" alt="" className="" />
+        {
+          user?.name?.toLowerCase().startsWith('gammaedge') ? <img src="/images/logo.png" alt="" className="" /> : <img src="/images/cubexoLogo.png" alt="" className="w-1/2" />
+        }
       </div>
       {isLoading ? (
         <ButtonLoading />

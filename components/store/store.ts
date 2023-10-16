@@ -10,7 +10,11 @@ const store = configureStore({
         client,
         project,
         invoice
-    }
+    },
+    middleware: getDefaultMiddleware =>
+        getDefaultMiddleware({
+            serializableCheck: false,
+        }),
 })
 
 export type AppState = ReturnType<typeof store.getState>

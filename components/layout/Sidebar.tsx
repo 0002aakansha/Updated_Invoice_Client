@@ -34,10 +34,12 @@ const SideBar = () => {
                             collapseSidebar();
                         }}
                         style={{ textAlign: "center" }}
+                        className='my-4'
                     >
-                        <h2 className='text-2xl tracking-wide uppercase font-bold text-[#5a51be]'>
-                            {loading ? <ButtonLoading /> : uname.split(' ')[0]}
-                        </h2>
+                        <div className='p-4'>
+                            {loading ? <ButtonLoading /> : uname.toLowerCase().startsWith('gammaedge') ? <img src="/images/logo.png" alt="" className="w-full" /> : <img src="/images/cubexoLogo.png" alt="" className="w-3/4" />
+                            }
+                        </div>
                     </MenuItem>
                     <MenuItem className='mt-4 mb-2'
                         icon={<FontAwesomeIcon icon={faHouse} className='text-stone-900 text-lg' />}

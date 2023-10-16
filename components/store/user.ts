@@ -24,6 +24,7 @@ const initialState: userStateType = {
     },
     contact: "",
   },
+  created: false,
   isLoading: false,
   error: "",
 };
@@ -81,11 +82,13 @@ const userslice = createSlice({
     // login
     builder.addCase(userAsync.pending, (state) => {
       state.isLoading = true;
+      state.created = false
       state.user = initialState.user;
       state.error = "";
     });
     builder.addCase(userAsync.fulfilled, (state, action) => {
       state.isLoading = false;
+      state.created = true
 
       setCookie(action.payload.token);
       localStorage.setItem("user", action.payload.user._id);
@@ -94,6 +97,7 @@ const userslice = createSlice({
     });
     builder.addCase(userAsync.rejected, (state, action) => {
       state.isLoading = false;
+      state.created = false
       state.error = action.payload;
     });
 

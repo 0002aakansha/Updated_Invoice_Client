@@ -90,8 +90,6 @@ const invoiceslice = createSlice({
       { payload }: { payload: { userState: string; clientState: string } }
     ) {
 
-      console.log(payload);
-
       if (
         payload?.userState?.toLowerCase() === payload?.clientState?.toLowerCase()
       ) {

@@ -77,6 +77,7 @@ export interface projectType {
 
 export interface userStateType {
   user: userType;
+  created: boolean;
   isLoading: boolean;
   error: string;
 }

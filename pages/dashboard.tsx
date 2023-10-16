@@ -13,32 +13,39 @@ import MainTable from '@/components/tables/MainTable'
 
 
 const Dashboard = () => {
-    const clients = useSelector<AppState>(state => state.client) as clientStateType
+    const { isLoading, error } = useSelector<AppState>(state => state.client) as clientStateType
     const dispatch = useDispatch<AppDispatch>()
-    const [Error, setError] = useState<string | null>()
     const router = useRouter()
 
     useEffect(() => {
         (async function () {
-            const { error } = await dispatch(fetchClient())
-
-            if (error?.message === 'Rejected') {
-                if (clients.error?.status == 401) {
-                    toast.error('Please login first!')
-                    router.push('/')
-                }
-                else setError(clients.error?.message)
-            }
+            await dispatch(fetchClient())
         })()
     }, [])
 
-    return (
-        <Layout>
-            {clients.isLoading && <FullPageLoader />}
-            <Cards />
-            <MainTable />
-        </Layout>
-    )
+    useEffect(() => {
+        if (error?.status == 401) {
+            toast.error('Please Login First!', {
+                id: 'auth'
+            })
+            router.push('/')
+        }
+
+        return () => toast.dismiss();
+    }, [error?.status])
+
+    if (error)
+
+        return (
+            <Layout>
+                {isLoading ? <FullPageLoader /> : (
+                    <>
+                        <Cards />
+                        <MainTable />
+                    </>
+                )}
+            </Layout>
+        )
 }
 
 export default Dashboard

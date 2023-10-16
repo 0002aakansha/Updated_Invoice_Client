@@ -8,7 +8,7 @@ import { userStateType } from "@/types/types";
 import ButtonLoading from "../spinners/buttonLoading";
 
 const Login = () => {
-  const { user, error, isLoading } = useSelector<AppState>(
+  const { created, error, isLoading } = useSelector<AppState>(
     (state) => state.user
   ) as userStateType;
 
@@ -23,17 +23,22 @@ const Login = () => {
     try {
       if (email && password) {
         await dispatch(userAsync({ email, password }));
-
-        router.push("/dashboard");
-        toast.success("Login Successfull!");
-      } else throw new Error("All fields are required!");
-    } catch (error: any) {
+      }
+      else throw new Error("All fields are required!");
+    }
+    catch (error: any) {
       toast.error(error.message);
     }
   }
 
+  useEffect(() => {
+    if (error !== '') toast.error(error)
+    else if (created) {
+      router.push("/dashboard");
+      toast.success("Login Successfull!", { id: 'login' });
+    }
+  }, [error, created]);
 
-  
   return (
     <>
       <form action="" onSubmit={submitHandler}>
@@ -55,7 +60,7 @@ const Login = () => {
             Password*
           </label>
           <input
-            type="text"
+            type="password"
             name="pass"
             id="pass"
             placeholder="Enter your Password"
@@ -65,9 +70,8 @@ const Login = () => {
         </div>
         <div className="flex justify-center">
           <button
-            className={`bg-[#5a51be] text-stone-100 rounded-sm w-full py-2 text-lg font-semibold my-4 cursor-${
-              isLoading ? "not-allowed" : "pointer"
-            }`}
+            className={`bg-[#5a51be] text-stone-100 rounded-sm w-full text-lg font-semibold my-4 py-1 cursor-${isLoading ? "not-allowed" : "pointer"
+              }`}
           >
             {isLoading ? <ButtonLoading /> : "Login"}
           </button>
