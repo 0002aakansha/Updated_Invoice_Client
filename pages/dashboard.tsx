@@ -10,6 +10,7 @@ import toast from 'react-hot-toast'
 import { useDispatch, useSelector } from 'react-redux'
 import Cards from '@/components/cards/Cards'
 import MainTable from '@/components/tables/MainTable'
+import { fetchProjects } from '@/components/store/project'
 
 
 const Dashboard = () => {
@@ -20,6 +21,7 @@ const Dashboard = () => {
     useEffect(() => {
         (async function () {
             await dispatch(fetchClient())
+            await dispatch(fetchProjects())
         })()
     }, [])
 
