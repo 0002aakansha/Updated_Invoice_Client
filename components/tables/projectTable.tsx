@@ -53,7 +53,7 @@ const ProjectTable = () => {
             <tbody>
               {projects?.projects?.map((project, i) => (
                 <tr
-                  key={project._id}
+                  key={project?._id}
                   className="w-full border-b even:bg-slate-100"
                 >
                   <td className="text-center py-3 font-semibold">{i + 1}.</td>

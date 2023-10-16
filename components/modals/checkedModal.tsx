@@ -23,10 +23,11 @@ import {
   calculateSubtotal,
   setisChecked,
   updateDetailedProjectOnChecked,
+  updatedChecked,
 } from "../store/invoice";
 
 const CheckedModal = ({ indx }: { indx: number }) => {
-  const { invoiceType, isChecked, detailedProject, subtotal } =
+  const { invoiceType, isChecked, detailedProject } =
     useSelector<AppState>((state) => state.invoice) as invoiceStateType;
   const { user, isLoading } = useSelector<AppState>(
     (state) => state.user
@@ -43,18 +44,18 @@ const CheckedModal = ({ indx }: { indx: number }) => {
   const [totalWorkingDays, settotalworkingDays] = useState(
     detailedProject[indx].totalWorkingDays
   );
-  const [hours, sethours] = useState(detailedProject[indx].hours);
+  const [hours, sethours] = useState<number>(+detailedProject[indx]?.hours);
 
   const submitHandler = (e: FormEvent) => {
     e.preventDefault();
 
     const project = detailedProject[indx];
     if (
-      workingDays !== project.workingDays &&
-      totalWorkingDays !== project.totalWorkingDays &&
+      workingDays !== '0' &&
+      totalWorkingDays !== '0' &&
       invoiceType === "monthly"
     ) {
-      if (workingDays && totalWorkingDays && workingDays <= totalWorkingDays) {
+      if (workingDays && totalWorkingDays && +workingDays <= +totalWorkingDays) {
         dispatch(
           updateDetailedProjectOnChecked({
             ...project,
@@ -65,14 +66,14 @@ const CheckedModal = ({ indx }: { indx: number }) => {
             amount: "0,0.0",
             rate: project.rate,
             conversionRate: project.conversionRate,
+            projectBelongsTo: project.projectBelongsTo
           })
         );
         dispatch(calculateSubtotal());
-        
+
         const clientState = client.clients.filter(
           (client) => client._id === project?.projectBelongsTo
         )[0] as clientType;
-          console.log(clientState);
 
         !isLoading &&
           dispatch(
@@ -85,7 +86,7 @@ const CheckedModal = ({ indx }: { indx: number }) => {
         return toast.error(
           `working days can'nt be greater than totalworking days`
         );
-    } else if (invoiceType === "hourly" && hours !== project.hours) {
+    } else if (invoiceType === "hourly" && hours !== 0.0) {
       dispatch(
         updateDetailedProjectOnChecked({
           ...project,
@@ -98,7 +99,7 @@ const CheckedModal = ({ indx }: { indx: number }) => {
       dispatch(calculateSubtotal());
 
       const clientState = client.clients.filter(
-        (client) => client._id === project._id
+        (client) => client._id === project?.projectBelongsTo
       )[0] as clientType;
 
       !isLoading &&
@@ -188,7 +189,10 @@ const CheckedModal = ({ indx }: { indx: number }) => {
                   Save
                 </Button>
                 <Button
-                  onClick={() => dispatch(setisChecked(false))}
+                  onClick={() => {
+                    dispatch(setisChecked(false))
+                    dispatch(updatedChecked({ indx, checked: false }))
+                  }}
                   className="bg-slate-100"
                 >
                   Cancel

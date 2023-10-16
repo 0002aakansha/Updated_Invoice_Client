@@ -10,8 +10,7 @@ const store = configureStore({
         client,
         project,
         invoice
-    },
-    middleware: (getDefaultMiddleware) => getDefaultMiddleware(),
+    }
 })
 
 export type AppState = ReturnType<typeof store.getState>

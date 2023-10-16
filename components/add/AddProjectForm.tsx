@@ -31,7 +31,7 @@ const AddProjectForm = () => {
         description,
         rate,
         conversionRate,
-        projectAmount,
+        amount: projectAmount,
         companyId: BelongsTo,
       })
     );

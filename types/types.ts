@@ -27,8 +27,9 @@ export interface loginType {
   password: string;
 }
 
+
 export interface userType {
-  _id: string;
+  _id?: string;
   name: string;
   email: string;
   gstin: string;
@@ -100,9 +101,29 @@ export interface clientStateType {
 
 export interface invoiceStateType {
   invoiceType: string;
+  invoiceNumber: string,
+  Date: Date,
+  DueDate: Date,
   isChecked: boolean;
   detailedProject: dataProps[];
   subtotal: number;
   GST: { CGST: number; SGST: number } | number;
   GrandTotal: number;
+}
+
+export interface PdfPreviewProps {
+  invoice: {
+    invoice: dataProps[] | undefined,
+    invoiceType: string,
+    invoiceNumber: string,
+    Date: Date,
+    DueDate: Date
+  },
+  user: userType,
+  client: clientType,
+  total: {
+    subtotal: number;
+    GST: { CGST: number; SGST: number } | number;
+    GrandTotal: number;
+  }
 }

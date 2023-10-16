@@ -22,7 +22,7 @@ const UpdateProjectModal = ({ isOpen, onClose, _id }: { isOpen: boolean, onClose
         console.log(projects);
         
         const project = projects?.filter(
-          (project) => project._id === _id
+          (project) => project?._id === _id
         )[0] as projectType;
         setDescription(project?.description);
         setRate(project?.rate);

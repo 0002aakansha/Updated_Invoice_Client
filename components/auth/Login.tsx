@@ -8,7 +8,7 @@ import { userStateType } from "@/types/types";
 import ButtonLoading from "../spinners/buttonLoading";
 
 const Login = () => {
-  const { user, error } = useSelector<AppState>(
+  const { user, error, isLoading } = useSelector<AppState>(
     (state) => state.user
   ) as userStateType;
 
@@ -32,6 +32,8 @@ const Login = () => {
     }
   }
 
+
+  
   return (
     <>
       <form action="" onSubmit={submitHandler}>
@@ -64,10 +66,10 @@ const Login = () => {
         <div className="flex justify-center">
           <button
             className={`bg-[#5a51be] text-stone-100 rounded-sm w-full py-2 text-lg font-semibold my-4 cursor-${
-              user.isLoading ? "not-allowed" : "pointer"
+              isLoading ? "not-allowed" : "pointer"
             }`}
           >
-            {user.isLoading ? <ButtonLoading /> : "Login"}
+            {isLoading ? <ButtonLoading /> : "Login"}
           </button>
         </div>
       </form>

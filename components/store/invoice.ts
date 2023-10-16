@@ -3,6 +3,9 @@ import { createSlice } from "@reduxjs/toolkit";
 
 const initialState: invoiceStateType = {
   invoiceType: "monthly",
+  invoiceNumber: "",
+  Date: new Date(),
+  DueDate: new Date(),
   isChecked: false,
   detailedProject: [],
   subtotal: 0.0,
@@ -19,6 +22,15 @@ const invoiceslice = createSlice({
     },
     setisChecked(state, action) {
       state.isChecked = action.payload;
+    },
+    setInvoiceNumber(state, { payload }) {
+      state.invoiceNumber = payload
+    },
+    setDate(state, { payload }) {
+      state.Date = payload
+    },
+    setDueDate(state, { payload }) {
+      state.DueDate = payload
     },
     updatedChecked(
       state,
@@ -77,19 +89,19 @@ const invoiceslice = createSlice({
       state,
       { payload }: { payload: { userState: string; clientState: string } }
     ) {
+
       console.log(payload);
-      
+
       if (
-        payload.userState.toLowerCase() === payload.clientState.toLowerCase()
+        payload?.userState?.toLowerCase() === payload?.clientState?.toLowerCase()
       ) {
         const CGST = +((state.subtotal * 9) / 100).toFixed(3);
         const SGST = +((state.subtotal * 9) / 100).toFixed(3);
-        console.log('subtotal' + state.subtotal, CGST, SGST);
 
         state.GST = { CGST, SGST };
         state.GrandTotal = +(state.subtotal + state.GST.CGST + state.GST.SGST).toFixed(3);
       } else {
-        state.GST = (state.subtotal * 18) / 100;
+        state.GST = +((state.subtotal * 18) / 100).toFixed(3);
         state.GrandTotal = +(state.subtotal + state.GST).toFixed(3);
       }
     },
@@ -105,5 +117,8 @@ export const {
   calculateSubtotal,
   updatedChecked,
   calculateGST,
+  setInvoiceNumber,
+  setDate,
+  setDueDate
 } = invoiceslice.actions;
 export default invoiceslice.reducer;

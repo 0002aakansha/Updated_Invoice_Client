@@ -5,10 +5,12 @@ import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, AppState } from "@/components/store/store";
 import {
   clientStateType,
+  clientType,
   invoiceStateType,
   userStateType,
 } from "@/types/types";
 import {
+  calculateGST,
   calculateSubtotal,
   setisChecked,
   updatedChecked,
@@ -19,12 +21,12 @@ const Table = () => {
   const { projects, clients } = useSelector<AppState>(
     (state) => state.client
   ) as clientStateType;
-  const { user, isLoading } = useSelector<AppState>(
-    (state) => state.user
-  ) as userStateType;
   const { invoiceType, isChecked, detailedProject } = useSelector<AppState>(
     (state) => state.invoice
   ) as invoiceStateType;
+  const { user, isLoading } = useSelector<AppState>(
+    (state) => state.user
+  ) as userStateType;
   const dispatch = useDispatch<AppDispatch>();
 
   const [uniqueKey, setUniqueKey] = useState<number>(0);
@@ -35,7 +37,7 @@ const Table = () => {
       projects.map((project) => {
         return {
           _id: project._id,
-          period: "0",
+          period: "",
           description: project.description,
           workingDays: "0",
           totalWorkingDays: "0",
@@ -91,6 +93,7 @@ const Table = () => {
                           <input
                             type="checkbox"
                             className="outline-none accent-[#5a51be]"
+                            checked={detailedProject[indx]?.checked}
                             onChange={(e) => {
                               if (e.target.checked) {
                                 dispatch(setisChecked(true));
@@ -103,8 +106,22 @@ const Table = () => {
                                 dispatch(
                                   updatedChecked({ indx, checked: false })
                                 );
+                                dispatch(calculateSubtotal());
                               }
-                              dispatch(calculateSubtotal());
+
+                              const clientState = clients.filter(
+                                (client) => client._id === project?.projectBelongsTo
+                              )[0] as clientType;
+
+
+                              !isLoading &&
+                                dispatch(
+                                  calculateGST({
+                                    userState: user.address.state,
+                                    clientState: clientState?.address?.state,
+                                  })
+                                );
+
                             }}
                           />
                         </td>
