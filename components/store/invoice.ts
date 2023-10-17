@@ -59,14 +59,14 @@ const invoiceslice = createSlice({
         ).toFixed(3);
 
         state.detailedProject[payload.id] = { ...payload, amount };
-      } else if (payload.hours) {
+      } 
+      else if (payload.hours) {
         const rate = Number(project?.rate?.rate);
         const currency = project?.rate?.currency;
         const hours = Number(payload?.hours);
         const conversionRate = Number(project?.conversionRate);
 
-        const amount =
-          currency === "INR" ? rate * hours : rate * conversionRate * hours;
+        const amount = currency === "INR" ? rate * hours : rate * conversionRate * hours;
 
         state.detailedProject[payload.id] = {
           ...payload,

@@ -21,20 +21,20 @@ const ClientTable = () => {
     <>
       {clients?.clients?.length !== 0 ? (
         <div className="bg-stone-50 shadow-sm my-4 mx-auto">
-          <table className="table-fixed w-full shadow-md overflow-hidden rounded-t-lg">
+          <table className="table-auto w-full shadow-md overflow-hidden rounded-t-lg">
             <thead>
               <tr className="bg-[#5a51be] text-stone-50">
-                <th className="p-2 font-semibold uppercase">S. No.</th>
-                <th className="p-2 text-start font-semibold uppercase">
+                <th className="py-3 px-4 font-semibold uppercase w-[10%]">S. No.</th>
+                <th className="py-3 px-4 text-start font-semibold uppercase w-[30%]">
                   Client
                 </th>
-                <th className="p-2 text-center font-semibold uppercase">
+                <th className="py-3 px-4 text-center font-semibold uppercase w-[20%]">
                   GSTIN
                 </th>
-                <th className="p-2 text-center font-semibold uppercase">
+                <th className="py-3 px-4 text-center font-semibold uppercase w-[30%]">
                   address
                 </th>
-                <th className="p-2 text-center font-semibold uppercase">
+                <th className="py-3 px-4 text-center font-semibold uppercase w-[10%]">
                   Actions
                 </th>
               </tr>
@@ -43,17 +43,17 @@ const ClientTable = () => {
               {clients?.clients?.map((client, i) => (
                 <tr
                   key={client._id}
-                  className="w-full border-b even:bg-slate-100"
+                  className="w-full border-b even:bg-[#afa7d63b]"
                 >
                   <td className="text-center py-3 font-semibold">{i + 1}.</td>
-                  <td className="py-3 text-start font-semibold text-slate-700 capitalize">
+                  <td className="py-3 px-4 text-start font-semibold text-slate-700 capitalize">
                     {client.name}
                   </td>
-                  <td className="py-3 text-center text-slate-600 text-sm">
+                  <td className="py-3 px-4 text-center text-slate-600 text-sm">
                     {client.gstin}
                   </td>
-                  <td className="py-3 text-center text-slate-600 text-sm">{`${client.address.street}, ${client.address.city}, ${client.address.pin} ${client.address.state}, ${client.address.country}`}</td>
-                  <td className="py-3 text-center cursor-pointer space-x-10">
+                  <td className="py-3 px-4 text-center text-slate-600 text-sm">{`${client.address.street}, ${client.address.city}, ${client.address.pin} ${client.address.state}, ${client.address.country}`}</td>
+                  <td className="p-2 text-center cursor-pointer space-x-10">
                     <FontAwesomeIcon
                       icon={faUserPen}
                       style={{ color: "#5d6f99" }}

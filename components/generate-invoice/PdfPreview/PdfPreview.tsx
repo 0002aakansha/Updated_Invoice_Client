@@ -92,6 +92,12 @@ import { useEffect, useState } from 'react'; const styles = StyleSheet.create({
     width: '80%',
     marginRight: '38%',
   },
+  email: {
+    marginTop: 7,
+    fontSize: 13,
+    color: 'blue',
+    textDecoration: 'underline'
+  },
   top: {
     display: 'flex',
     flexDirection: 'row',
@@ -122,8 +128,15 @@ import { useEffect, useState } from 'react'; const styles = StyleSheet.create({
     marginTop: 50,
     marginRight: '13%',
     marginLeft: '5%',
-  }
-}); const PdfPreview = ({ data }: { data: PdfPreviewProps }) => {
+  },
+  address: {
+    marginTop: 7,
+    fontSize: 13,
+    width: '30%',
+  },
+});
+
+const PdfPreview = ({ data }: { data: PdfPreviewProps }) => {
   const [formattedInvoiceDate, setformattedInvoiceDate] = useState('')
   const [formattedDueDate, setformattedDueDate] = useState('')
 
@@ -151,7 +164,7 @@ import { useEffect, useState } from 'react'; const styles = StyleSheet.create({
               <Text style={styles.txt2}>PAN : {data?.user?.pan}</Text>
               <Text style={styles.txt2}>{data?.user?.address?.street},</Text>
               <Text style={styles.txt2}> {data?.user?.address?.city} {data?.user?.address?.pin}, {data?.user?.address?.state} {data?.user?.address?.country}</Text>
-              <Text style={styles.txt2}>{data?.user?.email}</Text>            </View>
+              <Text style={styles.email}>{data?.user?.email}</Text>            </View>
           </View>
           {/* middle */}
           <View style={{ display: 'flex', flexDirection: 'row' }}>
@@ -171,17 +184,19 @@ import { useEffect, useState } from 'react'; const styles = StyleSheet.create({
                 <Text style={styles.title}>Bill To:</Text>
                 <Text style={styles.title}>{data?.client?.name}</Text>
                 <Text style={styles.txt2}>GSTIN: {data?.client?.gstin}</Text>
-                <Text style={styles.txt2}>{data?.client?.address?.street}, {data?.client?.address?.city} {data?.client?.address?.pin}, {data?.client?.address?.state}, {data?.client?.address?.country} </Text>
+                <Text style={styles.address}>{data?.client?.address?.street}, {data?.client?.address?.city} {data?.client?.address?.pin}, {data?.client?.address?.state}, {data?.client?.address?.country} </Text>
               </View>
-            )}          </View>
+            )}
+          </View>
           <View style={styles.table}>
             <View style={styles.tableRow}>
               <Text style={[styles.tableHead, { fontWeight: 'bold' }]}>Description</Text>
               {data?.invoice?.invoiceType === 'monthly' && <Text style={[styles.tableHead, { fontWeight: 'bold' }]}>Period</Text>}
               {data?.invoice?.invoiceType === 'monthly' && <Text style={[styles.tableHead, { fontWeight: 'bold' }]}>Working Days</Text>}
-              <Text style={[styles.tableHead, { fontWeight: 'bold' }]}>Rate</Text>
-              <Text style={[styles.tableHead, { fontWeight: 'bold' }]}>Hour</Text>
-              <Text style={[styles.tableHead, { fontWeight: 'bold' }]}>Conversion Rate</Text>
+              {data?.invoice?.invoiceType === 'monthly' && <Text style={[styles.tableHead, { fontWeight: 'bold' }]}>Total Working Days</Text>}
+              {data?.invoice?.invoiceType === 'hourly' && <Text style={[styles.tableHead, { fontWeight: 'bold' }]}>Rate</Text>}
+              {data?.invoice?.invoiceType === 'hourly' && <Text style={[styles.tableHead, { fontWeight: 'bold' }]}>Hour</Text>}
+              {data?.invoice?.invoiceType === 'hourly' && <Text style={[styles.tableHead, { fontWeight: 'bold' }]}>Conversion Rate</Text>}
               <Text style={[styles.tableHead, { fontWeight: 'bold' }]}>Amount</Text>
             </View>
             {data?.invoice?.invoice?.map((invoice) => (
@@ -189,9 +204,10 @@ import { useEffect, useState } from 'react'; const styles = StyleSheet.create({
                 <Text style={styles.tableCell}>{invoice?.description}</Text>
                 {data?.invoice?.invoiceType === 'monthly' && <Text style={styles.tableCell}>{invoice?.period}</Text>}
                 {data.invoice.invoiceType === 'monthly' && <Text style={styles.tableCell}>{invoice.workingDays}</Text>}
-                <Text style={styles.tableCell}>{invoice?.rate?.rate}</Text>
-                <Text style={styles.tableCell}>{invoice?.hours}</Text>
-                <Text style={styles.tableCell}>{invoice?.conversionRate}</Text>
+                {data?.invoice?.invoiceType === 'monthly' && <Text style={styles.tableCell}>{invoice.totalWorkingDays}</Text>}
+                {data?.invoice?.invoiceType === 'hourly' && <Text style={styles.tableCell}>{invoice?.rate?.rate}</Text>}
+                {data?.invoice?.invoiceType === 'hourly' && <Text style={styles.tableCell}>{invoice?.hours}</Text>}
+                {invoice?.conversionRate && data?.invoice?.invoiceType === 'hourly' && <Text style={styles.tableCell}>{invoice?.conversionRate}</Text>}
                 <Text style={styles.tableCell}>{invoice?.amount}</Text>
               </View>
             ))}

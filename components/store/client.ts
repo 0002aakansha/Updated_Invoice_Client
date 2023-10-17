@@ -169,6 +169,12 @@ const clientslice = createSlice({
     setHidden(state, action) {
       state.isHidden = action.payload;
     },
+    setCreate(state) {
+      state.created = false
+    },
+    setUpdate(state) {
+      state.updated = false
+    },
     getClientState(state, { payload }) {
       state.clientState = current(state.clients).filter(
         (client) => client._id === payload
@@ -290,5 +296,5 @@ const clientslice = createSlice({
   },
 });
 
-export const { setHidden, getClientState, getClientById } = clientslice.actions;
+export const { setHidden, getClientState, getClientById, setCreate, setUpdate } = clientslice.actions;
 export default clientslice.reducer;

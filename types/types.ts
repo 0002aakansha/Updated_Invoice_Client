@@ -64,14 +64,13 @@ export interface clientType {
 }
 
 export interface projectType {
-  _id: string;
   description: string;
   rate: {
     currency: string;
     rate: number;
   };
   projectAmount: number;
-  conversionRate: number;
+  conversionRate?: number;
   projectBelongsTo?: string;
 }
 

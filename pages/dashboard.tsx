@@ -1,5 +1,4 @@
 import Layout from '@/components/layout/Layout'
-import NotFound from '@/components/alerts/notFound'
 import FullPageLoader from '@/components/spinners/fullPageLoader'
 import { fetchClient } from '@/components/store/client'
 import { AppDispatch, AppState } from '@/components/store/store'
@@ -23,6 +22,9 @@ const Dashboard = () => {
             await dispatch(fetchClient())
             await dispatch(fetchProjects())
         })()
+
+        console.log(error);
+        
     }, [])
 
     useEffect(() => {
@@ -34,7 +36,7 @@ const Dashboard = () => {
         }
 
         return () => toast.dismiss();
-    }, [error?.status])
+    }, [])
 
     if (error)
 

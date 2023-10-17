@@ -12,7 +12,7 @@ import {
 import { FormEvent, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, AppState } from "../store/store";
-import { UpdateClient } from "../store/client";
+import { UpdateClient, setUpdate } from "../store/client";
 import toast from "react-hot-toast";
 
 const UpdateClientModal = ({
@@ -58,8 +58,11 @@ const UpdateClientModal = ({
     setAddress(client?.address);
 
     if (error?.message !== '') toast.error(error?.message)
-    else if (updated) toast.success("Client Updated!");
-  }, [_id]);
+    else if (updated) {
+      toast.success("Client Updated!");
+      dispatch(setUpdate())
+    }
+  }, [_id, error?.message, updated]);
 
   return (
     <>

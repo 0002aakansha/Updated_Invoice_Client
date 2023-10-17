@@ -23,11 +23,11 @@ const MainTable = () => {
 
         <form action="" className='flex flex-row items-center space-x-4'>
           <select data-te-select-init
-            className='bg-[#5a51be] text-stone-50 rounded-sm cursor-pointer outline-none shadow-lg px-4 py-2 font-semibold tracking-wider'
+            className='bg-[#5a51be] text-stone-50 rounded-sm cursor-pointer outline-none shadow-lg px-2 py-3 font-semibold tracking-wider'
             onChange={changeHandler}
           >
-            <option value="clients">View Clients</option>
-            <option value="projects">View Projects</option>
+            <option value="clients" className='bg-[#fff] text-stone-500'>View Clients</option>
+            <option value="projects" className='bg-[#fff] text-stone-500'>View Projects</option>
           </select>
         </form>
       </div>

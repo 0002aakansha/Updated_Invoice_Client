@@ -12,11 +12,11 @@ const TableTr = ({ project, indx }: Props) => {
 
     return (
         <>
-            <td className='border-2 border-[#9d96e4] px-4 py-1 text-center'>{indx+1}</td>
+            <td className='border-2 border-[#9d96e4] px-4 py-1 text-center'>{indx + 1}</td>
             <td className='border-2 border-[#9d96e4] px-4 py-1'>{project?.description}</td>
             {invoiceType === 'monthly' ? (
                 <>
-                    <td className='border-2 border-[#9d96e4] px-4 py-1 text-center'>{detailedProject[indx]?.period !== '' ? detailedProject[indx]?.period : <span className='text-slate-400 select-none'>Miscellaneous</span> }</td>
+                    <td className='border-2 border-[#9d96e4] px-4 py-1 text-center'>{detailedProject[indx]?.period !== '' ? detailedProject[indx]?.period : <span className='text-slate-400 select-none'>Miscellaneous</span>}</td>
                     <td className='border-2 border-[#9d96e4] px-4 py-1 text-center'>{detailedProject[indx]?.workingDays}</td>
                     <td className='border-2 border-[#9d96e4] px-4 py-1 text-center'>{detailedProject[indx]?.totalWorkingDays}</td>
                 </>
@@ -24,7 +24,7 @@ const TableTr = ({ project, indx }: Props) => {
                 <>
                     <td className='border-2 border-[#9d96e4] px-4 py-1 text-center'>{project?.rate?.rate} $/Hour</td>
                     <td className='border-2 border-[#9d96e4] px-4 py-1 text-center'>{detailedProject[indx]?.hours}</td>
-                    <td className='border-2 border-[#9d96e4] px-4 py-1 text-center'>1$ = {project?.conversionRate}</td>
+                    <td className='border-2 border-[#9d96e4] px-4 py-1 text-center'>{project?.conversionRate ? `1$ = ${project?.conversionRate}` : <span className='text-red-500 font-semibold'>N/A</span>}</td>
                 </>
             )}
             <td className='border-2 border-[#9d96e4] px-4 py-1 text-center font-semibold'>INR {detailedProject[indx]?.amount}</td>

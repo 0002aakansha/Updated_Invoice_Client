@@ -67,12 +67,18 @@ export const fetchProjects = createAsyncThunk(
 export const UpdateProject = createAsyncThunk(
   "project/update",
   async (
-    { cid, project }: { cid: string; project: projectType },
+    { cid, _id, project }: {
+      cid: string;
+      _id: string;
+      project: projectType
+    },
     { rejectWithValue }
   ) => {
+    console.log(project);
+    
     try {
       const { data } = await client({
-        url: `/projects/${cid}/${project._id}`,
+        url: `/projects/${cid}/${_id}`,
         method: "PATCH",
         headers: {
           "Content-Type": "application/json",
@@ -129,7 +135,14 @@ export const DeleteProject = createAsyncThunk(
 const projectslice = createSlice({
   name: "project",
   initialState,
-  reducers: {},
+  reducers: {
+    setCreate(state) {
+      state.created = false
+    },
+    setUpdate(state) {
+      state.updated = false
+    },
+  },
   extraReducers: (builder) => {
     // create
     builder.addCase(createProject.pending, (state) => {
@@ -226,4 +239,5 @@ const projectslice = createSlice({
   },
 });
 
+export const { setCreate, setUpdate } = projectslice.actions;
 export default projectslice.reducer;

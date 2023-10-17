@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch, AppState } from '../store/store';
 import { projectStateType, projectType } from '@/types/types';
 import { FormEvent, useEffect, useState } from 'react';
-import { UpdateProject } from '../store/project';
+import { UpdateProject, setUpdate } from '../store/project';
 import toast from 'react-hot-toast';
 
 const UpdateProjectModal = ({ isOpen, onClose, _id }: { isOpen: boolean, onClose: (value: boolean) => void, _id: string }) => {
@@ -29,16 +29,25 @@ const UpdateProjectModal = ({ isOpen, onClose, _id }: { isOpen: boolean, onClose
         setBelongsTo(project?.projectBelongsTo?._id || project?.projectBelongsTo)
 
         if (error.message !== '') toast.error(error.message)
-        else if (updated) toast.success("Project Updated!");
+        else if (updated) {
+            toast.success("Project Updated!");
+            dispatch(setUpdate())
+        }
     }, [_id, projects, error.message, updated]);
 
     const submitHandler = async (e: FormEvent) => {
         e.preventDefault()
-        console.log(projects);
 
-        await dispatch(
-            UpdateProject({ cid: BelongsTo, project: { _id, description, rate, conversionRate, projectAmount } })
-        );
+        if (rate.currency !== 'INR') {
+            await dispatch(
+                UpdateProject({ cid: BelongsTo, _id, project: { description, rate, conversionRate, projectAmount } })
+            );
+        }
+        else {
+            await dispatch(
+                UpdateProject({ cid: BelongsTo, _id, project: { description, rate, conversionRate: undefined, projectAmount } })
+            );
+        }
         onClose(false)
     };
 
@@ -76,10 +85,14 @@ const UpdateProjectModal = ({ isOpen, onClose, _id }: { isOpen: boolean, onClose
                                     <input type="number" step='0.01' placeholder='Rate' value={rate?.rate} className='outline-none border-2 px-4 py-2 rounded-md' onChange={e => setRate({ ...rate, rate: +e.target.value })} />
                                 </div>
                             </div>
-                            <div className='flex flex-col my-2'>
-                                <label htmlFor="name" className='font-semibold tracking-wide mb-2'>Conversion Rate</label>
-                                <input type="number" step='0.01' placeholder='Conversion Rate' className='outline-none border-2 px-4 py-2 rounded-md' value={conversionRate} onChange={e => setConversionRate(+e.target.value)} />
-                            </div>
+                            {
+                                rate?.currency !== 'INR' && (
+                                    <div className='flex flex-col my-2'>
+                                        <label htmlFor="name" className='font-semibold tracking-wide mb-2'>Conversion Rate</label>
+                                        <input type="number" step='0.01' placeholder='Conversion Rate' className='outline-none border-2 px-4 py-2 rounded-md' value={conversionRate} onChange={e => setConversionRate(+e.target.value)} />
+                                    </div>
+                                )
+                            }
                         </ModalBody>
 
                         <ModalFooter>
