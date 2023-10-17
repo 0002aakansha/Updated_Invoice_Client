@@ -6,6 +6,8 @@ import { AppDispatch, AppState } from "../store/store";
 import { userAsync } from "../store/user";
 import { userStateType } from "@/types/types";
 import ButtonLoading from "../spinners/buttonLoading";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faEye, faEyeSlash } from "@fortawesome/free-solid-svg-icons";
 
 const Login = () => {
   const { created, error, isLoading } = useSelector<AppState>(
@@ -16,6 +18,11 @@ const Login = () => {
   const [password, setPassword] = useState<string | null>(null);
   const router = useRouter();
   const dispatch = useDispatch<AppDispatch>();
+  const [showPassword, setShowPassword] = useState<boolean>(false);
+
+  const togglePasswordVisibility = () => {
+    setShowPassword(!showPassword);
+  };
 
   async function submitHandler(e: FormEvent) {
     e.preventDefault();
@@ -44,33 +51,46 @@ const Login = () => {
       <form action="" onSubmit={submitHandler}>
         <div className="flex flex-col">
           <label htmlFor="email" className="my-3">
-            Email*
+            Email<span className="text-red-500"> *</span>
           </label>
           <input
             type="text"
             name="email"
             id="email"
             placeholder="Enter your email"
+            required
             className="p-4 bg-slate-100 text-slate-500 outline-none"
             onChange={(e) => setEmail(e.target.value)}
           />
         </div>
-        <div className="flex flex-col">
+        <div className="flex flex-col relative">
           <label htmlFor="pass" className="my-3">
-            Password*
+            Password<span className="text-red-500"> *</span>
           </label>
-          <input
-            type="password"
-            name="pass"
-            id="pass"
-            placeholder="Enter your Password"
-            className="p-4 bg-slate-100 text-slate-500 outline-none"
-            onChange={(e) => setPassword(e.target.value)}
-          />
+          <div className="flex justify-between bg-slate-100 pe-4">
+            <input
+              type={showPassword ? 'text' : 'password'}
+              name="pass"
+              id="pass"
+              placeholder="Enter your Password"
+              className="p-4 bg-slate-100 text-slate-500 outline-none"
+              onChange={(e) => setPassword(e.target.value)}
+              required />
+            <button
+              type="button"
+              className=""
+              onClick={togglePasswordVisibility}
+            >
+              <FontAwesomeIcon
+                icon={showPassword ? faEyeSlash : faEye}
+                className="text-gray-500 cursor-pointer"
+              />
+            </button>
+          </div>
         </div>
         <div className="flex justify-center">
           <button
-            className={`bg-[#5a51be] text-stone-100 rounded-sm w-full text-lg font-semibold my-4 py-1 cursor-${isLoading ? "not-allowed" : "pointer"
+            className={`bg-[#5a51be] text-stone-100 rounded-sm w-full text-lg font-semibold my-4 py-2 cursor-${isLoading ? "not-allowed" : "pointer"
               }`}
           >
             {isLoading ? <ButtonLoading /> : "Login"}

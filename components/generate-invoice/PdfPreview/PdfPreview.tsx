@@ -1,8 +1,6 @@
 import { PdfPreviewProps, dataProps } from '@/types/types';
 import { Document, Page, Text, View, StyleSheet, Image } from '@react-pdf/renderer';
-import { useEffect, useState } from 'react';
-
-const styles = StyleSheet.create({
+import { useEffect, useState } from 'react'; const styles = StyleSheet.create({
   page: {
     flexDirection: 'row',
     backgroundColor: 'white',
@@ -44,6 +42,7 @@ const styles = StyleSheet.create({
     // textAlign: 'right',
     fontSize: 12,
     marginTop: 50,
+    marginRight: '30%',
   },
   tableCell: {
     border: '1 solid #B0B0B0',
@@ -55,10 +54,18 @@ const styles = StyleSheet.create({
   txt: {
     fontSize: 13,
     marginTop: 10,
+    backgroundColor: '#5A51BE',
+    color: 'white',
+    padding: 5,
+    width: '33%',
   },
   txt1: {
     fontSize: 13,
     marginTop: 50,
+    backgroundColor: '#5A51BE',
+    color: 'white',
+    padding: 5,
+    width: '33%',
   },
   account: {
     marginTop: 60,
@@ -82,7 +89,8 @@ const styles = StyleSheet.create({
     marginLeft: 50,
   },
   logo: {
-    width: '50%',
+    width: '80%',
+    marginRight: '38%',
   },
   top: {
     display: 'flex',
@@ -92,22 +100,36 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 16,
-    fontWeight: 'ultrabold',
     marginBottom: 2,
     marginTop: 2,
+  },
+  txt2: {
+    marginTop: 7,
+    fontSize: 13,
+  },
+  billTo: {
+    display: 'flex',
+    flexDirection: 'column',
+    fontSize: 12,
+    marginTop: 50,
+    marginRight: '7%',
+    marginLeft: '5%',
+  },
+  billToCubexo: {
+    display: 'flex',
+    flexDirection: 'column',
+    fontSize: 12,
+    marginTop: 50,
+    marginRight: '13%',
+    marginLeft: '5%',
   }
-});
-
-const PdfPreview = ({ data }: { data: PdfPreviewProps }) => {
-
+}); const PdfPreview = ({ data }: { data: PdfPreviewProps }) => {
   const [formattedInvoiceDate, setformattedInvoiceDate] = useState('')
   const [formattedDueDate, setformattedDueDate] = useState('')
 
   function formatDate(date: Date) {
     return date?.toLocaleDateString('en-GB');
-  }
-
-  useEffect(() => {
+  } useEffect(() => {
     setformattedInvoiceDate(formatDate(data?.invoice?.Date))
     setformattedDueDate(formatDate(data?.invoice?.DueDate))
   }, [data?.invoice?.Date, data?.invoice?.DueDate])
@@ -123,15 +145,13 @@ const PdfPreview = ({ data }: { data: PdfPreviewProps }) => {
                 data?.user?.name?.toLowerCase().startsWith('gammaedge') ? <Image src='/images/logo.png' alt='gammaedge' /> : <Image src='/images/cubexoLogo.png' alt='cubexo' />
               }
             </View>
-
             <View style={styles.rightColumn}>
               <Text style={styles.title}>{data?.user?.name}</Text>
-              <Text>GSTIN: {data?.user?.gstin}</Text>
-              <Text>PAN : {data?.user?.pan}</Text>
-              <Text>{data?.user?.address?.street},</Text>
-              <Text> {data?.user?.address?.city} {data?.user?.address?.pin}, {data?.user?.address?.state} {data?.user?.address?.country}</Text>
-              <Text>{data?.user?.email}</Text>
-            </View>
+              <Text style={styles.txt2}>GSTIN: {data?.user?.gstin}</Text>
+              <Text style={styles.txt2}>PAN : {data?.user?.pan}</Text>
+              <Text style={styles.txt2}>{data?.user?.address?.street},</Text>
+              <Text style={styles.txt2}> {data?.user?.address?.city} {data?.user?.address?.pin}, {data?.user?.address?.state} {data?.user?.address?.country}</Text>
+              <Text style={styles.txt2}>{data?.user?.email}</Text>            </View>
           </View>
           {/* middle */}
           <View style={{ display: 'flex', flexDirection: 'row' }}>
@@ -139,21 +159,25 @@ const PdfPreview = ({ data }: { data: PdfPreviewProps }) => {
               <Text style={styles.txt1}>Invoice Number : {data?.invoice?.invoiceNumber}</Text>
               <Text style={styles.txt}>Invoice Date : {formattedInvoiceDate}</Text>
               <Text style={styles.txt}>Due Date: {formattedDueDate}</Text>
-            </View>
-
-            <View style={{ flex: 1 }}>
-              <View>
-                <Text>Bill To:</Text>
+            </View>            {data?.user?.name?.toLowerCase().startsWith('gammaedge') ? (
+              <View style={styles.billTo}>
+                <Text style={styles.title}>Bill To:</Text>
+                <Text style={styles.title}>{data?.client?.name}</Text>
+                <Text style={styles.txt2}>GSTIN: {data?.client?.gstin}</Text>
+                <Text style={styles.txt2}>{data?.client?.address?.street}, {data?.client?.address?.city} {data?.client?.address?.pin}, {data?.client?.address?.state}, {data?.client?.address?.country} </Text>
               </View>
-              <Text style={styles.txt1}>{data?.client?.name}</Text>
-              <Text style={styles.txt}>{data?.client?.gstin}</Text>
-              <Text style={styles.txt}>{data?.client?.address?.street}, {data?.client?.address?.city} {data?.client?.address?.pin}, {data?.client?.address?.state}, {data?.client?.address?.country} </Text>
-            </View>
-          </View>
+            ) : (
+              <View style={styles.billToCubexo}>
+                <Text style={styles.title}>Bill To:</Text>
+                <Text style={styles.title}>{data?.client?.name}</Text>
+                <Text style={styles.txt2}>GSTIN: {data?.client?.gstin}</Text>
+                <Text style={styles.txt2}>{data?.client?.address?.street}, {data?.client?.address?.city} {data?.client?.address?.pin}, {data?.client?.address?.state}, {data?.client?.address?.country} </Text>
+              </View>
+            )}          </View>
           <View style={styles.table}>
             <View style={styles.tableRow}>
               <Text style={[styles.tableHead, { fontWeight: 'bold' }]}>Description</Text>
-              <Text style={[styles.tableHead, { fontWeight: 'bold' }]}>Period</Text>
+              {data?.invoice?.invoiceType === 'monthly' && <Text style={[styles.tableHead, { fontWeight: 'bold' }]}>Period</Text>}
               {data?.invoice?.invoiceType === 'monthly' && <Text style={[styles.tableHead, { fontWeight: 'bold' }]}>Working Days</Text>}
               <Text style={[styles.tableHead, { fontWeight: 'bold' }]}>Rate</Text>
               <Text style={[styles.tableHead, { fontWeight: 'bold' }]}>Hour</Text>
@@ -163,7 +187,7 @@ const PdfPreview = ({ data }: { data: PdfPreviewProps }) => {
             {data?.invoice?.invoice?.map((invoice) => (
               <View key={invoice?.id} style={styles.tableRow}>
                 <Text style={styles.tableCell}>{invoice?.description}</Text>
-                <Text style={styles.tableCell}>{invoice?.period}</Text>
+                {data?.invoice?.invoiceType === 'monthly' && <Text style={styles.tableCell}>{invoice?.period}</Text>}
                 {data.invoice.invoiceType === 'monthly' && <Text style={styles.tableCell}>{invoice.workingDays}</Text>}
                 <Text style={styles.tableCell}>{invoice?.rate?.rate}</Text>
                 <Text style={styles.tableCell}>{invoice?.hours}</Text>
@@ -174,35 +198,37 @@ const PdfPreview = ({ data }: { data: PdfPreviewProps }) => {
           </View>
           <View style={{ display: 'flex', flexDirection: 'row' }}>
             <View style={styles.account}>
-              <Text>{data?.user?.name}</Text>
-              <Text>A/C NO: {data?.user?.account?.acc_no}</Text>
-              <Text>BANK: {data?.user?.account?.bank}</Text>
-              <Text>IFSC: {data?.user?.account?.ifsc}</Text>
+              <Text style={styles.title}>{data?.user?.name}</Text>
+              <Text style={styles.txt2}>A/C NO: {data?.user?.account?.acc_no}</Text>
+              <Text style={styles.txt2}>BANK: {data?.user?.account?.bank}</Text>
+              <Text style={styles.txt2}>IFSC: {data?.user?.account?.ifsc}</Text>
             </View>
             <View style={styles.subtotal}>
               <Text style={styles.calSubTotal}>SUBTOTAL  {'          '}
                 <Text style={styles.digit}>{data?.total?.subtotal}</Text>
               </Text>
               {typeof data?.total?.GST === 'number' ? (
-                <Text style={styles.cgst}>CGST @9% {'          '}
+                <Text style={styles.cgst}>CGST @18% {'          '}
                   <Text style={styles.digit}>{data?.total?.GST}</Text>
                 </Text>
               ) : (
-                <Text>
+                <View>
                   <Text style={styles.cgst}>CGST @9% {'          '}
                     <Text style={styles.digit}>{data?.total?.GST?.CGST}</Text>
                   </Text>
                   <Text style={styles.sgst}>SGST @9% {'          '}
                     <Text style={styles.digit}>{data?.total?.GST?.SGST}</Text>
                   </Text>
-                </Text>
+                </View>
               )}
               <Text style={styles.total}>Total Amount {'        '}
                 <Text style={styles.digit}>{data?.total?.GrandTotal}</Text>
               </Text>
             </View>
           </View>
-          <Text style={{ fontSize: 16, padding: 2 }}>We appreciate your collaboration and look forword to a long relationship with you.</Text>
+          <Text style={{ fontSize: 12, padding: 2, marginTop: 100, textAlign: 'center', fontStyle: 'italic' }}>
+            We appreciate your collaboration and look forword to a long relationship with you.
+          </Text>
         </View>
       </Page>
     </Document>

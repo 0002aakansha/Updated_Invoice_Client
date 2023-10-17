@@ -5,8 +5,8 @@ import { useSelector } from "react-redux";
 import { AppState } from "@/components/store/store";
 import { clientStateType } from "@/types/types";
 import NotFound from "@/components/alerts/notFound";
-import ButtonLoading from "@/components/spinners/buttonLoading";
 import GeneratePDF from "./GeneratePDF";
+import Loader from "@/components/spinners/Loader";
 
 const BottomMain = () => {
   const clients = useSelector<AppState>(
@@ -16,7 +16,7 @@ const BottomMain = () => {
   return (
     <>
       {clients.isLoading ? (
-        <ButtonLoading />
+        <Loader />
       ) : (
         !clients.isHidden &&
         (clients.projects?.length !== 0 ? (

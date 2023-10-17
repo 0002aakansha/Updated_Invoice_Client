@@ -12,7 +12,7 @@ import {
 import { FormEvent, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, AppState } from "../store/store";
-import { UpdateClient} from "../store/client";
+import { UpdateClient } from "../store/client";
 import toast from "react-hot-toast";
 
 const UpdateClientModal = ({
@@ -24,7 +24,7 @@ const UpdateClientModal = ({
   _id: string;
   onClose: (value: boolean) => void;
 }) => {
-  const { clients, error } = useSelector<AppState>(
+  const { clients, error, updated } = useSelector<AppState>(
     (state) => state.client
   ) as clientStateType;
   const dispatch = useDispatch<AppDispatch>();
@@ -42,13 +42,11 @@ const UpdateClientModal = ({
   const submitHandler = async (e: FormEvent) => {
     e.preventDefault()
 
-    const { error } = await dispatch(
+    await dispatch(
       UpdateClient({ _id, name, gstin, address })
     );
 
-    if (error?.message === "Rejected") throw new Error(error);
     onClose(false)
-    toast.success("Client Updated!");
   };
 
   useEffect(() => {
@@ -58,6 +56,9 @@ const UpdateClientModal = ({
     setName(client?.name);
     setgstin(client?.gstin);
     setAddress(client?.address);
+
+    if (error?.message !== '') toast.error(error?.message)
+    else if (updated) toast.success("Client Updated!");
   }, [_id]);
 
   return (

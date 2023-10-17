@@ -16,7 +16,7 @@ const TableTr = ({ project, indx }: Props) => {
             <td className='border-2 border-[#9d96e4] px-4 py-1'>{project?.description}</td>
             {invoiceType === 'monthly' ? (
                 <>
-                    <td className='border-2 border-[#9d96e4] px-4 py-1 text-center'>{detailedProject[indx]?.period}</td>
+                    <td className='border-2 border-[#9d96e4] px-4 py-1 text-center'>{detailedProject[indx]?.period !== '' ? detailedProject[indx]?.period : <span className='text-slate-400 select-none'>Miscellaneous</span> }</td>
                     <td className='border-2 border-[#9d96e4] px-4 py-1 text-center'>{detailedProject[indx]?.workingDays}</td>
                     <td className='border-2 border-[#9d96e4] px-4 py-1 text-center'>{detailedProject[indx]?.totalWorkingDays}</td>
                 </>

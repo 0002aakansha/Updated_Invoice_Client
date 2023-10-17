@@ -86,12 +86,14 @@ export interface projectStateType {
   projects: projectType[];
   created: boolean;
   isLoading: boolean;
+  updated: boolean,
   error: { status: number | string; message: string };
 }
 
 export interface clientStateType {
   clients: clientType[];
   created: boolean;
+  updated: boolean;
   clientById: clientType;
   clientState: string;
   projects: projectType[];

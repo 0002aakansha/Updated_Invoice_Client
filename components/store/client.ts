@@ -6,6 +6,7 @@ import { createSlice, createAsyncThunk, current } from "@reduxjs/toolkit";
 const initialState: clientStateType = {
   clients: [],
   created: false,
+  updated: false,
   clientById: {
     _id: "",
     name: "",

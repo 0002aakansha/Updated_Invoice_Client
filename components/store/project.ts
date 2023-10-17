@@ -8,6 +8,7 @@ const initialState: projectStateType = {
   isLoading: false,
   created: false,
   error: { status: "", message: "" },
+  updated: false
 };
 
 export const createProject = createAsyncThunk(
@@ -140,7 +141,7 @@ const projectslice = createSlice({
       state.isLoading = false;
 
       console.log(action.payload);
-      
+
       state.created = true;
       state.projects = [...current(state.projects), action.payload.new];
       state.error = { status: "", message: "" };
@@ -177,14 +178,24 @@ const projectslice = createSlice({
     // update project
     builder.addCase(UpdateProject.pending, (state) => {
       state.isLoading = true;
+      state.updated = false
       state.error = { status: "", message: "" };
     });
     builder.addCase(UpdateProject.fulfilled, (state, { payload }) => {
       state.isLoading = false;
+      state.updated = true
+
+      const filteredIndex = current(state.projects).findIndex(
+        (client) => client._id === payload.updatedProject._id
+      );
+
+      state.projects[filteredIndex] = payload.updatedProject;
+
       state.error = { status: "", message: "" };
     });
     builder.addCase(UpdateProject.rejected, (state, action) => {
       state.isLoading = false;
+      state.updated = false
       state.error = action.payload as {
         status: number | string;
         message: string;

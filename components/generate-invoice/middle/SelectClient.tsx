@@ -4,7 +4,8 @@ import {
   fetchClientProjects,
   setHidden,
 } from "@/components/store/client";
-import { calculateGST, setInvoiceType } from "@/components/store/invoice";
+import { calculateGST, calculateSubtotal, setInvoiceType, setTotalToZero, updateSpecificField, updatedChecked } from "@/components/store/invoice";
+import project from "@/components/store/project";
 import { AppDispatch, AppState } from "@/components/store/store";
 import {
   clientStateType,
@@ -60,6 +61,15 @@ const SelectClient = () => {
       );
   }
 
+  function changeInvoiceTypeHandler(e: { target: { value: any; }; }) {
+    dispatch(setInvoiceType(e.target.value))
+    invoice.detailedProject.map((_, indx) => {
+      dispatch(updatedChecked({ indx, checked: false }))
+      dispatch(updateSpecificField({ indx, field: 'amount', data: '0,0' }))
+    })
+    dispatch(setTotalToZero())
+  }
+
   useEffect(() => {
     onLoadClient();
   }, []);
@@ -86,9 +96,7 @@ const SelectClient = () => {
             value={clientId}
             onChange={changeHandler}
           >
-            {client.isLoading ? (
-              <Loader />
-            ) : client?.clients?.length !== 0 ? (
+            {client?.clients?.length !== 0 ? (
               <>
                 <option value={"undefined"}>Select Client</option>
                 {client?.clients?.map((client) => (
@@ -111,7 +119,7 @@ const SelectClient = () => {
             </label>
             <select
               id="select"
-              onChange={(e) => dispatch(setInvoiceType(e.target.value))}
+              onChange={changeInvoiceTypeHandler}
               className="outline-none bg-transparent border-2 px-4 py-2 rounded-sm my-2"
             >
               <option value="monthly">Monthly</option>

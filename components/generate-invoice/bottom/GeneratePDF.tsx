@@ -1,11 +1,11 @@
 import { AppDispatch, AppState } from "@/components/store/store"
-import { PdfPreviewProps, clientStateType, clientType, dataProps, invoiceStateType, userStateType, userType } from "@/types/types"
+import { PdfPreviewProps, clientStateType, dataProps, invoiceStateType, userType } from "@/types/types"
 import { PDFViewer, pdf } from "@react-pdf/renderer"
 import { useEffect, useState } from "react"
 import { useDispatch, useSelector } from "react-redux"
 import { Button, Modal, ModalBody, ModalContent, ModalFooter, ModalOverlay } from '@chakra-ui/react'
 import PdfPreview from "../PdfPreview/PdfPreview"
-import { updatedChecked } from "@/components/store/invoice"
+import { setDate, setDueDate, setInvoiceNumber, updatedChecked } from "@/components/store/invoice"
 import toast from "react-hot-toast"
 import { getClientById } from "@/components/store/client"
 
@@ -24,17 +24,6 @@ const GeneratePDF = () => {
   useEffect(() => {
     setCheckedInvoice(detailedProject.filter((invoice) => invoice.checked === true))
     dispatch(getClientById(detailedProject[0]?.projectBelongsTo))
-  }, [detailedProject])
-
-  const generatePDF = async () => {
-    if (invoiceNumber === '' || !Date || !DueDate) return toast.error('All fileds are required!')
-
-    onClose(true)
-    const pdfData = await pdf(
-      <PdfPreview data={pdfPreviewData}
-      />
-    ).toBlob();
-    setPdfBlob(pdfData);
 
     setpdfPreviewData(
       {
@@ -66,6 +55,22 @@ const GeneratePDF = () => {
         }
       }
     )
+
+  }, [detailedProject, Date, DueDate, GST, GrandTotal, account, address, checkedInvoice, clientById?.address, clientById?.gstin, clientById?.name, contact, dispatch, email, gstin, invoiceNumber, invoiceType, name, pan, subtotal])
+
+  const generatePDF = async () => {
+    if (invoiceNumber === '' || !Date || !DueDate) return toast.error('All fileds are required!')
+    if (!checkedInvoice || checkedInvoice.length === 0) {
+      return toast.error('No rows Selected. Please select records to generate an invoice.')
+    }
+    onClose(true)
+
+    const pdfData = await pdf(
+      <PdfPreview data={pdfPreviewData}
+      />
+    ).toBlob();
+    setPdfBlob(pdfData);
+
   }
 
   const downloadPDF = () => {
@@ -80,6 +85,9 @@ const GeneratePDF = () => {
       document.body.removeChild(a);
       onClose(false);
       checkedInvoice?.map((_, indx) => dispatch(updatedChecked({ indx, checked: false })))
+      dispatch(setInvoiceNumber(''))
+      dispatch(setDate(new window.Date()))
+      dispatch(setDueDate(new window.Date()))
     }
     onClose(false)
   };

@@ -1,5 +1,5 @@
 import { dataProps, invoiceStateType } from "@/types/types";
-import { createSlice } from "@reduxjs/toolkit";
+import { createSlice, current } from "@reduxjs/toolkit";
 
 const initialState: invoiceStateType = {
   invoiceType: "monthly",
@@ -103,6 +103,28 @@ const invoiceslice = createSlice({
         state.GrandTotal = +(state.subtotal + state.GST).toFixed(3);
       }
     },
+    setTotalToZero(state) {
+      state.subtotal = 0,
+        state.GrandTotal = 0
+
+      if (typeof state.GST !== 'number') {
+        state.GST.CGST = 0
+        state.GST.SGST = 0
+      }
+      else {
+        state.GST = 0
+      }
+    },
+    updateSpecificField(state, { payload }: { payload: { indx: number, field: string, data: string | number } }) {
+      const { indx, field, data } = payload
+      if(state.invoiceType === 'monthly'){
+        state.detailedProject[indx].period = ''
+        state.detailedProject[indx].totalWorkingDays = '0'
+        state.detailedProject[indx].workingDays = '0'
+      }
+      else state.detailedProject[indx].hours = '0.0'
+      state.detailedProject[indx].amount = 0.0
+    }
   },
   extraReducers: {},
 });
@@ -117,6 +139,8 @@ export const {
   calculateGST,
   setInvoiceNumber,
   setDate,
-  setDueDate
+  setDueDate,
+  setTotalToZero,
+  updateSpecificField
 } = invoiceslice.actions;
 export default invoiceslice.reducer;

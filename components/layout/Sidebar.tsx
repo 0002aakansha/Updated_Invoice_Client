@@ -10,7 +10,7 @@ import { FaHistory } from 'react-icons/fa'
 import { Sidebar, Menu, MenuItem, useProSidebar } from "react-pro-sidebar";
 import ReceiptOutlinedIcon from "@mui/icons-material/ReceiptOutlined";
 import MenuOutlinedIcon from "@mui/icons-material/MenuOutlined";
-import ButtonLoading from '../spinners/buttonLoading'
+import Loader from '../spinners/Loader'
 
 const SideBar = () => {
     const router = useRouter()
@@ -37,7 +37,7 @@ const SideBar = () => {
                         className='my-4'
                     >
                         <div className='p-4'>
-                            {loading ? <ButtonLoading /> : uname.toLowerCase().startsWith('gammaedge') ? <img src="/images/logo.png" alt="" className="w-full" /> : <img src="/images/cubexoLogo.png" alt="" className="w-3/4" />
+                            {loading ? <Loader /> : uname.toLowerCase().startsWith('gammaedge') ? <img src="/images/logo.png" alt="" className="w-full" /> : <img src="/images/cubexoLogo.png" alt="" className="w-3/4" />
                             }
                         </div>
                     </MenuItem>

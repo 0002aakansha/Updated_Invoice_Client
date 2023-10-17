@@ -50,23 +50,49 @@ const CheckedModal = ({ indx }: { indx: number }) => {
     e.preventDefault();
 
     const project = detailedProject[indx];
-    if (
-      workingDays !== '0' &&
-      totalWorkingDays !== '0' &&
-      invoiceType === "monthly"
-    ) {
-      if (workingDays && totalWorkingDays && +workingDays <= +totalWorkingDays) {
+    if (workingDays && totalWorkingDays) {
+      if (+workingDays > 0 && +totalWorkingDays > 0 && invoiceType === "monthly") {
+        if (+workingDays <= +totalWorkingDays) {
+          dispatch(
+            updateDetailedProjectOnChecked({
+              ...project,
+              id: indx,
+              period,
+              workingDays,
+              totalWorkingDays,
+              amount: "0,0.0",
+              rate: project.rate,
+              conversionRate: project.conversionRate,
+              projectBelongsTo: project.projectBelongsTo
+            })
+          );
+          dispatch(calculateSubtotal());
+
+          const clientState = client.clients.filter(
+            (client) => client._id === project?.projectBelongsTo
+          )[0] as clientType;
+
+          !isLoading &&
+            dispatch(
+              calculateGST({
+                userState: user.address.state,
+                clientState: clientState?.address?.state,
+              })
+            );
+        } else
+          return toast.error(
+            `working days can'nt be greater than totalworking days`
+          );
+      }
+      else if (+workingDays < 0 || +totalWorkingDays < 0 || hours < 0) return toast.error("values can't be less than to 0");
+      else if (invoiceType === "hourly" && hours > 0) {
         dispatch(
           updateDetailedProjectOnChecked({
             ...project,
             id: indx,
-            period,
-            workingDays,
-            totalWorkingDays,
-            amount: "0,0.0",
+            hours,
             rate: project.rate,
             conversionRate: project.conversionRate,
-            projectBelongsTo: project.projectBelongsTo
           })
         );
         dispatch(calculateSubtotal());
@@ -82,36 +108,14 @@ const CheckedModal = ({ indx }: { indx: number }) => {
               clientState: clientState?.address?.state,
             })
           );
-      } else
-        return toast.error(
-          `working days can'nt be greater than totalworking days`
-        );
-    } else if (invoiceType === "hourly" && hours !== 0.0) {
-      dispatch(
-        updateDetailedProjectOnChecked({
-          ...project,
-          id: indx,
-          hours,
-          rate: project.rate,
-          conversionRate: project.conversionRate,
-        })
-      );
-      dispatch(calculateSubtotal());
-
-      const clientState = client.clients.filter(
-        (client) => client._id === project?.projectBelongsTo
-      )[0] as clientType;
-
-      !isLoading &&
-        dispatch(
-          calculateGST({
-            userState: user.address.state,
-            clientState: clientState?.address?.state,
-          })
-        );
-    } else return toast.error("all fields are required!");
-    dispatch(setisChecked(false));
+      }
+      else return toast.error("all fields are required!");
+      dispatch(setisChecked(false));
+    }
   };
+
+  console.log(period);
+
 
   return (
     <>
@@ -135,6 +139,7 @@ const CheckedModal = ({ indx }: { indx: number }) => {
                       value={period}
                       onChange={(e) => setPeriod(e.target.value)}
                       required
+                      placeholder="Some Message!"
                       className="border-2 mt-2 px-4 py-2 rounded-sm outline-none"
                     />
                   </div>
@@ -145,9 +150,10 @@ const CheckedModal = ({ indx }: { indx: number }) => {
                     <input
                       type="number"
                       step="0.01"
-                      value={workingDays}
+                      value={workingDays !== '0' && workingDays}
                       onChange={(e) => setworkingDays(e.target.value)}
                       required
+                      placeholder="0"
                       className="border-2 mt-2 px-4 py-2 rounded-sm outline-none"
                     />
                   </div>
@@ -157,9 +163,10 @@ const CheckedModal = ({ indx }: { indx: number }) => {
                     </label>
                     <input
                       type="number"
-                      value={totalWorkingDays}
+                      value={totalWorkingDays !== '0' && totalWorkingDays}
                       onChange={(e) => settotalworkingDays(e.target.value)}
                       required
+                      placeholder="0"
                       className="border-2 mt-2 px-4 py-2 rounded-sm outline-none"
                     />
                   </div>
@@ -173,9 +180,10 @@ const CheckedModal = ({ indx }: { indx: number }) => {
                   <input
                     type="number"
                     step="0.01"
-                    value={hours}
+                    value={hours !== 0.0 && hours}
                     onChange={(e) => sethours(e.target.value)}
                     required
+                    placeholder="0.0"
                     className="border-2 mt-2 px-4 py-2 rounded-sm outline-none"
                   />
                 </div>
