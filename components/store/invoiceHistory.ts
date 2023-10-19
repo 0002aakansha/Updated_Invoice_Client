@@ -24,6 +24,8 @@ const initialState: invoiceHistoryType = {
 };
 
 export const postInvoiceHistory = createAsyncThunk('invoice/history/create', async (invoice: invoiceType, { rejectWithValue }) => {
+    console.log(invoice);
+    
     try {
         const { data } = await client({
             url: `/invoice`,
@@ -73,6 +75,55 @@ export const getAllInvoice = createAsyncThunk('invoice/history/getAll', async (_
     }
 })
 
+export const updateInvoice = createAsyncThunk('invoice/history/update', async ({ id, dataToUpdate }: { id: string, dataToUpdate: { status: string } }, { rejectWithValue }) => {
+    try {
+        const { data } = await client({
+            url: `/invoice/${id}`,
+            method: "PATCH",
+            headers: {
+                Authorization: getCookie(),
+            },
+            data: JSON.stringify(dataToUpdate)
+        });
+
+        if (data.status === "true") return data;
+        else throw new Error(data.message);
+
+    } catch (error: any) {
+        return rejectWithValue({
+            status: error.response.status,
+            message:
+                error.response.data.message ||
+                error.message ||
+                "An unknown error has been occured, Please try again later!",
+        });
+    }
+})
+
+export const deleteInvoice = createAsyncThunk('invoice/history/delete', async (id: string, { rejectWithValue }) => {
+    try {
+        const { data } = await client({
+            url: `/invoice/${id}`,
+            method: "DELETE",
+            headers: {
+                Authorization: getCookie(),
+            },
+        });
+
+        if (data.status === "true") return id;
+        else throw new Error(data.message);
+
+    } catch (error: any) {
+        return rejectWithValue({
+            status: error.response.status,
+            message:
+                error.response.data.message ||
+                error.message ||
+                "An unknown error has been occured, Please try again later!",
+        });
+    }
+})
+
 const historyslice = createSlice({
     name: "invoice",
     initialState,
@@ -83,7 +134,7 @@ const historyslice = createSlice({
             state.error = initialState.error
         })
         builder.addCase(postInvoiceHistory.fulfilled, (state, { payload }) => {
-            state.invoice.push({ ...payload })
+            state.invoice.push({ ...payload.newInvoice })
             state.isLoading = initialState.isLoading
             state.error = initialState.error
         })
@@ -107,6 +158,52 @@ const historyslice = createSlice({
             state.isLoading = initialState.isLoading
             state.error = payload
         })
+        // update project
+        builder.addCase(updateInvoice.pending, (state) => {
+            state.isLoading = true;
+            state.updated = false
+            state.error = { status: "", message: "" };
+        });
+        builder.addCase(updateInvoice.fulfilled, (state, { payload }) => {
+            state.isLoading = false;
+            state.updated = true
+
+            const filteredIndex = current(state.invoice).findIndex(
+                (invoice) => invoice._id === payload.updatedInvoice._id
+            );
+
+            state.invoice[filteredIndex] = payload.updatedInvoice;
+            state.error = { status: "", message: "" };
+        });
+        builder.addCase(updateInvoice.rejected, (state, action) => {
+            state.isLoading = false;
+            state.updated = false
+            state.error = action.payload as {
+                status: number | string;
+                message: string;
+            };
+        });
+        // delete
+        builder.addCase(deleteInvoice.pending, (state) => {
+            state.isLoading = true;
+            state.error = { status: "", message: "" };
+        });
+        builder.addCase(deleteInvoice.fulfilled, (state, { payload }) => {
+            state.isLoading = false;
+
+            const filteredArray = current(state.invoice).filter(
+                (invoice) => invoice._id !== payload
+            );
+            state.invoice = [...filteredArray];
+            state.error = { status: "", message: "" };
+        });
+        builder.addCase(deleteInvoice.rejected, (state, action) => {
+            state.isLoading = false;
+            state.error = action.payload as {
+                status: number | string;
+                message: string;
+            };
+        });
     },
 });
 

@@ -14,7 +14,7 @@ const NotFound = ({ title, description }: { title: string, description: string |
                 className='rounded-sm mt-[3rem]'
             >
                 <AlertIcon boxSize='40px' mr={0} />
-                <AlertTitle mt={4} mb={1} fontSize='lg'>
+                <AlertTitle mt={4} mb={1} mr={0} fontSize='xl'>
                     {title}
                 </AlertTitle>
                 <AlertDescription maxWidth='sm' className='font-medium'>

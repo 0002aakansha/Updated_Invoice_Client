@@ -25,7 +25,9 @@ const GeneratePDF = () => {
   useEffect(() => {
     setCheckedInvoice(detailedProject.filter((invoice) => invoice.checked === true))
     dispatch(getClientById(detailedProject[0]?.projectBelongsTo))
+  }, [detailedProject])
 
+  useEffect(() => {
     setpdfPreviewData(
       {
         invoice: {
@@ -56,8 +58,7 @@ const GeneratePDF = () => {
         }
       }
     )
-
-  }, [detailedProject, Date, DueDate, GST, GrandTotal, account, address, clientById?.address, clientById?.gstin, clientById?.name, contact, email, gstin, invoiceNumber, invoiceType, name, pan, subtotal])
+  }, [Date, DueDate, GST, GrandTotal, account, address, checkedInvoice, clientById?.address, clientById?.gstin, clientById?.name, contact, email, gstin, invoiceNumber, invoiceType, name, pan, subtotal])
 
   const generatePDF = async () => {
     if (invoiceNumber === '' || !Date || !DueDate) return toast.error('All fileds are required!')
@@ -71,10 +72,6 @@ const GeneratePDF = () => {
       />
     ).toBlob();
     setPdfBlob(pdfData);
-
-    console.log();
-
-
   }
 
   const downloadPDF = () => {
@@ -90,7 +87,7 @@ const GeneratePDF = () => {
 
       invoiceType === 'monthly' ? (
         dispatch(postInvoiceHistory({
-          createdFor: clientById?.name, invoiceNumber, createdOn: Date?.toLocaleDateString('en-GB'), dueDate: DueDate?.toLocaleDateString('en-GB'),
+          createdFor: clientById?._id, invoiceNumber, createdOn: Date?.toLocaleDateString('en-GB'), dueDate: DueDate?.toLocaleDateString('en-GB'),
           projects: detailedProject?.filter(project => project.checked === true).map(project => {
             return { id: project.id, projectDetails: project._id, period: project.period, workingDays: project.workingDays, totalWorkingDays: project.totalWorkingDays, amount: +project.amount }
           }),

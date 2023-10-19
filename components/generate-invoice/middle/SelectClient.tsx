@@ -59,6 +59,7 @@ const SelectClient = () => {
       );
   }
 
+
   function changeInvoiceTypeHandler(e: { target: { value: any; }; }) {
     dispatch(setInvoiceType(e.target.value))
     invoice.detailedProject.map((_, indx) => {

@@ -26,7 +26,7 @@ const SideBar = () => {
 
     return (
         <>
-            <Sidebar style={{ height: "100vh" }}>
+            <Sidebar style={{ height: "100vh" }} defaultCollapsed={true} className='md:static sm:fixed'>
                 <Menu>
                     <MenuItem
                         icon={<MenuOutlinedIcon />}

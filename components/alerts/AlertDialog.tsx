@@ -14,6 +14,7 @@ import { useDispatch } from "react-redux";
 import { DeleteClient } from "../store/client";
 import toast from "react-hot-toast";
 import { DeleteProject } from "../store/project";
+import { deleteInvoice } from "../store/invoiceHistory";
 
 export default function AlertDialogExample({
   isOpen,
@@ -52,6 +53,14 @@ export default function AlertDialogExample({
     toast.success("Project Deleted!");
   };
 
+  const invoiceDelete = async () => {
+    const { error } = await dispatch(deleteInvoice(_id));
+
+    if (error?.message === "Rejected") throw new Error(error);
+    onClose(false);
+    toast.success("Invoice Deleted!");
+  };
+
   return (
     <AlertDialog isOpen={isOpen} onClose={() => onClose(false)}>
       <AlertDialogOverlay>
@@ -61,7 +70,7 @@ export default function AlertDialogExample({
               ? "Logout"
               : filter === "clientDelete"
                 ? "Delete Client"
-                : "Delete Project"}
+                : filter === 'invoiceDelete' ? 'Delete Invoice' : "Delete Project"}
           </AlertDialogHeader>
 
           <AlertDialogBody>
@@ -71,13 +80,9 @@ export default function AlertDialogExample({
           <AlertDialogFooter>
             <Button onClick={() => onClose(false)}>Cancel</Button>
             <Button
-              className=" bg-red-700 text-stone-100 hover:bg-red-600"
+              className="bg-red-700 text-stone-100 hover:bg-red-600"
               onClick={
-                filter === "logout"
-                  ? logoutHandler
-                  : filter === "clientDelete"
-                    ? clientDelete
-                    : projectDelete
+                filter === "logout" ? logoutHandler : filter === "clientDelete" ? clientDelete : filter === 'invoiceDelete' ? invoiceDelete : projectDelete
               }
               ml={3}
             >

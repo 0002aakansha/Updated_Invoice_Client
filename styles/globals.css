@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;500&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -129,12 +131,14 @@ select:hover option:hover {
     background-color: rgb(0, 0, 0);
 }
 
-.card {
+.card,
+.invoice {
     position: relative;
     overflow: hidden;
 }
 
-.card::before {
+.card::before,
+.invoice::before {
     content: '';
     background-color: #ffffff1e;
     position: absolute;
@@ -146,7 +150,8 @@ select:hover option:hover {
     border-radius: 50%;
 }
 
-.card::after {
+.card::after,
+.invoice::after {
     content: '';
     background-color: #ffffff1e;
     position: absolute;
@@ -168,4 +173,16 @@ select:hover option:hover {
 
 .card:last-child {
     background: linear-gradient(45deg, #f1a056, #eb2f2f);
+}
+
+.success {
+    background: linear-gradient(70deg, #00ff4f5c, #006a2e);
+}
+
+.pending {
+    background: linear-gradient(70deg, #ffb66c, #ff6c00);
+}
+
+.font{
+    font-family: 'Poppins', sans-serif;
 }

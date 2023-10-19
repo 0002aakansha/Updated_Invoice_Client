@@ -30,6 +30,7 @@ const InvoiceNumber = () => {
             id="invoice"
             className="bg-transparent outline-none border px-2 border-stone-300 p-1 rounded-sm w-1/2"
             value={invoiceNo}
+            maxLength={8}
             onChange={e => setInvoiceNo(e.target.value)}
           />
         </div>

@@ -138,7 +138,7 @@ import { useEffect, useState } from 'react'; const styles = StyleSheet.create({
 
 const PdfPreview = ({ data }: { data: PdfPreviewProps }) => {
   const [formattedInvoiceDate, setformattedInvoiceDate] = useState('')
-  const [formattedDueDate, setformattedDueDate] = useState('')
+  const [formattedDueDate, setformattedDueDate] = useState('') 
 
   function formatDate(date: Date) {
     return date?.toLocaleDateString('en-GB');
@@ -146,6 +146,7 @@ const PdfPreview = ({ data }: { data: PdfPreviewProps }) => {
     setformattedInvoiceDate(formatDate(data?.invoice?.Date))
     setformattedDueDate(formatDate(data?.invoice?.DueDate))
   }, [data?.invoice?.Date, data?.invoice?.DueDate])
+
 
   return (
     <Document>
@@ -201,7 +202,7 @@ const PdfPreview = ({ data }: { data: PdfPreviewProps }) => {
             </View>
             {data?.invoice?.invoice?.map((invoice) => (
               <View key={invoice?.id} style={styles.tableRow}>
-                <Text style={styles.tableCell}>{invoice?.description}</Text>
+                <Text style={styles.tableCell}>{invoice?.description || invoice?.projectDetails?.description}</Text>
                 {data?.invoice?.invoiceType === 'monthly' && <Text style={styles.tableCell}>{invoice?.period}</Text>}
                 {data.invoice.invoiceType === 'monthly' && <Text style={styles.tableCell}>{invoice.workingDays}</Text>}
                 {data?.invoice?.invoiceType === 'monthly' && <Text style={styles.tableCell}>{invoice.totalWorkingDays}</Text>}
