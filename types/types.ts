@@ -13,6 +13,7 @@ export interface dataProps {
   checked: boolean;
   projectBelongsTo?: string;
 }
+
 export interface rateType {
   currency: string;
   rate: number;
@@ -26,7 +27,6 @@ export interface loginType {
   email: string;
   password: string;
 }
-
 
 export interface userType {
   _id?: string;
@@ -128,4 +128,36 @@ export interface PdfPreviewProps {
     GST: { CGST: number; SGST: number } | number;
     GrandTotal: number;
   }
+}
+
+export interface invoiceProjectType {
+  id: number,
+  projectDetails: string | projectType,
+  period?: string,
+  workingDays?: string,
+  totalWorkingDays?: string,
+  hours?: string,
+  amount: number,
+}
+
+export interface invoiceType {
+  _id?: string,
+  createdFor: string,
+  invoiceNumber: string,
+  createdOn: string,
+  dueDate: string,
+  projects: invoiceProjectType[];
+  subtotal: number;
+  GST: { CGST: number; SGST: number } | number;
+  GrandTotal: number;
+  status: string,
+  invoiceType: string
+}
+
+export interface invoiceHistoryType {
+  invoice: invoiceType[],
+  isLoading: boolean,
+  created: boolean,
+  updated: boolean,
+  error: { status: string, message: string }
 }

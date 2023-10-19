@@ -60,8 +60,8 @@ export default function AlertDialogExample({
             {filter === "logout"
               ? "Logout"
               : filter === "clientDelete"
-              ? "Delete Client"
-              : "Delete Project"}
+                ? "Delete Client"
+                : "Delete Project"}
           </AlertDialogHeader>
 
           <AlertDialogBody>
@@ -76,12 +76,12 @@ export default function AlertDialogExample({
                 filter === "logout"
                   ? logoutHandler
                   : filter === "clientDelete"
-                  ? clientDelete
-                  : projectDelete
+                    ? clientDelete
+                    : projectDelete
               }
               ml={3}
             >
-              Delete
+              {filter === "logout" ? 'Logout' : 'Delete'}
             </Button>
           </AlertDialogFooter>
         </AlertDialogContent>

@@ -1,11 +1,9 @@
-import Loader from "@/components/spinners/Loader";
 import {
   fetchClient,
   fetchClientProjects,
   setHidden,
 } from "@/components/store/client";
 import { calculateGST, calculateSubtotal, setInvoiceType, setTotalToZero, updateSpecificField, updatedChecked } from "@/components/store/invoice";
-import project from "@/components/store/project";
 import { AppDispatch, AppState } from "@/components/store/store";
 import {
   clientStateType,
@@ -85,7 +83,7 @@ const SelectClient = () => {
 
   return (
     <div className="flex justify-around">
-      <div>
+      <div className="mx-1">
         <form action="" className="flex flex-col">
           <label htmlFor="select" className="font-semibold">
             Bill To:
@@ -111,7 +109,7 @@ const SelectClient = () => {
           </select>
         </form>
       </div>
-      <div>
+      <div className="mx-1">
         {!client.isHidden && client.projects?.length !== 0 && (
           <form action="" className="flex flex-col">
             <label htmlFor="select" className="font-semibold">

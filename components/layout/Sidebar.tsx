@@ -63,7 +63,7 @@ const SideBar = () => {
                     </MenuItem>
                     <MenuItem className='my-2'
                         icon={<FaHistory className='text-lg' />}
-                        onClick={() => router.push('/dashboard')}>
+                        onClick={() => router.push('/history')}>
                         <span className='capitalize tracking-normal font-semibold text-slate-700'>Invoice History</span>
                     </MenuItem>
                 </Menu>

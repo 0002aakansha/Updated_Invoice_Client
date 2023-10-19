@@ -1,5 +1,7 @@
 import { dataProps, invoiceStateType } from "@/types/types";
-import { createSlice, current } from "@reduxjs/toolkit";
+import { createAsyncThunk, createSlice, current } from "@reduxjs/toolkit";
+import { getCookie } from "@/utils/cookies";
+import { client } from "@/axios/instance/client";
 
 const initialState: invoiceStateType = {
   invoiceType: "monthly",
@@ -59,7 +61,7 @@ const invoiceslice = createSlice({
         ).toFixed(3);
 
         state.detailedProject[payload.id] = { ...payload, amount };
-      } 
+      }
       else if (payload.hours) {
         const rate = Number(project?.rate?.rate);
         const currency = project?.rate?.currency;
@@ -117,7 +119,7 @@ const invoiceslice = createSlice({
     },
     updateSpecificField(state, { payload }: { payload: { indx: number, field: string, data: string | number } }) {
       const { indx, field, data } = payload
-      if(state.invoiceType === 'monthly'){
+      if (state.invoiceType === 'monthly') {
         state.detailedProject[indx].period = ''
         state.detailedProject[indx].totalWorkingDays = '0'
         state.detailedProject[indx].workingDays = '0'

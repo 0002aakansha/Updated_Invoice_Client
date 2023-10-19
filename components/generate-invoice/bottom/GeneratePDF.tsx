@@ -8,6 +8,7 @@ import PdfPreview from "../PdfPreview/PdfPreview"
 import { setDate, setDueDate, setInvoiceNumber, updatedChecked } from "@/components/store/invoice"
 import toast from "react-hot-toast"
 import { getClientById } from "@/components/store/client"
+import { postInvoiceHistory } from "@/components/store/invoiceHistory"
 
 const GeneratePDF = () => {
   const [pdfBlob, setPdfBlob] = useState<Blob | MediaSource>()
@@ -56,7 +57,7 @@ const GeneratePDF = () => {
       }
     )
 
-  }, [detailedProject, Date, DueDate, GST, GrandTotal, account, address, checkedInvoice, clientById?.address, clientById?.gstin, clientById?.name, contact, dispatch, email, gstin, invoiceNumber, invoiceType, name, pan, subtotal])
+  }, [detailedProject, Date, DueDate, GST, GrandTotal, account, address, clientById?.address, clientById?.gstin, clientById?.name, contact, email, gstin, invoiceNumber, invoiceType, name, pan, subtotal])
 
   const generatePDF = async () => {
     if (invoiceNumber === '' || !Date || !DueDate) return toast.error('All fileds are required!')
@@ -71,6 +72,9 @@ const GeneratePDF = () => {
     ).toBlob();
     setPdfBlob(pdfData);
 
+    console.log();
+
+
   }
 
   const downloadPDF = () => {
@@ -83,7 +87,30 @@ const GeneratePDF = () => {
       document.body.appendChild(a);
       a.click();
       document.body.removeChild(a);
-      onClose(false);
+
+      invoiceType === 'monthly' ? (
+        dispatch(postInvoiceHistory({
+          createdFor: clientById?.name, invoiceNumber, createdOn: Date?.toLocaleDateString('en-GB'), dueDate: DueDate?.toLocaleDateString('en-GB'),
+          projects: detailedProject?.filter(project => project.checked === true).map(project => {
+            return { id: project.id, projectDetails: project._id, period: project.period, workingDays: project.workingDays, totalWorkingDays: project.totalWorkingDays, amount: +project.amount }
+          }),
+          subtotal, GST, GrandTotal, status: 'pending', invoiceType
+        }
+        ))
+      ) : (
+        dispatch(postInvoiceHistory({
+          createdFor: clientById?.name, invoiceNumber, Date: Date?.toLocaleDateString('en-GB'), DueDate: DueDate?.toLocaleDateString('en-GB'),
+          projects:
+            detailedProject?.filter(project => project.checked === true).map(project => {
+              return { id: project.id, projectDetails: project._id, period: project.period, hours: project.hours && +project.hours, amount: project.amount }
+            }),
+          subtotal, GST, GrandTotal, status: 'pending', invoiceType
+        }
+        ))
+      )
+
+
+      // unset all
       checkedInvoice?.map((_, indx) => dispatch(updatedChecked({ indx, checked: false })))
       dispatch(setInvoiceNumber(''))
       dispatch(setDate(new window.Date()))
