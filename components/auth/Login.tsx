@@ -3,7 +3,7 @@ import { FormEvent, useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import { useSelector, useDispatch } from "react-redux";
 import { AppDispatch, AppState } from "../store/store";
-import { userAsync } from "../store/user";
+import { setCreated, userAsync } from "../store/user";
 import { userStateType } from "@/types/types";
 import ButtonLoading from "../spinners/buttonLoading";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -41,6 +41,7 @@ const Login = () => {
   useEffect(() => {
     if (error !== '') toast.error(error)
     else if (created) {
+      dispatch(setCreated())
       router.push("/dashboard");
       toast.success("Login Successfull!", { id: 'login' });
     }
