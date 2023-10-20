@@ -28,6 +28,8 @@ const HistoryCard = ({ invoiceData }: { invoiceData: invoiceType }) => {
     const dispatch = useDispatch<AppDispatch>()
     const [isUpdateOpen, onUpdateOpen] = useState<boolean>(false)
 
+    const today = new Date().toISOString().split("T")[0];
+
     // console.log(invoiceData);
     useEffect(() => {
 
@@ -164,11 +166,12 @@ const HistoryCard = ({ invoiceData }: { invoiceData: invoiceType }) => {
                                                 } else {
                                                     setDate(null);
                                                 }
-                                            }} />
+                                            }} required/>
                                     </div>
                                     <div className="flex flex-col my-2">
                                         <label htmlFor="" className="font-semibold text-lg">Due Date</label>
                                         <input type="date" placeholder='Due Date' className="border-2 mt-2 px-4 py-2 rounded-sm outline-none"
+                                        min={today}
                                             onChange={e => {
                                                 const dateValue = e.target.value;
                                                 if (dateValue) {
@@ -177,7 +180,7 @@ const HistoryCard = ({ invoiceData }: { invoiceData: invoiceType }) => {
                                                     setDueDate(null);
                                                 }
                                             }}
-                                        />
+                                        required/>
                                     </div>
                                     <ModalFooter>
                                         <Button className="bg-stone-200" mr={3} onClick={() => onEditClose(false)}>

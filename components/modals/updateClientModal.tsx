@@ -14,6 +14,8 @@ import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, AppState } from "../store/store";
 import { UpdateClient, setUpdate } from "../store/client";
 import toast from "react-hot-toast";
+import { states } from "@/utils/states";
+
 
 const UpdateClientModal = ({
   isOpen,
@@ -34,7 +36,7 @@ const UpdateClientModal = ({
   const [address, setAddress] = useState<addressType>({
     street: "",
     city: "",
-    state: "",
+    state: states[0],
     pin: "",
     country: "",
   });
@@ -86,8 +88,14 @@ const UpdateClientModal = ({
                     placeholder="Name"
                     className="outline-none border-2 px-4 py-2 rounded-md"
                     value={name}
-                    onChange={(e) => setName(e.target.value)}
-                  />
+                    onChange={(e) => {
+                      const inputValue = e.target.value;
+                      const pattern = /^[A-Za-z\s]*$/;
+                      if (pattern.test(inputValue) || inputValue === '') {
+                        setName(inputValue);
+                      }
+                    }}
+                    required />
                 </div>
                 <div className="flex flex-col">
                   <label
@@ -101,7 +109,15 @@ const UpdateClientModal = ({
                     placeholder="GSTIN"
                     className="outline-none border-2 px-4 py-2 rounded-md"
                     value={gstin}
-                    onChange={(e) => setgstin(e.target.value)}
+                    maxLength={15}
+                    onChange={(e) => {
+                      const input = e.target.value;
+                      const pattern = /^[A-Za-z0-9]*$/;
+                      if (pattern.test(input) || input === '') {
+                        setgstin(input);
+                      }
+                    }}
+                    required
                   />
                 </div>
               </div>
@@ -119,9 +135,14 @@ const UpdateClientModal = ({
                     placeholder="Street"
                     className="outline-none border-2 px-4 py-2 rounded-md"
                     value={address?.street}
-                    onChange={(e) =>
-                      setAddress({ ...address, street: e.target.value })
-                    }
+                    required
+                    onChange={(e) => {
+                      const inputValue = e.target.value;
+                      const pattern = /^[A-Za-z\s]*$/;
+                      if (pattern.test(inputValue) || inputValue === '') {
+                        setAddress({ ...address, street: inputValue });
+                      }
+                    }}
                   />
                 </div>
                 <div className="flex flex-col m-1">
@@ -136,9 +157,14 @@ const UpdateClientModal = ({
                     placeholder="City"
                     className="outline-none border-2 px-4 py-2 rounded-md"
                     value={address?.city}
-                    onChange={(e) =>
-                      setAddress({ ...address, city: e.target.value })
-                    }
+                    required
+                    onChange={(e) => {
+                      const inputValue = e.target.value;
+                      const pattern = /^[A-Za-z() ]*$/;
+                      if (pattern.test(inputValue) || inputValue === '') {
+                        setAddress({ ...address, city: inputValue })
+                      }
+                    }}
                   />
                 </div>
                 <div className="flex flex-col m-1">
@@ -152,10 +178,14 @@ const UpdateClientModal = ({
                     type="text"
                     placeholder="Pin"
                     className="outline-none border-2 px-4 py-2 rounded-md"
+                    maxLength={6}
                     value={address?.pin}
-                    onChange={(e) =>
-                      setAddress({ ...address, pin: e.target.value })
-                    }
+                    onChange={(e) => {
+                      const inputValue = e.target.value;
+                      const alphabeticValue = inputValue.replace(/[^0-9]/g, '');
+                      setAddress({ ...address, pin: alphabeticValue });
+                    }}
+                    required
                   />
                 </div>
                 <div className="flex flex-col m-1">
@@ -165,15 +195,15 @@ const UpdateClientModal = ({
                   >
                     State
                   </label>
-                  <input
-                    type="text"
-                    placeholder="State"
+                  <select
                     className="outline-none border-2 px-4 py-2 rounded-md"
                     value={address?.state}
-                    onChange={(e) =>
-                      setAddress({ ...address, state: e.target.value })
+                    required
+                    onChange={(e) => setAddress({ ...address, state: e.target.value })}>
+                    {
+                      states.map(state => <option key={state} value={state}>{state}</option>)
                     }
-                  />
+                  </select>
                 </div>
                 <div className="flex flex-col m-1">
                   <label
@@ -187,9 +217,12 @@ const UpdateClientModal = ({
                     placeholder="Country"
                     className="outline-none border-2 px-4 py-2 rounded-md"
                     value={address?.country}
-                    onChange={(e) =>
-                      setAddress({ ...address, country: e.target.value })
-                    }
+                    required
+                    onChange={(e) => {
+                      const inputValue = e.target.value;
+                      const alphabeticValue = inputValue.replace(/[^A-Za-z]/g, '');
+                      setAddress({ ...address, country: alphabeticValue });
+                    }}
                   />
                 </div>
               </div>

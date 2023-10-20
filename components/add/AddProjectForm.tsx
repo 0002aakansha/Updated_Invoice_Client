@@ -1,3 +1,4 @@
+
 import React, { FormEvent, useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, AppState } from "../store/store";
@@ -51,21 +52,21 @@ const AddProjectForm = () => {
     <div className="w-full">
       <form
         action=""
-        className="bg-white p-4 rounded-sm mx-auto w-1/2"
+        className="bg-white p-4 rounded-sm mx-auto w-1/2 sm:w-1/2 xs:w-3/4"
         onSubmit={submitHandler}
       >
-        <h1 className="mt-2 mb-4 uppercase border-b p-3 text-center font-bold text-[#5a51be] text-xl tracking-wide">
+        <h1 className="mt-2 mb-4 uppercase border-b p-3 text-center font-bold text-[#5a51be] xs:text-xs sm:text-sm md:text-xl tracking-wide">
           Add Project
         </h1>
         <div className="p-4">
           <div className="flex flex-col my-2">
-            <label htmlFor="name" className="font-semibold tracking-wide mb-2">
+            <label htmlFor="name" className="font-semibold tracking-wide mb-2 xs:text-xs sm:text-sm md:text-md">
               Description
             </label>
             <input
               type="text"
               placeholder="Description"
-              className="outline-none border-2 px-4 py-2 rounded-md"
+              className="outline-none border-2 px-4 py-2 rounded-md xs:text-xs sm:text-sm md:text-md xs:w-full"
               value={description}
               onChange={(e) => {
                 const inputValue = e.target.value;
@@ -77,14 +78,14 @@ const AddProjectForm = () => {
             />
           </div>
           <div className="flex flex-col my-2">
-            <label htmlFor="name" className="font-semibold tracking-wide mb-2">
+            <label htmlFor="name" className="font-semibold tracking-wide mb-2 xs:text-xs sm:text-sm md:text-md">
               Project Amount
             </label>
             <input
               type="number"
               step="0.01"
               placeholder="Project Amount"
-              className="outline-none border-2 px-4 py-2 rounded-md"
+              className="outline-none border-2 px-4 py-2 rounded-md xs:text-xs sm:text-sm md:text-md"
               value={projectAmount === 0 ? '' : projectAmount}
               onChange={(e) => {
                 const input = e.target.value;
@@ -94,18 +95,18 @@ const AddProjectForm = () => {
               }}
             />
           </div>
-          <div className="grid grid-cols-2 space-x-2 my-2">
+          <div className="sm:grid sm:grid-cols-1   md:grid md:grid-cols-2 space-x-2 my-2">
             <div className="flex flex-col">
               <label
                 htmlFor="name"
-                className="font-semibold tracking-wide mb-2"
+                className="font-semibold tracking-wide mb-2 xs:text-xs sm:text-sm md:text-md"
               >
                 Currency
               </label>
               <select
                 name=""
                 id=""
-                className="outline-none border-2 px-4 py-2 rounded-md"
+                className="outline-none border-2 px-4 py-2 rounded-md xs:text-xs sm:text-sm md:text-md"
                 value={rate?.currency}
                 onChange={(e) => setRate({ ...rate, currency: e.target.value })}
               >
@@ -117,7 +118,7 @@ const AddProjectForm = () => {
             <div className="flex flex-col">
               <label
                 htmlFor="name"
-                className="font-semibold tracking-wide mb-2"
+                className="font-semibold tracking-wide mb-2 xs:text-xs sm:text-sm md:text-md"
               >
                 Rate
               </label>
@@ -125,7 +126,7 @@ const AddProjectForm = () => {
                 type="number"
                 step="0.01"
                 placeholder="Rate"
-                className="outline-none border-2 px-4 py-2 rounded-md"
+                className="outline-none border-2 px-4 py-2 rounded-md xs:text-xs sm:text-sm md:text-md"
                 value={rate?.rate || ''}
                 onChange={(e) => {
                   const input = e.target.value;
@@ -133,11 +134,11 @@ const AddProjectForm = () => {
                 }} />
             </div>
           </div>
-          <div className="grid grid-cols-2 space-x-2">
+          <div className="sm:grid sm:grid-cols-2 md:grid md:grid-cols-2 space-x-2">
             <div className="flex flex-col my-2">
               <label
-                htmlFor="name"
-                className="font-semibold tracking-wide mb-2"
+                htmlFor="name" 
+                className="font-semibold tracking-wide mb-2 xs:text-xs sm:text-sm md:text-md xs:text-xs sm:text-sm md:text-md"
               >
                 Conversion Rate
               </label>
@@ -146,7 +147,7 @@ const AddProjectForm = () => {
                 step="0.01"
                 disabled={rate.currency === 'INR' ? true : false}
                 placeholder="Conversion Rate"
-                className={`outline-none border-2 px-4 py-2 rounded-md ${rate.currency === 'INR' ? 'cursor-not-allowed bg-stone-100' : 'cursor-text'}`}
+                className={`outline-none border-2 px-4 py-2 rounded-md xs:text-xs sm:text-sm md:text-md  ${rate.currency === 'INR' ? 'cursor-not-allowed bg-stone-100' : 'cursor-text'}`}
                 value={conversionRate || ''}
                 onChange={(e) => {
                   const input = e.target.value;
@@ -157,14 +158,14 @@ const AddProjectForm = () => {
             <div className="flex flex-col my-2">
               <label
                 htmlFor="name"
-                className="font-semibold tracking-wide mb-2"
+                className="font-semibold tracking-wide mb-2 xs:text-xs sm:text-sm md:text-md"
               >
                 Belongs To:
               </label>
               <select
                 name=""
                 id=""
-                className="outline-none border-2 px-4 py-2 rounded-md"
+                className="outline-none border-2 px-4 py-2 rounded-md xs:text-xs sm:text-sm md:text-md"
                 value={BelongsTo}
                 onChange={(e) => setBelongsTo(e.target.value)}
               >
@@ -178,7 +179,7 @@ const AddProjectForm = () => {
           </div>
         </div>
         <div className="flex justify-center my-3">
-          <button className="bg-[#5a51be] text-stone-100 px-4 py-2 w-1/2 rounded-sm font-semibold text-lg">
+          <button className="bg-[#5a51be] text-stone-100 px-4 py-2 w-1/2 rounded-sm font-semibold xs:text-xs sm:text-sm md:text-md">
             {isLoading ? <TextLoaders /> : "Submit"}
           </button>
         </div>

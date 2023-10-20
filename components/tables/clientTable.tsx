@@ -21,20 +21,22 @@ const ClientTable = () => {
     <>
       {clients?.clients?.length !== 0 ? (
         <div className="bg-stone-50 shadow-sm my-4 mx-auto">
-          <table className="table-auto w-full shadow-md overflow-hidden rounded-t-lg">
+          <div className="overflow-x-auto">  
+          {/* <table className="table-auto w-full shadow-md  md:overflow-hidden xs:overflow-x-scroll sm:overflow-x-scroll rounded-t-lg"> */}
+          <table className="table-auto w-full shadow-md xs:table-fixed md:table-auto  rounded-t-lg">
             <thead>
               <tr className="bg-[#5a51be] text-stone-50">
-                <th className="py-3 px-4 font-semibold uppercase w-[10%]">S. No.</th>
-                <th className="py-3 px-4 text-start font-semibold uppercase w-[30%]">
+                <th className="py-3 px-4 font-semibold uppercase  md:w-[10%] xs:text-xs  sm:text-xs md:text-base">S. No.</th>
+                <th className="py-3 px-4 text-start font-semibold uppercase md:w-[30%] xs:text-xs  sm:text-xs md:text-base">
                   Client
                 </th>
-                <th className="py-3 px-4 text-center font-semibold uppercase w-[20%]">
+                <th className="py-3 px-4 text-center font-semibold uppercase md:w-[20%] xs:text-xs  sm:text-xs md:text-base">
                   GSTIN
                 </th>
-                <th className="py-3 px-4 text-center font-semibold uppercase w-[30%]">
+                <th className="py-3 px-4 text-center font-semibold uppercase  md:w-[30%] xs:text-xs  sm:text-xs md:text-base">
                   address
                 </th>
-                <th className="py-3 px-4 text-center font-semibold uppercase w-[10%]">
+                <th className="py-3 px-4 text-center font-semibold uppercase md:w-[10%] xs:text-xs  sm:text-xs md:text-base">
                   Actions
                 </th>
               </tr>
@@ -45,19 +47,19 @@ const ClientTable = () => {
                   key={client._id}
                   className="w-full border-b even:bg-[#afa7d63b]"
                 >
-                  <td className="text-center py-3 font-semibold">{i + 1}.</td>
-                  <td className="py-3 px-4 text-start font-semibold text-slate-700 capitalize">
+                  <td className="text-center md:py-3 font-semibold xs:text-xs sm:text-xs md:text-base sm:pr-0 sm:pl-0">{i + 1}.</td>
+                  <td className="md:py-3 md:px-4 text-start font-semibold xs:text-xs sm:text-xs md:text-base text-slate-700 capitalize sm:pr-0 sm:pl-0">
                     {client.name}
                   </td>
-                  <td className="py-3 px-4 text-center text-slate-600 text-sm">
+                  <td className="md:py-3 md:px-4 text-center text-slate-600 xs:text-xs sm:text-xs md:text-base sm:pr-0 sm:pl-0">
                     {client.gstin}
                   </td>
-                  <td className="py-3 px-4 text-center text-slate-600 text-sm">{`${client.address.street}, ${client.address.city}, ${client.address.pin} ${client.address.state}, ${client.address.country}`}</td>
-                  <td className="p-2 text-center cursor-pointer space-x-10">
+                  <td className="md:py-3 md:px-4 sm:pr-0 sm:pl-0 text-center text-slate-600 xs:text-xs sm:text-xs md:text-base">{`${client.address.street}, ${client.address.city}, ${client.address.pin} ${client.address.state}, ${client.address.country}`}</td>
+                  <td className="md:p-2 sm:pr-0 sm:pl-0 text-center cursor-pointer space-x-10">
                     <FontAwesomeIcon
                       icon={faUserPen}
                       style={{ color: "#5d6f99" }}
-                      className="text-lg"
+                      className=" sm:text-xs md:text-lg"
                       onClick={() => {
                         setUpdateOpen(true);
                         setId(client._id);
@@ -66,7 +68,7 @@ const ClientTable = () => {
                     <FontAwesomeIcon
                       icon={faTrash}
                       style={{ color: "#ed0707" }}
-                      className="text-lg"
+                      className="sm:text-xs  md:text-lg"
                       onClick={() => {
                         setDeleteOpen(true);
                         setId(client._id);
@@ -77,6 +79,7 @@ const ClientTable = () => {
               ))}
             </tbody>
           </table>
+          </div>
         </div>
       ) : (
         <NotFound title="Not Found" description="Please Add Client First!" />
