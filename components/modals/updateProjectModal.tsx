@@ -65,7 +65,12 @@ const UpdateProjectModal = ({ isOpen, onClose, _id }: { isOpen: boolean, onClose
                         <ModalBody pb={6}>
                             <div className='flex flex-col my-2'>
                                 <label htmlFor="name" className='font-semibold tracking-wide mb-2'>Description</label>
-                                <input type="text" placeholder='Description' className='outline-none border-2 px-4 py-2 rounded-md' value={description} onChange={e => setDescription(e.target.value)} />
+                                <input type="text"
+                                 placeholder='Description' 
+                                 className='outline-none border-2 px-4 py-2 rounded-md' 
+                                 value={description} 
+                                 onChange={e => setDescription(e.target.value)}
+                                />
                             </div>
                             <div className='flex flex-col my-2'>
                                 <label htmlFor="name" className='font-semibold tracking-wide mb-2'>Project Amount</label>

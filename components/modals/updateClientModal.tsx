@@ -136,13 +136,7 @@ const UpdateClientModal = ({
                     className="outline-none border-2 px-4 py-2 rounded-md"
                     value={address?.street}
                     required
-                    onChange={(e) => {
-                      const inputValue = e.target.value;
-                      const pattern = /^[A-Za-z\s]*$/;
-                      if (pattern.test(inputValue) || inputValue === '') {
-                        setAddress({ ...address, street: inputValue });
-                      }
-                    }}
+                    onChange={(e) => setAddress({ ...address, street:  e.target.value})}
                   />
                 </div>
                 <div className="flex flex-col m-1">

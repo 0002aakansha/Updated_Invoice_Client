@@ -19,7 +19,7 @@ const GenerateInvoice = () => {
         {user.isLoading && client.isLoading ? (
           <FullPageLoader />
         ) : (
-          <div className="bg-[#fff] py-8 px-16">
+          <div className="bg-[#fff] py-8 px-16 xs:px-8 ">
             <TopHeader />
             <MiddleMain />
             <BottomMain />

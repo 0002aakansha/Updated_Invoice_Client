@@ -9,7 +9,7 @@ const TopHeader = () => {
   ) as userStateType;
 
   return (
-    <div className="grid grid-cols-[50%_50%] my-4">
+    <div className="sm:grid sm:grid-cols-1 md:grid md:grid-cols-2 my-4 ">
       <div>
         {
           user?.name?.toLowerCase().startsWith('gammaedge') ? <img src="/images/logo.png" alt="" className="" /> : <img src="/images/cubexoLogo.png" alt="" className="w-1/2" />
@@ -18,7 +18,7 @@ const TopHeader = () => {
       {isLoading ? (
         <ButtonLoading />
       ) : (
-        <div className="px-8">
+        <div className="px-8 xs:mt-5 xs:pl-0 xs:pr-0 xs:text-xs md:text-base">
           <h1 className="uppercase font-semibold">{user?.name}</h1>
           <h5 className="font-semibold">
             GSTIN: <span className="uppercase">{user?.gstin}</span>
