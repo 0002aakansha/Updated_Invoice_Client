@@ -24,16 +24,6 @@ const Dashboard = () => {
         })()
     }, [])
 
-    useEffect(() => {
-        if (error?.status == 401) {
-            toast.error('Please Login First!', {
-                id: 'auth'
-            })
-            router.push('/')
-        }
-        return () => toast.dismiss();
-    }, [])
-
     if (error)
 
         return (

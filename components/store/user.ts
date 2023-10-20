@@ -44,8 +44,8 @@ export const userAsync = createAsyncThunk(
     } catch (error: any) {
       return rejectWithValue(
         error.response.data.message ||
-          error.message ||
-          "An unknown error has been occured, Please try again later!"
+        error.message ||
+        "An unknown error has been occured, Please try again later!"
       );
     }
   }
@@ -67,8 +67,8 @@ export const fetchUserById = createAsyncThunk(
     } catch (error: any) {
       return rejectWithValue(
         error.response.data.message ||
-          error.message ||
-          "An unknown error has been occured, Please try again later!"
+        error.message ||
+        "An unknown error has been occured, Please try again later!"
       );
     }
   }
@@ -77,7 +77,11 @@ export const fetchUserById = createAsyncThunk(
 const userslice = createSlice({
   name: "user",
   initialState,
-  reducers: {},
+  reducers: {
+    setCreated(state) {
+      state.created = false
+    }
+  },
   extraReducers: (builder) => {
     // login
     builder.addCase(userAsync.pending, (state) => {
@@ -121,4 +125,5 @@ const userslice = createSlice({
   },
 });
 
+export const { setCreated } = userslice.actions
 export default userslice.reducer;
