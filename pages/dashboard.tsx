@@ -22,9 +22,6 @@ const Dashboard = () => {
             await dispatch(fetchClient())
             await dispatch(fetchProjects())
         })()
-
-        console.log(error);
-        
     }, [])
 
     useEffect(() => {
@@ -34,7 +31,6 @@ const Dashboard = () => {
             })
             router.push('/')
         }
-
         return () => toast.dismiss();
     }, [])
 
