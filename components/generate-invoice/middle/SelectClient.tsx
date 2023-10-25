@@ -3,7 +3,13 @@ import {
   fetchClientProjects,
   setHidden,
 } from "@/components/store/client";
-import { calculateGST, calculateSubtotal, setInvoiceType, setTotalToZero, updateSpecificField, updatedChecked } from "@/components/store/invoice";
+import {
+  calculateGST,
+  setInvoiceType,
+  setTotalToZero,
+  updateSpecificField,
+  updatedChecked,
+} from "@/components/store/invoice";
 import { AppDispatch, AppState } from "@/components/store/store";
 import {
   clientStateType,
@@ -11,16 +17,14 @@ import {
   invoiceStateType,
   userStateType,
 } from "@/types/types";
-import { useRouter } from "next/router";
 import { ChangeEvent, useEffect, useState } from "react";
-import toast from "react-hot-toast";
 import { useDispatch, useSelector } from "react-redux";
 
 const SelectClient = () => {
   const { user, isLoading } = useSelector<AppState>(
     (state) => state.user
   ) as userStateType;
-  const client = useSelector<AppState>(
+  const { clients, isHidden, projects } = useSelector<AppState>(
     (state) => state.client
   ) as clientStateType;
   const invoice = useSelector<AppState>(
@@ -28,25 +32,16 @@ const SelectClient = () => {
   ) as invoiceStateType;
 
   const dispatch = useDispatch<AppDispatch>();
-  const router = useRouter();
-  const [Error, setError] = useState<string | null>();
   const [clientId, setClientId] = useState<string | undefined>(undefined);
 
   async function onLoadClient() {
-    const { error } = await dispatch(fetchClient());
-
-    if (error?.message === "Rejected") {
-      if (client.error?.status == 401) {
-        toast.error("Please login first!");
-        router.push("/");
-      } else setError(client.error?.message);
-    }
+    await dispatch(fetchClient());
   }
 
   function changeHandler(e: ChangeEvent<HTMLSelectElement>) {
     setClientId(e.target.value);
 
-    const clientState = client.clients.filter(
+    const clientState = clients.filter(
       (client) => client._id === e.target.value
     )[0] as clientType;
 
@@ -59,14 +54,13 @@ const SelectClient = () => {
       );
   }
 
-
-  function changeInvoiceTypeHandler(e: { target: { value: any; }; }) {
-    dispatch(setInvoiceType(e.target.value))
+  function changeInvoiceTypeHandler(e: { target: { value: any } }) {
+    dispatch(setInvoiceType(e.target.value));
     invoice.detailedProject.map((_, indx) => {
-      dispatch(updatedChecked({ indx, checked: false }))
-      dispatch(updateSpecificField({ indx, field: 'amount', data: '0,0' }))
-    })
-    dispatch(setTotalToZero())
+      dispatch(updatedChecked({ indx, checked: false }));
+      dispatch(updateSpecificField({ indx, field: "amount", data: "0,0" }));
+    });
+    dispatch(setTotalToZero());
   }
 
   useEffect(() => {
@@ -74,6 +68,8 @@ const SelectClient = () => {
   }, []);
 
   useEffect(() => {
+    console.log(invoice.invoiceType);
+
     if (clientId === "undefined" || clientId === undefined)
       dispatch(setHidden(true));
     else {
@@ -86,7 +82,10 @@ const SelectClient = () => {
     <div className="flex justify-around">
       <div className="mx-1">
         <form action="" className="flex flex-col">
-          <label htmlFor="select" className="font-semibold xs:text-xs sm:text-md md:text-base">
+          <label
+            htmlFor="select"
+            className="font-semibold xs:text-xs sm:text-md md:text-base"
+          >
             Bill To:
           </label>
           <select
@@ -95,12 +94,12 @@ const SelectClient = () => {
             value={clientId}
             onChange={changeHandler}
           >
-            {client?.clients?.length !== 0 ? (
+            {clients?.length !== 0 ? (
               <>
                 <option value={"undefined"}>Select Client</option>
-                {client?.clients?.map((client) => (
+                {clients?.map((client) => (
                   <option key={client._id} value={client._id}>
-                    {client.name}
+                    {client.name.toUpperCase()}
                   </option>
                 ))}
               </>
@@ -111,21 +110,19 @@ const SelectClient = () => {
         </form>
       </div>
       <div className="mx-1">
-        {!client.isHidden && client.projects?.length !== 0 && (
-          <form action="" className="flex flex-col">
-            <label htmlFor="select" className="font-semibold">
-              Invoice Type:
-            </label>
-            <select
-              id="select"
-              onChange={changeInvoiceTypeHandler}
-              className="outline-none bg-transparent border-2 px-4 py-2 rounded-sm my-2"
-            >
-              <option value="monthly">Monthly</option>
-              <option value="hourly">Hourly</option>
-            </select>
-          </form>
-        )}
+        <form action="" className="flex flex-col">
+          <label htmlFor="select" className="font-semibold">
+            Project Type:
+          </label>
+          <select
+            id="select"
+            onChange={changeInvoiceTypeHandler}
+            className="outline-none bg-transparent border-2 px-4 py-2 rounded-sm my-2"
+          >
+            <option value="monthly">Monthly</option>
+            <option value="hourly">Hourly</option>
+          </select>
+        </form>
       </div>
     </div>
   );

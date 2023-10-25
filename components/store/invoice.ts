@@ -1,10 +1,8 @@
 import { dataProps, invoiceStateType } from "@/types/types";
-import { createAsyncThunk, createSlice, current } from "@reduxjs/toolkit";
-import { getCookie } from "@/utils/cookies";
-import { client } from "@/axios/instance/client";
+import { createSlice } from "@reduxjs/toolkit";
 
 const initialState: invoiceStateType = {
-  invoiceType: "monthly",
+  invoiceType: "",
   invoiceNumber: "",
   Date: new Date(),
   DueDate: new Date(),
@@ -26,13 +24,13 @@ const invoiceslice = createSlice({
       state.isChecked = action.payload;
     },
     setInvoiceNumber(state, { payload }) {
-      state.invoiceNumber = payload
+      state.invoiceNumber = payload;
     },
     setDate(state, { payload }) {
-      state.Date = payload
+      state.Date = payload;
     },
     setDueDate(state, { payload }) {
-      state.DueDate = payload
+      state.DueDate = payload;
     },
     updatedChecked(
       state,
@@ -61,14 +59,14 @@ const invoiceslice = createSlice({
         ).toFixed(3);
 
         state.detailedProject[payload.id] = { ...payload, amount };
-      }
-      else if (payload.hours) {
+      } else if (payload.hours) {
         const rate = Number(project?.rate?.rate);
         const currency = project?.rate?.currency;
         const hours = Number(payload?.hours);
         const conversionRate = Number(project?.conversionRate);
 
-        const amount = currency === "INR" ? rate * hours : rate * conversionRate * hours;
+        const amount =
+          currency === "INR" ? rate * hours : rate * conversionRate * hours;
 
         state.detailedProject[payload.id] = {
           ...payload,
@@ -91,42 +89,48 @@ const invoiceslice = createSlice({
       state,
       { payload }: { payload: { userState: string; clientState: string } }
     ) {
-
       if (
-        payload?.userState?.toLowerCase() === payload?.clientState?.toLowerCase()
+        payload?.userState?.toLowerCase() ===
+        payload?.clientState?.toLowerCase()
       ) {
         const CGST = +((state.subtotal * 9) / 100).toFixed(3);
         const SGST = +((state.subtotal * 9) / 100).toFixed(3);
 
         state.GST = { CGST, SGST };
-        state.GrandTotal = +(state.subtotal + state.GST.CGST + state.GST.SGST).toFixed(3);
+        state.GrandTotal = +(
+          state.subtotal +
+          state.GST.CGST +
+          state.GST.SGST
+        ).toFixed(3);
       } else {
         state.GST = +((state.subtotal * 18) / 100).toFixed(3);
         state.GrandTotal = +(state.subtotal + state.GST).toFixed(3);
       }
     },
     setTotalToZero(state) {
-      state.subtotal = 0,
-        state.GrandTotal = 0
+      (state.subtotal = 0), (state.GrandTotal = 0);
 
-      if (typeof state.GST !== 'number') {
-        state.GST.CGST = 0
-        state.GST.SGST = 0
-      }
-      else {
-        state.GST = 0
+      if (typeof state.GST !== "number") {
+        state.GST.CGST = 0;
+        state.GST.SGST = 0;
+      } else {
+        state.GST = 0;
       }
     },
-    updateSpecificField(state, { payload }: { payload: { indx: number, field: string, data: string | number } }) {
-      const { indx, field, data } = payload
-      if (state.invoiceType === 'monthly') {
-        state.detailedProject[indx].period = ''
-        state.detailedProject[indx].totalWorkingDays = '0'
-        state.detailedProject[indx].workingDays = '0'
-      }
-      else state.detailedProject[indx].hours = '0.0'
-      state.detailedProject[indx].amount = 0.0
-    }
+    updateSpecificField(
+      state,
+      {
+        payload,
+      }: { payload: { indx: number; field: string; data: string | number } }
+    ) {
+      const { indx, field, data } = payload;
+      if (state.invoiceType === "monthly") {
+        state.detailedProject[indx].period = "";
+        state.detailedProject[indx].totalWorkingDays = "0";
+        state.detailedProject[indx].workingDays = "0";
+      } else state.detailedProject[indx].hours = "0.0";
+      state.detailedProject[indx].amount = 0.0;
+    },
   },
   extraReducers: {},
 });
@@ -143,6 +147,6 @@ export const {
   setDate,
   setDueDate,
   setTotalToZero,
-  updateSpecificField
+  updateSpecificField,
 } = invoiceslice.actions;
 export default invoiceslice.reducer;

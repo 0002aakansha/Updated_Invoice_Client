@@ -67,7 +67,7 @@ const ClientTable = () => {
                     />
                     <FontAwesomeIcon
                       icon={faTrash}
-                      style={{ color: "#ed0707" }}
+                      style={{ color: "rgb(247 43 43)" }}
                       className="sm:text-xs  md:text-lg"
                       onClick={() => {
                         setDeleteOpen(true);

@@ -87,7 +87,7 @@ const ProjectTable = () => {
                     />
                     <FontAwesomeIcon
                       icon={faTrash}
-                      style={{ color: "#ed0707" }}
+                      style={{ color: "rgb(247 43 43)" }}
                       className="text-lg"
                       onClick={() => {
                         setDeleteOpen(true);
