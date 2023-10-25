@@ -5,12 +5,14 @@ import { useEffect, useState } from 'react'
 import { AppDispatch } from '@/components/store/store'
 import { fetchUserById } from '@/components/store/user'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faAddressBook, faAngleRight, faBars, faFileInvoice, faHouse, faUserPlus } from '@fortawesome/free-solid-svg-icons'
+import { faAddressBook, faAngleRight, faBars, faFileInvoice, faHouse, faUserPlus, faSquarePlus } from '@fortawesome/free-solid-svg-icons'
 import { FaHistory } from 'react-icons/fa'
 import { Sidebar, Menu, MenuItem, useProSidebar } from "react-pro-sidebar";
 import ReceiptOutlinedIcon from "@mui/icons-material/ReceiptOutlined";
 import MenuOutlinedIcon from "@mui/icons-material/MenuOutlined";
 import Loader from '../spinners/Loader'
+import AddProject from '../image/AddProject'
+import Bill from '../image/Bill'
 
 const SideBar = () => {
     const router = useRouter()
@@ -37,7 +39,7 @@ const SideBar = () => {
                         className='my-4'
                     >
                         <div className='p-4'>
-                            {loading ? <Loader /> : uname.toLowerCase().startsWith('gammaedge') ? <img src="/images/logo.png" alt="" className="w-full" /> : <img src="/images/cubexoLogo.png" alt="" className="w-3/4" />
+                            {loading ? <Loader /> : uname.toLowerCase().startsWith('gammaedge') ? <img src="/images/logo.png" alt="" className="w-full h-9" /> : <img src="/images/cubexoLogo.png" alt="" className="w-3/4" />
                             }
                         </div>
                     </MenuItem>
@@ -47,17 +49,19 @@ const SideBar = () => {
                         <span className='capitalize tracking-normal font-semibold text-slate-700'>Dashboard</span>
                     </MenuItem>
                     <MenuItem className='my-2'
-                        icon={<FontAwesomeIcon icon={faUserPlus} className='text-stone-900 text-lg' />}
+                        icon={<FontAwesomeIcon icon={faSquarePlus} className='text-stone-900 text-lg' />}
                         onClick={() => router.push('/addClient')}>
                         <span className='capitalize tracking-normal font-semibold text-slate-700'>Add Client</span>
                     </MenuItem>
                     <MenuItem className='my-2'
-                        icon={<FontAwesomeIcon icon={faAddressBook} className='text-stone-900 text-lg' />}
+                        // icon={<FontAwesomeIcon icon={faAddressBook} className='text-stone-900 text-lg' />}
+                        icon={<AddProject />}
                         onClick={() => router.push('/addProject')}>
                         <span className='capitalize tracking-normal font-semibold text-slate-700'>Add Project</span>
                     </MenuItem>
                     <MenuItem className='my-2'
-                        icon={<ReceiptOutlinedIcon className='text-xl' />}
+                        // icon={<ReceiptOutlinedIcon className='text-xl' />}
+                        icon={<Bill />}
                         onClick={() => router.push('/generateInvoice')}>
                         <span className='capitalize tracking-normal font-semibold text-slate-700'>Generate Invoice</span>
                     </MenuItem>

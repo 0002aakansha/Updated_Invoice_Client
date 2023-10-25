@@ -11,6 +11,7 @@ import TextLoaders from "../spinners/textLoaders";
 const AddProjectForm = () => {
   const [description, setDescription] = useState("");
   const [rate, setRate] = useState<rateType>({ currency: "INR", rate: 0 });
+  const [projectType, setProjectType] = useState<string>('')
   const [conversionRate, setConversionRate] = useState<number>();
   const [projectAmount, setProjectAmount] = useState<number>();
   const [BelongsTo, setBelongsTo] = useState("");
@@ -31,6 +32,7 @@ const AddProjectForm = () => {
       createProject({
         description,
         rate,
+        projectType,
         conversionRate,
         amount: projectAmount,
         companyId: BelongsTo,
@@ -77,6 +79,7 @@ const AddProjectForm = () => {
               }}
             />
           </div>
+        <div className="sm:grid sm:grid-cols-1   md:grid md:grid-cols-2 space-x-2 my-2">
           <div className="flex flex-col my-2">
             <label htmlFor="name" className="font-semibold tracking-wide mb-2 xs:text-xs sm:text-sm md:text-md">
               Project Amount
@@ -95,6 +98,27 @@ const AddProjectForm = () => {
               }}
             />
           </div>
+          <div>
+          <div className="flex flex-col my-2">
+            <label htmlFor="name" className="font-semibold tracking-wide mb-2 xs:text-xs sm:text-sm md:text-md">
+              Project Type
+            </label>
+            <select
+                name=""
+                id=""
+                className="outline-none border-2 px-4 py-2 rounded-md xs:text-xs sm:text-sm md:text-md"
+                value={projectType}
+                onChange={(e) => setProjectType(e.target.value)}
+              >
+                <option value="monthly">Monthly</option>
+                <option value="hourly">Hourly</option>
+              
+              </select>
+          </div>
+          </div>
+
+        </div>
+
           <div className="sm:grid sm:grid-cols-1   md:grid md:grid-cols-2 space-x-2 my-2">
             <div className="flex flex-col">
               <label
