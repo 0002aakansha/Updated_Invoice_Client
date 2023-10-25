@@ -112,14 +112,14 @@ const SelectClient = () => {
       </div>
       <div className="mx-1">
         {!client.isHidden && client.projects?.length !== 0 && (
-          <form action="" className="flex flex-col sm:flex-row">
-            <label htmlFor="select" className="font-semibold xs:text-xs sm:text-md md:text-base">
+          <form action="" className="flex flex-col">
+            <label htmlFor="select" className="font-semibold">
               Invoice Type:
             </label>
             <select
               id="select"
               onChange={changeInvoiceTypeHandler}
-              className="outline-none bg-transparent border-2 px-4 py-2 rounded-sm my-2 xs:text-xs sm:text-sm md:text-md"
+              className="outline-none bg-transparent border-2 px-4 py-2 rounded-sm my-2"
             >
               <option value="monthly">Monthly</option>
               <option value="hourly">Hourly</option>

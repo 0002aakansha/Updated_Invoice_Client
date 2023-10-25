@@ -105,7 +105,8 @@ const AddClientForm = () => {
               required
               onChange={(e) => {
                 const inputValue = e.target.value;
-                const pattern = /^[A-Za-z\s]*$/;
+                // const pattern = /^[A-Za-z\s]*$/;
+                const pattern = /^[A-Za-z0-9\s]*$/;
                 if (pattern.test(inputValue) || inputValue === '') {
                   setAddress({ ...address, street: inputValue });
                 }
