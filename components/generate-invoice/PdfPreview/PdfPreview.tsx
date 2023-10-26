@@ -141,7 +141,7 @@ const PdfPreview = ({ data }: { data: PdfPreviewProps }) => {
   const [formattedDueDate, setformattedDueDate] = useState('')
 
   // console.log(data);
-  
+
 
   function formatDate(date: Date) {
     return date?.toLocaleDateString('en-GB');
@@ -215,18 +215,21 @@ const PdfPreview = ({ data }: { data: PdfPreviewProps }) => {
                   </Text>
                 )}
                 {data?.invoice?.invoiceType === 'hourly' && <Text style={styles.tableCell}>{invoice?.hours}</Text>}
-                {invoice?.conversionRate ? (
-                  <Text style={styles.tableCell}>
-                    {invoice?.rate?.currency === 'INR' ? (
-                      <Text style={styles.tableCell}>N/A</Text>
-                    ) : (
-                      `${invoice?.rate?.currency === 'USD' ? '1$' : `1£`} = ${invoice?.conversionRate}`
 
-                    )}
-                  </Text>
-                ) : (
-                  <Text style={styles.tableCell}>N/A</Text>
-                )}
+                {data?.invoice?.invoiceType === 'hourly' ? (
+                  invoice?.conversionRate ? (
+                    <Text style={styles.tableCell}>
+                      {invoice?.rate?.currency === 'INR' ? (
+                        <Text style={styles.tableCell}>N/A</Text>
+                      ) : (
+                        `${invoice?.rate?.currency === 'USD' ? '1$' : `1£`} = ${invoice?.conversionRate}`
+                      )}
+                    </Text>
+                  ) : (
+                    <Text style={styles.tableCell}>N/A</Text>
+                  )
+                ) : null}
+
                 <Text style={styles.tableCell}>{invoice?.amount}</Text>
               </View>
             ))}
