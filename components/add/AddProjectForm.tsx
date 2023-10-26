@@ -139,6 +139,10 @@ const AddProjectForm = () => {
                 <option value="POUND">POUND</option>
               </select>
             </div>
+
+            
+
+
             <div className="flex flex-col">
               <label
                 htmlFor="name"
@@ -157,6 +161,8 @@ const AddProjectForm = () => {
                   setRate({ ...rate, rate: +input || 0 })
                 }} />
             </div>
+
+
           </div>
           <div className="sm:grid sm:grid-cols-2 md:grid md:grid-cols-2 space-x-2">
             <div className="flex flex-col my-2">

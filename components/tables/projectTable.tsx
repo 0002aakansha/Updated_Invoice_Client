@@ -40,6 +40,9 @@ const ProjectTable = () => {
                   client
                 </th>
                 <th className="py-3 px-4 text-center font-semibold uppercase">
+                  project Type
+                </th>
+                <th className="py-3 px-4 text-center font-semibold uppercase">
                   project amount
                 </th>
                 <th className="py-3 px-4 text-center font-semibold uppercase">
@@ -65,6 +68,9 @@ const ProjectTable = () => {
                   </td>
                   <td className="py-3 px-4 text-start text-sm  text-slate-700 capitalize w-[25%]">
                     ({project?.projectBelongsTo?.name})
+                  </td>
+                  <td className="py-3 px-4 text-start text-sm  text-slate-700 capitalize w-[10%]">
+
                   </td>
                   <td className="py-3 px-4 text-center text-slate-600 text-sm w-[15%]">
                     {project?.projectAmount} INR
