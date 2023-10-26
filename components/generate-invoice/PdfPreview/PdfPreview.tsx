@@ -140,6 +140,9 @@ const PdfPreview = ({ data }: { data: PdfPreviewProps }) => {
   const [formattedInvoiceDate, setformattedInvoiceDate] = useState('')
   const [formattedDueDate, setformattedDueDate] = useState('')
 
+  // console.log(data);
+  
+
   function formatDate(date: Date) {
     return date?.toLocaleDateString('en-GB');
   } useEffect(() => {

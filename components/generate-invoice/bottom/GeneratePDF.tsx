@@ -96,7 +96,7 @@ const GeneratePDF = () => {
         ))
       ) : (
         dispatch(postInvoiceHistory({
-          createdFor: clientById?.name, invoiceNumber, Date: Date?.toLocaleDateString('en-GB'), DueDate: DueDate?.toLocaleDateString('en-GB'),
+          createdFor: clientById?._id, invoiceNumber, createdOn: Date?.toLocaleDateString('en-GB'), dueDate: DueDate?.toLocaleDateString('en-GB'),
           projects:
             detailedProject?.filter(project => project.checked === true).map(project => {
               return { id: project.id, projectDetails: project._id, period: project.period, hours: project.hours && +project.hours, amount: project.amount }
