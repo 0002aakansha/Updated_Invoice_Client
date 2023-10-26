@@ -30,7 +30,6 @@ const HistoryCard = ({ invoiceData }: { invoiceData: invoiceType }) => {
 
     const today = new Date().toISOString().split("T")[0];
 
-    // console.log(invoiceData);
     useEffect(() => {
 
         if (typeof invoiceData?.createdFor !== 'string' && invoiceData?.invoiceCreatedBy && date && dueDate) {
@@ -74,8 +73,6 @@ const HistoryCard = ({ invoiceData }: { invoiceData: invoiceType }) => {
         if (invoiceNumber !== '' && date && dueDate) {
             onPreviewClose(true)
             onEditClose(false)
-
-            console.log(invoiceData.projects);
 
             const pdfData = await pdf(
                 <PdfPreview data={pdfPreviewData}

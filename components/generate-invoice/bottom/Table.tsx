@@ -82,61 +82,62 @@ const Table = () => {
             </thead>
             <tbody>
               {projects &&
-                projects?.map((project, indx) => {
-                  return (
-                    <>
-                      <tr
-                        key={project?._id}
-                        className="border-2 border-[#9d96e4]"
-                      >
-                        <td className="border-2 border-[#9d96e4] text-center p-2">
-                          <input
-                            type="checkbox"
-                            className="outline-none accent-[#5a51be]"
-                            checked={detailedProject[indx]?.checked}
-                            onChange={(e) => {
-                              if (e.target.checked) {
-                                dispatch(setisChecked(true));
-                                setUniqueKey(indx);
-                                dispatch(
-                                  updatedChecked({ indx, checked: true })
-                                );
-                              } else {
-                                setisChecked(false);
-                                dispatch(
-                                  updatedChecked({ indx, checked: false })
-                                );
-                                dispatch(calculateSubtotal());
-                              }
+                projects
+                  ?.filter((project) => project.projectType === invoiceType)
+                  .map((project, indx) => {
+                    return (
+                      <>
+                        <tr
+                          key={project?._id}
+                          className="border-2 border-[#9d96e4]"
+                        >
+                          <td className="border-2 border-[#9d96e4] text-center p-2">
+                            <input
+                              type="checkbox"
+                              className="outline-none accent-[#5a51be]"
+                              checked={detailedProject[indx]?.checked}
+                              onChange={(e) => {
+                                if (e.target.checked) {
+                                  dispatch(setisChecked(true));
+                                  setUniqueKey(indx);
+                                  dispatch(
+                                    updatedChecked({ indx, checked: true })
+                                  );
+                                } else {
+                                  setisChecked(false);
+                                  dispatch(
+                                    updatedChecked({ indx, checked: false })
+                                  );
+                                  dispatch(calculateSubtotal());
+                                }
 
-                              const clientState = clients.filter(
-                                (client) => client._id === project?.projectBelongsTo
-                              )[0] as clientType;
+                                const clientState = clients.filter(
+                                  (client) =>
+                                    client._id === project?.projectBelongsTo
+                                )[0] as clientType;
 
-
-                              !isLoading &&
-                                dispatch(
-                                  calculateGST({
-                                    userState: user.address.state,
-                                    clientState: clientState?.address?.state,
-                                  })
-                                );
-
-                            }}
+                                !isLoading &&
+                                  dispatch(
+                                    calculateGST({
+                                      userState: user.address.state,
+                                      clientState: clientState?.address?.state,
+                                    })
+                                  );
+                              }}
+                            />
+                          </td>
+                          <TableTr
+                            key={project._id}
+                            indx={indx}
+                            project={project}
                           />
-                        </td>
-                        <TableTr
-                          key={project._id}
-                          indx={indx}
-                          project={project}
-                        />
-                      </tr>
-                      {isChecked && (
-                        <CheckedModal key={project._id} indx={uniqueKey} />
-                      )}
-                    </>
-                  );
-                })}
+                        </tr>
+                        {isChecked && (
+                          <CheckedModal key={project._id} indx={uniqueKey} />
+                        )}
+                      </>
+                    );
+                  })}
             </tbody>
           </table>
         </div>

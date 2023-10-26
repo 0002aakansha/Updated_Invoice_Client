@@ -8,7 +8,7 @@ const initialState: projectStateType = {
   isLoading: false,
   created: false,
   error: { status: "", message: "" },
-  updated: false
+  updated: false,
 };
 
 export const createProject = createAsyncThunk(
@@ -67,15 +67,18 @@ export const fetchProjects = createAsyncThunk(
 export const UpdateProject = createAsyncThunk(
   "project/update",
   async (
-    { cid, _id, project }: {
+    {
+      cid,
+      _id,
+      project,
+    }: {
       cid: string;
       _id: string;
-      project: projectType
+      project: projectType;
     },
     { rejectWithValue }
   ) => {
-    console.log(project);
-    
+
     try {
       const { data } = await client({
         url: `/projects/${cid}/${_id}`,
@@ -86,6 +89,7 @@ export const UpdateProject = createAsyncThunk(
         },
         data: JSON.stringify({
           description: project.description,
+          projectType: project.projectType,
           conversionRate: project.conversionRate,
           rate: project.rate,
           projectAmount: project.projectAmount,
@@ -137,10 +141,10 @@ const projectslice = createSlice({
   initialState,
   reducers: {
     setCreate(state) {
-      state.created = false
+      state.created = false;
     },
     setUpdate(state) {
-      state.updated = false
+      state.updated = false;
     },
   },
   extraReducers: (builder) => {
@@ -152,8 +156,6 @@ const projectslice = createSlice({
     });
     builder.addCase(createProject.fulfilled, (state, action) => {
       state.isLoading = false;
-
-      console.log(action.payload);
 
       state.created = true;
       state.projects = [...current(state.projects), action.payload.new];
@@ -191,12 +193,12 @@ const projectslice = createSlice({
     // update project
     builder.addCase(UpdateProject.pending, (state) => {
       state.isLoading = true;
-      state.updated = false
+      state.updated = false;
       state.error = { status: "", message: "" };
     });
     builder.addCase(UpdateProject.fulfilled, (state, { payload }) => {
       state.isLoading = false;
-      state.updated = true
+      state.updated = true;
 
       const filteredIndex = current(state.projects).findIndex(
         (client) => client._id === payload.updatedProject._id
@@ -208,7 +210,7 @@ const projectslice = createSlice({
     });
     builder.addCase(UpdateProject.rejected, (state, action) => {
       state.isLoading = false;
-      state.updated = false
+      state.updated = false;
       state.error = action.payload as {
         status: number | string;
         message: string;

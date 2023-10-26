@@ -24,7 +24,6 @@ const initialState: invoiceHistoryType = {
 };
 
 export const postInvoiceHistory = createAsyncThunk('invoice/history/create', async (invoice: invoiceType, { rejectWithValue }) => {
-    console.log(invoice);
     
     try {
         const { data } = await client({

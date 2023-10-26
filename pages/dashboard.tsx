@@ -13,18 +13,19 @@ import { fetchProjects } from "@/components/store/project";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPlus } from "@fortawesome/free-solid-svg-icons";
 import Link from "next/link";
+import { getAllInvoice } from "@/components/store/invoiceHistory";
 
 const Dashboard = () => {
   const { isLoading, error } = useSelector<AppState>(
     (state) => state.client
   ) as clientStateType;
   const dispatch = useDispatch<AppDispatch>();
-  const router = useRouter();
 
   useEffect(() => {
     (async function () {
       await dispatch(fetchClient());
       await dispatch(fetchProjects());
+      await dispatch(getAllInvoice())
     })();
   }, []);
 
