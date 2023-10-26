@@ -70,13 +70,13 @@ const SelectClient = () => {
   useEffect(() => {
     console.log(invoice.invoiceType);
 
-    if (clientId === "undefined" || clientId === undefined)
+    if (clientId === "undefined" || clientId === undefined || invoice.invoiceType === '')
       dispatch(setHidden(true));
     else {
       dispatch(setHidden(false));
       dispatch(fetchClientProjects(clientId));
     }
-  }, [clientId]);
+  }, [clientId, invoice.invoiceType]);
 
   return (
     <div className="flex justify-around">
@@ -117,8 +117,9 @@ const SelectClient = () => {
           <select
             id="select"
             onChange={changeInvoiceTypeHandler}
-            className="outline-none bg-transparent border-2 px-4 py-2 rounded-sm my-2"
+            className="outline-none bg-transparent border-2 px-4 py-2 rounded-sm my-2 xs:text-xs sm:text-sm md:text-md"
           >
+            <option value="">Select project type</option>
             <option value="monthly">Monthly</option>
             <option value="hourly">Hourly</option>
           </select>

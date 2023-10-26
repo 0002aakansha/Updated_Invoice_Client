@@ -64,10 +64,11 @@ export interface clientType {
 }
 
 export interface projectType {
+  projectType?: string;
   description: string;
   rate: {
     currency: string;
-    rate: number;
+    rate?: number;
   };
   projectAmount: number;
   conversionRate?: number;
@@ -85,7 +86,7 @@ export interface projectStateType {
   projects: projectType[];
   created: boolean;
   isLoading: boolean;
-  updated: boolean,
+  updated: boolean;
   error: { status: number | string; message: string };
 }
 
@@ -103,9 +104,9 @@ export interface clientStateType {
 
 export interface invoiceStateType {
   invoiceType: string;
-  invoiceNumber: string,
-  Date: Date,
-  DueDate: Date,
+  invoiceNumber: string;
+  Date: Date;
+  DueDate: Date;
   isChecked: boolean;
   detailedProject: dataProps[];
   subtotal: number;
@@ -115,51 +116,51 @@ export interface invoiceStateType {
 
 export interface PdfPreviewProps {
   invoice: {
-    invoice: dataProps[] | undefined,
-    invoiceType: string,
-    invoiceNumber: string,
-    Date: Date,
-    DueDate: Date
-  },
-  user: userType,
-  client: clientType,
+    invoice: dataProps[] | undefined;
+    invoiceType: string;
+    invoiceNumber: string;
+    Date: Date;
+    DueDate: Date;
+  };
+  user: userType;
+  client: clientType;
   total: {
     subtotal: number;
     GST: { CGST: number; SGST: number } | number;
     GrandTotal: number;
-  }
+  };
 }
 
 export interface invoiceProjectType {
-  _id: string,
-  id: number,
-  projectDetails: projectType,
-  period?: string,
-  workingDays?: string,
-  totalWorkingDays?: string,
-  hours?: string,
-  amount: number,
+  _id: string;
+  id: number;
+  projectDetails: projectType;
+  period?: string;
+  workingDays?: string;
+  totalWorkingDays?: string;
+  hours?: string;
+  amount: number;
 }
 
 export interface invoiceType {
-  _id?: string,
-  createdFor: string | clientType,
-  invoiceNumber: string,
-  createdOn: string,
-  dueDate: string,
+  _id?: string;
+  createdFor: string | clientType;
+  invoiceNumber: string;
+  createdOn: string;
+  dueDate: string;
   projects: invoiceProjectType[];
   subtotal: number;
   GST: { CGST: number; SGST: number } | number;
   GrandTotal: number;
-  status: string,
-  invoiceType: string,
-  invoiceCreatedBy?: userType
+  status: string;
+  invoiceType: string;
+  invoiceCreatedBy?: userType;
 }
 
 export interface invoiceHistoryType {
-  invoice: invoiceType[],
-  isLoading: boolean,
-  created: boolean,
-  updated: boolean,
-  error: { status: string, message: string }
+  invoice: invoiceType[];
+  isLoading: boolean;
+  created: boolean;
+  updated: boolean;
+  error: { status: string; message: string };
 }
