@@ -68,10 +68,10 @@ const ProjectTable = () => {
                   <td className="py-3 px-4 text-start font-semibold text-slate-700 capitalize w-[25%]">
                     {project?.description}
                   </td>
-                  <td className="py-3 px-4 text-start text-sm  text-slate-700 capitalize w-[25%]">
+                  <td className="py-3 px-4 text-start text-sm  text-slate-700 capitalize w-[15%]">
                     ({project?.projectBelongsTo?.name})
                   </td>
-                  <td className="py-3 px-4 text-start text-sm  text-slate-700 capitalize w-[10%]">
+                  <td className="py-3 px-4 text-center text-sm  text-slate-700 capitalize w-[10%]">
                     {project?.projectType}
                   </td>
                   <td className="py-3 px-4 text-center text-slate-600 text-sm w-[15%]">

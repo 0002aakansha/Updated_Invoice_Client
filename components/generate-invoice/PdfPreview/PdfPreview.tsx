@@ -206,21 +206,12 @@ const PdfPreview = ({ data }: { data: PdfPreviewProps }) => {
                 {data?.invoice?.invoiceType === 'monthly' && <Text style={styles.tableCell}>{invoice?.period}</Text>}
                 {data.invoice.invoiceType === 'monthly' && <Text style={styles.tableCell}>{invoice.workingDays}</Text>}
                 {data?.invoice?.invoiceType === 'monthly' && <Text style={styles.tableCell}>{invoice.totalWorkingDays}</Text>}
-                {/* {data?.invoice?.invoiceType === 'hourly' && <Text style={styles.tableCell}>{invoice?.rate?.rate} {invoice?.rate?.currency}/Hour</Text>} */} 
-
                 {data?.invoice?.invoiceType === 'hourly' && (
                   <Text style={styles.tableCell}>
                     {`${invoice?.rate?.rate} ${invoice?.rate?.currency === 'USD' ? '$' : invoice?.rate?.currency === 'POUND' ? '£' : invoice?.rate?.currency === 'INR' ? 'INR' : ''} / Hour`}
                   </Text>
                 )}
-
-
                 {data?.invoice?.invoiceType === 'hourly' && <Text style={styles.tableCell}>{invoice?.hours}</Text>}
-
-
-
-
-
                 {invoice?.conversionRate ? (
                   <Text style={styles.tableCell}>
                     {invoice?.rate?.currency === 'INR' ? (
@@ -233,12 +224,6 @@ const PdfPreview = ({ data }: { data: PdfPreviewProps }) => {
                 ) : (
                   <Text style={styles.tableCell}>N/A</Text>
                 )}
-
-
-
-
-
-
                 <Text style={styles.tableCell}>{invoice?.amount}</Text>
               </View>
             ))}

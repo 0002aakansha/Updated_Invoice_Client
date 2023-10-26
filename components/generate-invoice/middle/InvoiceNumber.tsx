@@ -8,9 +8,9 @@ const InvoiceNumber = () => {
   const { invoiceNumber, Date, DueDate } = useSelector<AppState>(state => state.invoice) as invoiceStateType
   const dispatch = useDispatch<AppDispatch>()
 
-  const [invoiceNo, setInvoiceNo] = useState(invoiceNumber)
+  // const [invoiceNo, setInvoiceNo] = useState(invoiceNumber)
 
-  // const [invoiceNo, setInvoiceNo] = useState()
+  const [invoiceNo, setInvoiceNo] = useState()
   const [date, setdate] = useState<Date | null>(Date)
   const [dueDate, setdueDate] = useState<Date | null>(DueDate)
 
