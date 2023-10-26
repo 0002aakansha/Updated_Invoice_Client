@@ -70,7 +70,10 @@ const SelectClient = () => {
   useEffect(() => {
     console.log(invoice.invoiceType);
 
-    if (clientId === "undefined" || clientId === undefined)
+    if (
+      clientId === "undefined" ||
+      clientId === undefined
+    )
       dispatch(setHidden(true));
     else {
       dispatch(setHidden(false));
