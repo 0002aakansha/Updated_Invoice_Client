@@ -118,7 +118,7 @@ import { useEffect, useState } from 'react'; const styles = StyleSheet.create({
     flexDirection: 'column',
     fontSize: 12,
     marginTop: 50,
-    marginRight: '7%',
+    marginRight: '12%',
     marginLeft: '5%',
   },
   billToCubexo: {
@@ -126,7 +126,7 @@ import { useEffect, useState } from 'react'; const styles = StyleSheet.create({
     flexDirection: 'column',
     fontSize: 12,
     marginTop: 50,
-    marginRight: '13%',
+    marginRight: '20%',
     marginLeft: '5%',
   },
   address: {
@@ -138,7 +138,7 @@ import { useEffect, useState } from 'react'; const styles = StyleSheet.create({
 
 const PdfPreview = ({ data }: { data: PdfPreviewProps }) => {
   const [formattedInvoiceDate, setformattedInvoiceDate] = useState('')
-  const [formattedDueDate, setformattedDueDate] = useState('') 
+  const [formattedDueDate, setformattedDueDate] = useState('')
 
   function formatDate(date: Date) {
     return date?.toLocaleDateString('en-GB');
@@ -206,9 +206,39 @@ const PdfPreview = ({ data }: { data: PdfPreviewProps }) => {
                 {data?.invoice?.invoiceType === 'monthly' && <Text style={styles.tableCell}>{invoice?.period}</Text>}
                 {data.invoice.invoiceType === 'monthly' && <Text style={styles.tableCell}>{invoice.workingDays}</Text>}
                 {data?.invoice?.invoiceType === 'monthly' && <Text style={styles.tableCell}>{invoice.totalWorkingDays}</Text>}
-                {data?.invoice?.invoiceType === 'hourly' && <Text style={styles.tableCell}>{invoice?.rate?.rate}</Text>}
+                {/* {data?.invoice?.invoiceType === 'hourly' && <Text style={styles.tableCell}>{invoice?.rate?.rate} {invoice?.rate?.currency}/Hour</Text>} */} 
+
+                {data?.invoice?.invoiceType === 'hourly' && (
+                  <Text style={styles.tableCell}>
+                    {`${invoice?.rate?.rate} ${invoice?.rate?.currency === 'USD' ? '$' : invoice?.rate?.currency === 'POUND' ? '£' : invoice?.rate?.currency === 'INR' ? 'INR' : ''} / Hour`}
+                  </Text>
+                )}
+
+
                 {data?.invoice?.invoiceType === 'hourly' && <Text style={styles.tableCell}>{invoice?.hours}</Text>}
-                {invoice?.conversionRate && data?.invoice?.invoiceType === 'hourly' && <Text style={styles.tableCell}>{invoice?.conversionRate}</Text>}
+
+
+
+
+
+                {invoice?.conversionRate ? (
+                  <Text style={styles.tableCell}>
+                    {invoice?.rate?.currency === 'INR' ? (
+                      <Text style={styles.tableCell}>N/A</Text>
+                    ) : (
+                      `${invoice?.rate?.currency === 'USD' ? '1$' : `1£`} = ${invoice?.conversionRate}`
+
+                    )}
+                  </Text>
+                ) : (
+                  <Text style={styles.tableCell}>N/A</Text>
+                )}
+
+
+
+
+
+
                 <Text style={styles.tableCell}>{invoice?.amount}</Text>
               </View>
             ))}

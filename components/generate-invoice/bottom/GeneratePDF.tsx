@@ -109,6 +109,7 @@ const GeneratePDF = () => {
 
       // unset all
       checkedInvoice?.map((_, indx) => dispatch(updatedChecked({ indx, checked: false })))
+     
       dispatch(setInvoiceNumber(''))
       dispatch(setDate(new window.Date()))
       dispatch(setDueDate(new window.Date()))
