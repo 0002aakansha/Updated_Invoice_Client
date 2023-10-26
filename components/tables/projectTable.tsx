@@ -62,7 +62,9 @@ const ProjectTable = () => {
                   key={project?._id}
                   className="w-full border-b even:bg-slate-100"
                 >
-                  <td className="text-center py-3 font-semibold w-[5%]">{i + 1}.</td>
+                  <td className="text-center py-3 font-semibold w-[5%]">
+                    {i + 1}.
+                  </td>
                   <td className="py-3 px-4 text-start font-semibold text-slate-700 capitalize w-[25%]">
                     {project?.description}
                   </td>
@@ -70,16 +72,24 @@ const ProjectTable = () => {
                     ({project?.projectBelongsTo?.name})
                   </td>
                   <td className="py-3 px-4 text-start text-sm  text-slate-700 capitalize w-[10%]">
-
+                    {project?.projectType}
                   </td>
                   <td className="py-3 px-4 text-center text-slate-600 text-sm w-[15%]">
                     {project?.projectAmount} INR
                   </td>
                   <td className="py-3 px-4 text-center text-slate-600 text-sm w-[10%]">
-                    {project?.rate?.rate} {project?.rate?.currency}
+                    {project?.rate?.rate ? (
+                      `${project?.rate?.rate} ${project?.rate?.currency}`
+                    ) : (
+                      <span className="text-red-500 font-semibold">N/A</span>
+                    )}
                   </td>
                   <td className="py-3 px-4 text-center text-slate-600 text-sm w-[10%]">
-                    {project?.conversionRate ? project?.conversionRate : <span className="text-red-500 font-semibold">N/A</span>}
+                    {project?.conversionRate ? (
+                      project?.conversionRate
+                    ) : (
+                      <span className="text-red-500 font-semibold">N/A</span>
+                    )}
                   </td>
                   <td className="py-3 text-center cursor-pointer space-x-10 w-[10%]">
                     <FontAwesomeIcon
@@ -98,7 +108,7 @@ const ProjectTable = () => {
                       onClick={() => {
                         setDeleteOpen(true);
                         setId(project?._id);
-                        setcid(project?.projectBelongsTo?._id)
+                        setcid(project?.projectBelongsTo?._id);
                       }}
                     />
                   </td>
