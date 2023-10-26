@@ -111,7 +111,7 @@ const HistoryCard = ({ invoiceData }: { invoiceData: invoiceType }) => {
       a.click();
       document.body.removeChild(a);
     }
-    
+
     dispatch(
       postInvoiceHistory({
         createdFor: invoiceData?.createdFor?._id,
