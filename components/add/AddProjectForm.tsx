@@ -27,7 +27,6 @@ const AddProjectForm = () => {
 
   const submitHandler = async (e: FormEvent) => {
     e.preventDefault();
-    console.log(projectType);
 
     projectType === "hourly"
       ? await dispatch(

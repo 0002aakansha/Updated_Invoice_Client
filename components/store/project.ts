@@ -78,7 +78,6 @@ export const UpdateProject = createAsyncThunk(
     },
     { rejectWithValue }
   ) => {
-    console.log(project);
 
     try {
       const { data } = await client({
@@ -157,8 +156,6 @@ const projectslice = createSlice({
     });
     builder.addCase(createProject.fulfilled, (state, action) => {
       state.isLoading = false;
-
-      console.log(action.payload);
 
       state.created = true;
       state.projects = [...current(state.projects), action.payload.new];

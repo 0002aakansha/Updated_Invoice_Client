@@ -114,9 +114,6 @@ const CheckedModal = ({ indx }: { indx: number }) => {
     }
   };
 
-  console.log(period);
-
-
   return (
     <>
       <Modal isOpen={isChecked} onClose={() => dispatch(setisChecked(false))}>
