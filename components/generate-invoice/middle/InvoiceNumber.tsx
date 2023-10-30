@@ -5,26 +5,23 @@ import {
 } from "@/components/store/invoice";
 import { AppDispatch, AppState } from "@/components/store/store";
 import { invoiceStateType } from "@/types/types";
-import { ChangeEvent, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
 const InvoiceNumber = () => {
-  const { invoiceNumber, Date, DueDate } = useSelector<AppState>(
+  const { Date, DueDate, invoiceNumber } = useSelector<AppState>(
     (state) => state.invoice
   ) as invoiceStateType;
   const dispatch = useDispatch<AppDispatch>();
 
-  // const [invoiceNo, setInvoiceNo] = useState(invoiceNumber)
-
-  const [invoiceNo, setInvoiceNo] = useState();
   const [date, setdate] = useState<Date | null>(Date);
   const [dueDate, setdueDate] = useState<Date | null>(DueDate);
 
   useEffect(() => {
-    dispatch(setInvoiceNumber(invoiceNo));
+    dispatch(setInvoiceNumber(Math.floor(100000 + Math.random() * 900000)));
     dispatch(setDate(date));
     dispatch(setDueDate(dueDate));
-  }, [invoiceNo, date, dueDate]);
+  }, [date, dueDate]);
 
   return (
     <div>
@@ -40,9 +37,9 @@ const InvoiceNumber = () => {
             type="text"
             id="invoice"
             className="bg-transparent outline-none border px-2 border-stone-300 p-1 rounded-sm w-1/2 xs:text-xs sm:text-sm md:text-md"
-            value={invoiceNo}
+            value={invoiceNumber}
+            disabled
             maxLength={8}
-            onChange={(e: any) => setInvoiceNo(e.target.value)}
           />
         </div>
         <div className="my-2 p-1 rounded-sm flex justify-between">

@@ -140,6 +140,7 @@ const CheckedModal = ({ indx }: { indx: number }) => {
                       value={period}
                       onChange={(e) => setPeriod(e.target.value)}
                       required
+                      autoFocus
                       placeholder="Some Message!"
                       className="border-2 mt-2 px-4 py-2 rounded-sm outline-none"
                     />
@@ -182,6 +183,7 @@ const CheckedModal = ({ indx }: { indx: number }) => {
                     type="number"
                     step="0.01"
                     value={hours !== 0.0 ? hours : ''}
+                    autoFocus
                     onChange={(e: any) => sethours(e.target.value)}
                     required
                     placeholder="0.0"

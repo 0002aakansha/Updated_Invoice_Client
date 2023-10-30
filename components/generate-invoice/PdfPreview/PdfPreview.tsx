@@ -82,7 +82,7 @@ const styles = StyleSheet.create({
   },
   subtotal: {
     fontSize: 12,
-    marginTop: 60,
+    marginTop: 30,
   },
   cgst: {
     marginTop: 15,
@@ -340,7 +340,7 @@ const PdfPreview = ({ data }: { data: PdfPreviewProps | any }) => {
             style={{
               fontSize: 12,
               padding: 2,
-              marginTop: 100,
+              marginTop: 10,
               textAlign: "center",
               fontStyle: "italic",
             }}
