@@ -181,7 +181,7 @@ const CheckedModal = ({ indx }: { indx: number }) => {
                   <input
                     type="number"
                     step="0.01"
-                    value={hours !== 0.0 ? hours : 0}
+                    value={hours !== 0.0 ? hours : ''}
                     onChange={(e: any) => sethours(e.target.value)}
                     required
                     placeholder="0.0"
