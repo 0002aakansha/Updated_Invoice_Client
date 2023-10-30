@@ -98,7 +98,7 @@ const ProjectTable = () => {
                       className="text-lg"
                       onClick={() => {
                         setUpdateOpen(true);
-                        setId(project?._id);
+                        setId(project?._id || "");
                       }}
                     />
                     <FontAwesomeIcon
@@ -107,7 +107,7 @@ const ProjectTable = () => {
                       className="text-lg"
                       onClick={() => {
                         setDeleteOpen(true);
-                        setId(project?._id);
+                        setId(project?._id || "");
                         setcid(project?.projectBelongsTo?._id);
                       }}
                     />

@@ -52,7 +52,7 @@ const AddProjectForm = () => {
   };
 
   useEffect(() => {
-    setBelongsTo(clients[0]?._id);
+    setBelongsTo(clients[0]?._id || "");
     if (error?.message !== "") toast.error(error?.message);
     else if (created) {
       toast.success("Project Created!");
@@ -158,9 +158,6 @@ const AddProjectForm = () => {
               </select>
             </div>
 
-            
-
-
             <div className="flex flex-col">
               <label
                 htmlFor="name"
@@ -185,8 +182,6 @@ const AddProjectForm = () => {
                 }}
               />
             </div>
-
-
           </div>
           <div className="sm:grid sm:grid-cols-2 md:grid md:grid-cols-2 space-x-2">
             <div className="flex flex-col my-2">

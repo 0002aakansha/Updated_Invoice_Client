@@ -15,6 +15,7 @@ import { DeleteClient } from "../store/client";
 import toast from "react-hot-toast";
 import { DeleteProject } from "../store/project";
 import { deleteInvoice } from "../store/invoiceHistory";
+import React, { useEffect } from "react";
 
 export default function AlertDialogExample({
   isOpen,
@@ -38,39 +39,39 @@ export default function AlertDialogExample({
   };
 
   const clientDelete = async () => {
-    const { error } = await dispatch(DeleteClient(_id));
-
-    if (error?.message === "Rejected") throw new Error(error);
+    await dispatch(DeleteClient(_id));
     onClose(false);
     toast.success("Client Deleted!");
   };
 
   const projectDelete = async () => {
-    const { error } = await dispatch(DeleteProject({ cid, pid: _id }));
-
-    if (error?.message === "Rejected") throw new Error(error);
+    await dispatch(DeleteProject({ cid, pid: _id }));
     onClose(false);
     toast.success("Project Deleted!");
   };
 
   const invoiceDelete = async () => {
-    const { error } = await dispatch(deleteInvoice(_id));
-
-    if (error?.message === "Rejected") throw new Error(error);
+    await dispatch(deleteInvoice(_id));
     onClose(false);
     toast.success("Invoice Deleted!");
   };
-
+  const cancelRef = React.useRef() as any;
   return (
-    <AlertDialog isOpen={isOpen} onClose={() => onClose(false)}>
+    <AlertDialog
+      isOpen={isOpen}
+      onClose={() => onClose(false)}
+      leastDestructiveRef={cancelRef}
+    >
       <AlertDialogOverlay>
         <AlertDialogContent className="mt-4">
           <AlertDialogHeader fontSize="lg" fontWeight="bold">
             {filter === "logout"
               ? "Logout"
               : filter === "clientDelete"
-                ? "Delete Client"
-                : filter === 'invoiceDelete' ? 'Delete Invoice' : "Delete Project"}
+              ? "Delete Client"
+              : filter === "invoiceDelete"
+              ? "Delete Invoice"
+              : "Delete Project"}
           </AlertDialogHeader>
 
           <AlertDialogBody>
@@ -82,11 +83,17 @@ export default function AlertDialogExample({
             <Button
               className="bg-red-700 text-stone-100 hover:bg-red-600"
               onClick={
-                filter === "logout" ? logoutHandler : filter === "clientDelete" ? clientDelete : filter === 'invoiceDelete' ? invoiceDelete : projectDelete
+                filter === "logout"
+                  ? logoutHandler
+                  : filter === "clientDelete"
+                  ? clientDelete
+                  : filter === "invoiceDelete"
+                  ? invoiceDelete
+                  : projectDelete
               }
               ml={3}
             >
-              {filter === "logout" ? 'Logout' : 'Delete'}
+              {filter === "logout" ? "Logout" : "Delete"}
             </Button>
           </AlertDialogFooter>
         </AlertDialogContent>

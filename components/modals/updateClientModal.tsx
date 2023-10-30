@@ -16,7 +16,6 @@ import { UpdateClient, setUpdate } from "../store/client";
 import toast from "react-hot-toast";
 import { states } from "@/utils/states";
 
-
 const UpdateClientModal = ({
   isOpen,
   _id,
@@ -42,13 +41,11 @@ const UpdateClientModal = ({
   });
 
   const submitHandler = async (e: FormEvent) => {
-    e.preventDefault()
+    e.preventDefault();
 
-    await dispatch(
-      UpdateClient({ _id, name, gstin, address })
-    );
+    await dispatch(UpdateClient({ _id, name, gstin, address }));
 
-    onClose(false)
+    onClose(false);
   };
 
   useEffect(() => {
@@ -59,10 +56,11 @@ const UpdateClientModal = ({
     setgstin(client?.gstin);
     setAddress(client?.address);
 
-    if (error?.message !== '') toast.error(error?.message)
+    if (error?.message !== "")
+      toast.error(error?.message || "Something went wrong!");
     else if (updated) {
       toast.success("Client Updated!");
-      dispatch(setUpdate())
+      dispatch(setUpdate());
     }
   }, [_id, error?.message, updated]);
 
@@ -91,11 +89,12 @@ const UpdateClientModal = ({
                     onChange={(e) => {
                       const inputValue = e.target.value;
                       const pattern = /^[A-Za-z\s]*$/;
-                      if (pattern.test(inputValue) || inputValue === '') {
+                      if (pattern.test(inputValue) || inputValue === "") {
                         setName(inputValue);
                       }
                     }}
-                    required />
+                    required
+                  />
                 </div>
                 <div className="flex flex-col">
                   <label
@@ -113,7 +112,7 @@ const UpdateClientModal = ({
                     onChange={(e) => {
                       const input = e.target.value;
                       const pattern = /^[A-Za-z0-9]*$/;
-                      if (pattern.test(input) || input === '') {
+                      if (pattern.test(input) || input === "") {
                         setgstin(input);
                       }
                     }}
@@ -136,7 +135,9 @@ const UpdateClientModal = ({
                     className="outline-none border-2 px-4 py-2 rounded-md"
                     value={address?.street}
                     required
-                    onChange={(e) => setAddress({ ...address, street:  e.target.value})}
+                    onChange={(e) =>
+                      setAddress({ ...address, street: e.target.value })
+                    }
                   />
                 </div>
                 <div className="flex flex-col m-1">
@@ -155,8 +156,8 @@ const UpdateClientModal = ({
                     onChange={(e) => {
                       const inputValue = e.target.value;
                       const pattern = /^[A-Za-z() ]*$/;
-                      if (pattern.test(inputValue) || inputValue === '') {
-                        setAddress({ ...address, city: inputValue })
+                      if (pattern.test(inputValue) || inputValue === "") {
+                        setAddress({ ...address, city: inputValue });
                       }
                     }}
                   />
@@ -176,7 +177,7 @@ const UpdateClientModal = ({
                     value={address?.pin}
                     onChange={(e) => {
                       const inputValue = e.target.value;
-                      const alphabeticValue = inputValue.replace(/[^0-9]/g, '');
+                      const alphabeticValue = inputValue.replace(/[^0-9]/g, "");
                       setAddress({ ...address, pin: alphabeticValue });
                     }}
                     required
@@ -193,10 +194,15 @@ const UpdateClientModal = ({
                     className="outline-none border-2 px-4 py-2 rounded-md"
                     value={address?.state}
                     required
-                    onChange={(e) => setAddress({ ...address, state: e.target.value })}>
-                    {
-                      states.map(state => <option key={state} value={state}>{state}</option>)
+                    onChange={(e) =>
+                      setAddress({ ...address, state: e.target.value })
                     }
+                  >
+                    {states.map((state) => (
+                      <option key={state} value={state}>
+                        {state}
+                      </option>
+                    ))}
                   </select>
                 </div>
                 <div className="flex flex-col m-1">
@@ -214,7 +220,10 @@ const UpdateClientModal = ({
                     required
                     onChange={(e) => {
                       const inputValue = e.target.value;
-                      const alphabeticValue = inputValue.replace(/[^A-Za-z]/g, '');
+                      const alphabeticValue = inputValue.replace(
+                        /[^A-Za-z]/g,
+                        ""
+                      );
                       setAddress({ ...address, country: alphabeticValue });
                     }}
                   />

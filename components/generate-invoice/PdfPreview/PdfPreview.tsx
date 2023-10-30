@@ -1,4 +1,4 @@
-import { PdfPreviewProps, dataProps } from "@/types/types";
+import { PdfPreviewProps } from "@/types/types";
 import {
   Document,
   Page,
@@ -26,7 +26,7 @@ const styles = StyleSheet.create({
     textDecoration: "underline",
   },
   table: {
-    display: "table",
+    // display: 'table',
     width: "100%",
     marginTop: 50,
     marginBottom: 10,
@@ -146,12 +146,9 @@ const styles = StyleSheet.create({
   },
 });
 
-const PdfPreview = ({ data }: { data: PdfPreviewProps }) => {
-  const [formattedInvoiceDate, setformattedInvoiceDate] = useState('')
-  const [formattedDueDate, setformattedDueDate] = useState('')
-
-  // console.log(data);
-
+const PdfPreview = ({ data }: { data: PdfPreviewProps | any }) => {
+  const [formattedInvoiceDate, setformattedInvoiceDate] = useState("");
+  const [formattedDueDate, setformattedDueDate] = useState("");
 
   function formatDate(date: Date) {
     return date?.toLocaleDateString("en-GB");
@@ -169,9 +166,9 @@ const PdfPreview = ({ data }: { data: PdfPreviewProps }) => {
           <View style={styles.top}>
             <View style={styles.logo}>
               {data?.user?.name?.toLowerCase().startsWith("gammaedge") ? (
-                <Image src="/images/logo.png" alt="gammaedge" />
+                <img src="/images/logo.png" alt="gammaedge" />
               ) : (
-                <Image src="/images/cubexoLogo.png" alt="cubexo" />
+                <img src="/images/cubexoLogo.png" alt="cubexo" />
               )}
             </View>
             <View style={styles.rightColumn}>
@@ -261,7 +258,7 @@ const PdfPreview = ({ data }: { data: PdfPreviewProps }) => {
                 Amount
               </Text>
             </View>
-            {data?.invoice?.invoice?.map((invoice) => (
+            {data?.invoice?.invoice?.map((invoice: any) => (
               <View key={invoice?.id} style={styles.tableRow}>
 
                 <Text style={styles.tableCell}>
@@ -312,7 +309,7 @@ const PdfPreview = ({ data }: { data: PdfPreviewProps }) => {
               <Text style={styles.txt2}>IFSC: {data?.user?.account?.ifsc}</Text>
             </View>
             <View style={styles.subtotal}>
-              <Text style={styles.calSubTotal}>
+              <Text style={styles.subtotal}>
                 SUBTOTAL {"          "}
                 <Text style={styles.digit}>{data?.total?.subtotal}</Text>
               </Text>
@@ -327,7 +324,7 @@ const PdfPreview = ({ data }: { data: PdfPreviewProps }) => {
                     CGST @9% {"          "}
                     <Text style={styles.digit}>{data?.total?.GST?.CGST}</Text>
                   </Text>
-                  <Text style={styles.sgst}>
+                  <Text style={styles.cgst}>
                     SGST @9% {"          "}
                     <Text style={styles.digit}>{data?.total?.GST?.SGST}</Text>
                   </Text>

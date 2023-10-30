@@ -1,4 +1,3 @@
-import { BiBarChartAlt } from 'react-icons/bi'
 import ButtonLoading from '../spinners/buttonLoading'
 
 const Card = ({ color, title, total, isLoading }: { color: string, title: string, total: number, isLoading: boolean }) => {

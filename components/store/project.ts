@@ -1,4 +1,8 @@
-import { projectStateType, projectType } from "@/types/types";
+import {
+  projectStateType,
+  projectType,
+  createProjectType,
+} from "@/types/types";
 import { createAsyncThunk, createSlice, current } from "@reduxjs/toolkit";
 import { client } from "@/axios/instance/client";
 import { getCookie } from "@/utils/cookies";
@@ -13,7 +17,7 @@ const initialState: projectStateType = {
 
 export const createProject = createAsyncThunk(
   "project/create",
-  async (projectData: projectType, { rejectWithValue }) => {
+  async (projectData: createProjectType, { rejectWithValue }) => {
     try {
       const { data } = await client({
         url: `/projects`,
@@ -78,7 +82,6 @@ export const UpdateProject = createAsyncThunk(
     },
     { rejectWithValue }
   ) => {
-
     try {
       const { data } = await client({
         url: `/projects/${cid}/${_id}`,
@@ -112,7 +115,10 @@ export const UpdateProject = createAsyncThunk(
 
 export const DeleteProject = createAsyncThunk(
   "project/delete",
-  async ({ cid, pid }: { cid: string; pid: string }, { rejectWithValue }) => {
+  async (
+    { cid, pid }: { cid: string | undefined; pid: string },
+    { rejectWithValue }
+  ) => {
     try {
       const { data } = await client({
         url: `/projects/${cid}/${pid}`,

@@ -5,7 +5,7 @@ export interface dataProps {
   period?: string;
   workingDays?: string;
   totalWorkingDays?: string;
-  hours?: string;
+  hours?: string | number | any;
   amount?: string | number;
   projectAmount?: number;
   rate?: { currency: string; rate: string };
@@ -64,6 +64,7 @@ export interface clientType {
 }
 
 export interface projectType {
+  _id?: string;
   projectType?: string;
   description: string;
   rate: {
@@ -72,14 +73,26 @@ export interface projectType {
   };
   projectAmount: number;
   conversionRate?: number;
-  projectBelongsTo?: string;
+  projectBelongsTo?: string | clientType | any;
+}
+
+export interface createProjectType {
+  projectType?: string;
+  description: string;
+  rate: {
+    currency: string;
+    rate?: number;
+  };
+  amount?: number;
+  companyId: string;
+  conversionRate?: number;
 }
 
 export interface userStateType {
   user: userType;
   created: boolean;
   isLoading: boolean;
-  error: string;
+  error: string | any;
 }
 
 export interface projectStateType {
@@ -132,23 +145,23 @@ export interface PdfPreviewProps {
 }
 
 export interface invoiceProjectType {
-  _id: string;
+  _id?: string;
   id: number;
-  projectDetails: projectType;
+  projectDetails: projectType | string;
   period?: string;
   workingDays?: string;
   totalWorkingDays?: string;
-  hours?: string;
+  hours?: string | number;
   amount: number;
 }
 
 export interface invoiceType {
   _id?: string;
-  createdFor: string | clientType;
+  createdFor: string | clientType | any;
   invoiceNumber: string;
-  createdOn: string;
-  dueDate: string;
-  projects: invoiceProjectType[];
+  createdOn: string | any;
+  dueDate: string | any;
+  projects: invoiceProjectType[] | any;
   subtotal: number;
   GST: { CGST: number; SGST: number } | number;
   GrandTotal: number;
@@ -162,5 +175,5 @@ export interface invoiceHistoryType {
   isLoading: boolean;
   created: boolean;
   updated: boolean;
-  error: { status: string; message: string };
+  error: { status: string; message: string } | any;
 }

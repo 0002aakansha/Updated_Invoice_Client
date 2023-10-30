@@ -27,8 +27,9 @@ import {
 } from "../store/invoice";
 
 const CheckedModal = ({ indx }: { indx: number }) => {
-  const { invoiceType, isChecked, detailedProject } =
-    useSelector<AppState>((state) => state.invoice) as invoiceStateType;
+  const { invoiceType, isChecked, detailedProject } = useSelector<AppState>(
+    (state) => state.invoice
+  ) as invoiceStateType;
   const { user, isLoading } = useSelector<AppState>(
     (state) => state.user
   ) as userStateType;
@@ -51,7 +52,11 @@ const CheckedModal = ({ indx }: { indx: number }) => {
 
     const project = detailedProject[indx];
     if (workingDays && totalWorkingDays) {
-      if (+workingDays > 0 && +totalWorkingDays > 0 && invoiceType === "monthly") {
+      if (
+        +workingDays > 0 &&
+        +totalWorkingDays > 0 &&
+        invoiceType === "monthly"
+      ) {
         if (+workingDays <= +totalWorkingDays) {
           dispatch(
             updateDetailedProjectOnChecked({
@@ -63,7 +68,7 @@ const CheckedModal = ({ indx }: { indx: number }) => {
               amount: "0,0.0",
               rate: project.rate,
               conversionRate: project.conversionRate,
-              projectBelongsTo: project.projectBelongsTo
+              projectBelongsTo: project.projectBelongsTo,
             })
           );
           dispatch(calculateSubtotal());
@@ -83,14 +88,14 @@ const CheckedModal = ({ indx }: { indx: number }) => {
           return toast.error(
             `working days can'nt be greater than totalworking days`
           );
-      }
-      else if (+workingDays < 0 || +totalWorkingDays < 0 || hours < 0) return toast.error("values can't be less than to 0");
+      } else if (+workingDays < 0 || +totalWorkingDays < 0 || hours < 0)
+        return toast.error("values can't be less than to 0");
       else if (invoiceType === "hourly" && hours > 0) {
         dispatch(
           updateDetailedProjectOnChecked({
             ...project,
             id: indx,
-            hours,
+            hours: hours.toString(),
             rate: project.rate,
             conversionRate: project.conversionRate,
           })
@@ -108,8 +113,7 @@ const CheckedModal = ({ indx }: { indx: number }) => {
               clientState: clientState?.address?.state,
             })
           );
-      }
-      else return toast.error("all fields are required!");
+      } else return toast.error("all fields are required!");
       dispatch(setisChecked(false));
     }
   };
@@ -147,7 +151,7 @@ const CheckedModal = ({ indx }: { indx: number }) => {
                     <input
                       type="number"
                       step="0.01"
-                      value={workingDays !== '0' && workingDays}
+                      value={workingDays !== "0" ? workingDays : ""}
                       onChange={(e) => setworkingDays(e.target.value)}
                       required
                       placeholder="0"
@@ -160,7 +164,7 @@ const CheckedModal = ({ indx }: { indx: number }) => {
                     </label>
                     <input
                       type="number"
-                      value={totalWorkingDays !== '0' && totalWorkingDays}
+                      value={totalWorkingDays !== "0" ? totalWorkingDays : ""}
                       onChange={(e) => settotalworkingDays(e.target.value)}
                       required
                       placeholder="0"
@@ -177,8 +181,8 @@ const CheckedModal = ({ indx }: { indx: number }) => {
                   <input
                     type="number"
                     step="0.01"
-                    value={hours !== 0.0 && hours}
-                    onChange={(e) => sethours(e.target.value)}
+                    value={hours !== 0.0 ? hours : 0}
+                    onChange={(e: any) => sethours(e.target.value)}
                     required
                     placeholder="0.0"
                     className="border-2 mt-2 px-4 py-2 rounded-sm outline-none"
@@ -195,8 +199,8 @@ const CheckedModal = ({ indx }: { indx: number }) => {
                 </Button>
                 <Button
                   onClick={() => {
-                    dispatch(setisChecked(false))
-                    dispatch(updatedChecked({ indx, checked: false }))
+                    dispatch(setisChecked(false));
+                    dispatch(updatedChecked({ indx, checked: false }));
                   }}
                   className="bg-slate-100"
                 >

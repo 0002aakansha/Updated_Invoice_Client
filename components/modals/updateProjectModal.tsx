@@ -10,7 +10,12 @@ import {
 } from "@chakra-ui/react";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, AppState } from "../store/store";
-import { projectStateType, projectType } from "@/types/types";
+import {
+  clientType,
+  projectStateType,
+  projectType,
+  rateType,
+} from "@/types/types";
 import { FormEvent, useEffect, useState } from "react";
 import { UpdateProject, setUpdate } from "../store/project";
 import toast from "react-hot-toast";
@@ -30,11 +35,11 @@ const UpdateProjectModal = ({
   ) as projectStateType;
 
   const [description, setDescription] = useState("");
-  const [projectType, setProjectType] = useState("");
-  const [rate, setRate] = useState({ currency: "", rate: 0 });
-  const [conversionRate, setConversionRate] = useState(0);
+  const [projectType, setProjectType] = useState<string | undefined>("");
+  const [rate, setRate] = useState<rateType | any>({ currency: "", rate: 0 });
+  const [conversionRate, setConversionRate] = useState<number | undefined>(0);
   const [projectAmount, setProjectAmount] = useState(0);
-  const [BelongsTo, setBelongsTo] = useState("");
+  const [BelongsTo, setBelongsTo] = useState<string>("");
 
   useEffect(() => {
     const project = projects?.filter(

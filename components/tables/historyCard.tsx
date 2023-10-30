@@ -23,7 +23,7 @@ import { faCircle } from "@fortawesome/free-solid-svg-icons";
 
 const HistoryCard = ({ invoiceData }: { invoiceData: invoiceType }) => {
   const [pdfBlob, setPdfBlob] = useState<Blob | MediaSource>();
-  const [pdfPreviewData, setpdfPreviewData] = useState<PdfPreviewProps>();
+  const [pdfPreviewData, setpdfPreviewData] = useState<PdfPreviewProps | any>();
   const [isPreviewOpen, onPreviewClose] = useState(false);
   const [isEditOpen, onEditClose] = useState(false);
   const [isAlertOpen, setAlertOpen] = useState<boolean>(false);
@@ -118,16 +118,25 @@ const HistoryCard = ({ invoiceData }: { invoiceData: invoiceType }) => {
         invoiceNumber,
         createdOn: date?.toLocaleDateString("en-GB"),
         dueDate: dueDate?.toLocaleDateString("en-GB"),
-        projects: invoiceData?.projects?.map((project) => {
-          return {
-            id: project?.id,
-            projectDetails: project?.projectDetails?._id,
-            period: project?.period,
-            workingDays: project?.workingDays,
-            totalWorkingDays: project?.totalWorkingDays,
-            amount: +project?.amount,
-          };
-        }),
+        projects: invoiceData?.projects?.map(
+          (project: {
+            id: any;
+            projectDetails: { _id: any };
+            period: any;
+            workingDays: any;
+            totalWorkingDays: any;
+            amount: string | number;
+          }) => {
+            return {
+              id: project?.id,
+              projectDetails: project?.projectDetails?._id,
+              period: project?.period,
+              workingDays: project?.workingDays,
+              totalWorkingDays: project?.totalWorkingDays,
+              amount: +project?.amount,
+            };
+          }
+        ),
         subtotal: invoiceData?.subtotal,
         GST: invoiceData?.GST,
         GrandTotal: invoiceData?.GrandTotal,
@@ -352,7 +361,7 @@ const HistoryCard = ({ invoiceData }: { invoiceData: invoiceType }) => {
       )}
       {isAlertOpen && (
         <AlertDialogExample
-          _id={invoiceData?._id}
+          _id={invoiceData?._id || ''}
           isOpen={isAlertOpen}
           onClose={setAlertOpen}
           filter="invoiceDelete"

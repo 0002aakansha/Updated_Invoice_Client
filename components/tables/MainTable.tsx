@@ -5,8 +5,6 @@ import { AppDispatch, AppState } from "../store/store";
 import { fetchClient } from "../store/client";
 import ClientTable from "./clientTable";
 import ProjectTable from "./projectTable";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faPlus } from "@fortawesome/free-solid-svg-icons";
 
 const MainTable = () => {
   const [select, setSelect] = useState("clients");

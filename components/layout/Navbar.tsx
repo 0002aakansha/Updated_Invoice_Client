@@ -36,7 +36,7 @@ const Navbar = () => {
                     }
                 </nav>
             </header>
-            {<AlertDialogExample isOpen={isOpen} onClose={onClose} filter='logout' />}
+            {<AlertDialogExample _id='' isOpen={isOpen} onClose={onClose} filter='logout' />}
         </>
     )
 }

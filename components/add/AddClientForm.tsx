@@ -31,7 +31,7 @@ const AddClientForm = () => {
   };
 
   useEffect(() => {
-    if (error?.message !== "") toast.error(error?.message);
+    if (error?.message !== "") toast.error(error?.message || 'Something went wrong!');
     else if (created) {
       toast.success("Client Created!");
       router.push("/dashboard");
