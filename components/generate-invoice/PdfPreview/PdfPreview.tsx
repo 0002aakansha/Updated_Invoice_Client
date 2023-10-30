@@ -166,9 +166,9 @@ const PdfPreview = ({ data }: { data: PdfPreviewProps | any }) => {
           <View style={styles.top}>
             <View style={styles.logo}>
               {data?.user?.name?.toLowerCase().startsWith("gammaedge") ? (
-                <img src="/images/logo.png" alt="gammaedge" />
+                <Image src="/images/logo.png" />
               ) : (
-                <img src="/images/cubexoLogo.png" alt="cubexo" />
+                <Image src="/images/cubexoLogo.png" />
               )}
             </View>
             <View style={styles.rightColumn}>
