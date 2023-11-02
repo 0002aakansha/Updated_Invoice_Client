@@ -25,30 +25,50 @@ const AddProjectForm = () => {
     (state) => state.project
   ) as projectStateType;
 
+  const calculateConvertedAmount = () => {
+    if (rate.currency === "USD" || rate.currency === "POUND") {
+      if (conversionRate !== undefined && projectAmount !== undefined) {
+        return projectAmount * conversionRate;
+      }
+    }
+    return projectAmount;
+  };
+
   const submitHandler = async (e: FormEvent) => {
     e.preventDefault();
 
-    projectType === "hourly"
-      ? await dispatch(
-          createProject({
-            description,
-            rate,
-            projectType,
-            conversionRate,
-            amount: projectAmount,
-            companyId: BelongsTo,
-          })
-        )
-      : await dispatch(
-          createProject({
-            description,
-            rate: { currency: rate.currency },
-            projectType,
-            conversionRate,
-            amount: projectAmount,
-            companyId: BelongsTo,
-          })
-        );
+    const convertedAmount = calculateConvertedAmount();
+    const projectData = {
+      description,
+      rate,
+      projectType,
+      conversionRate,
+      amount: convertedAmount,
+      companyId: BelongsTo,
+    };
+    await dispatch(createProject(projectData));
+
+    // projectType === "hourly"
+    //   ? await dispatch(
+    //       createProject({
+    //         description,
+    //         rate,
+    //         projectType,
+    //         conversionRate,
+    //         amount: projectAmount,
+    //         companyId: BelongsTo,
+    //       })
+    //     )
+    //   : await dispatch(
+    //       createProject({
+    //         description,
+    //         rate: { currency: rate.currency },
+    //         projectType,
+    //         conversionRate,
+    //         amount: projectAmount,
+    //         companyId: BelongsTo,
+    //       })
+    //     );
   };
 
   useEffect(() => {
@@ -119,7 +139,7 @@ const AddProjectForm = () => {
                 htmlFor="name"
                 className="font-semibold tracking-wide mb-2 xs:text-xs sm:text-sm md:text-md"
               >
-                Project Amount
+                Project Amount({rate.currency})
               </label>
               <input
                 type="number"
