@@ -45,7 +45,7 @@ const CheckedModal = ({ uniqueKey }: { uniqueKey: string }) => {
   const [period, setPeriod] = useState("");
   const [workingDays, setworkingDays] = useState("");
   const [totalWorkingDays, settotalworkingDays] = useState("");
-  const [hours, sethours] = useState<number>();
+  const [hours, sethours] = useState<number>(0.0);
   const [indx, setIndx] = useState<number>();
 
   useEffect(() => {
@@ -57,7 +57,7 @@ const CheckedModal = ({ uniqueKey }: { uniqueKey: string }) => {
     setPeriod(project?.period || "");
     setworkingDays(project?.workingDays || "");
     settotalworkingDays(project?.totalWorkingDays || "");
-    sethours(project?.hours || "");
+    sethours(project?.hours || 0.0);
   }, [detailedProject, uniqueKey]);
 
   const submitHandler = (e: FormEvent) => {
