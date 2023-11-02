@@ -113,28 +113,49 @@ const AddProjectForm = () => {
               }}
             />
           </div>
-          <div className="sm:grid sm:grid-cols-1   md:grid md:grid-cols-2 space-x-2 my-2">
-            <div>
-              <div className="flex flex-col my-2">
-                <label
-                  htmlFor="name"
-                  className="font-semibold tracking-wide mb-2 xs:text-xs sm:text-sm md:text-md"
-                >
-                  Project Type
-                </label>
-                <select
-                  name=""
-                  id=""
-                  className="bg-white outline-none border-2 px-4 py-2 rounded-md xs:text-xs sm:text-sm md:text-md"
-                  value={projectType}
-                  onChange={(e) => setProjectType(e.target.value)}
-                >
-                  <option value="monthly">Monthly</option>
-                  <option value="hourly">Hourly</option>
-                </select>
-              </div>
-            </div>
+          <div className="sm:grid sm:grid-cols-1 md:grid md:grid-cols-2 space-x-2 my-2">
             <div className="flex flex-col my-2">
+              <label
+                htmlFor="name"
+                className="font-semibold tracking-wide mb-2 xs:text-xs sm:text-sm md:text-md"
+              >
+                Project Type
+              </label>
+              <select
+                name=""
+                id=""
+                className="bg-white outline-none border-2 px-4 py-2 rounded-md xs:text-xs sm:text-sm md:text-md"
+                value={projectType}
+                onChange={(e) => setProjectType(e.target.value)}
+              >
+                <option value="monthly">Monthly</option>
+                <option value="hourly">Hourly</option>
+              </select>
+            </div>
+
+            <div className="flex flex-col my-2">
+              <label
+                htmlFor="name"
+                className="font-semibold tracking-wide mb-2 xs:text-xs sm:text-sm md:text-md"
+              >
+                Currency
+              </label>
+              <select
+                name=""
+                id=""
+                className="bg-white outline-none border-2 px-4 py-2 rounded-md xs:text-xs sm:text-sm md:text-md"
+                value={rate?.currency}
+                onChange={(e) => setRate({ ...rate, currency: e.target.value })}
+              >
+                <option value="INR">INR</option>
+                <option value="USD">USD</option>
+                <option value="POUND">POUND</option>
+              </select>
+            </div>
+          </div>
+
+          <div className="sm:grid sm:grid-cols-1 md:grid md:grid-cols-2 space-x-2 my-2">
+            <div className="flex flex-col">
               <label
                 htmlFor="name"
                 className="font-semibold tracking-wide mb-2 xs:text-xs sm:text-sm md:text-md"
@@ -154,28 +175,6 @@ const AddProjectForm = () => {
                   }
                 }}
               />
-            </div>
-          </div>
-
-          <div className="sm:grid sm:grid-cols-1 md:grid md:grid-cols-2 space-x-2 my-2">
-            <div className="flex flex-col">
-              <label
-                htmlFor="name"
-                className="font-semibold tracking-wide mb-2 xs:text-xs sm:text-sm md:text-md"
-              >
-                Currency
-              </label>
-              <select
-                name=""
-                id=""
-                className="bg-white outline-none border-2 px-4 py-2 rounded-md xs:text-xs sm:text-sm md:text-md"
-                value={rate?.currency}
-                onChange={(e) => setRate({ ...rate, currency: e.target.value })}
-              >
-                <option value="INR">INR</option>
-                <option value="USD">USD</option>
-                <option value="POUND">POUND</option>
-              </select>
             </div>
 
             <div className="flex flex-col">
