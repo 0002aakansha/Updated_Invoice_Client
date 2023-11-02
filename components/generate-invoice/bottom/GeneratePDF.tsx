@@ -175,7 +175,7 @@ const GeneratePDF = () => {
                     id: project.id,
                     projectDetails: project._id,
                     period: project.period,
-                    hours: project.hours && +project.hours?.toString() || '',
+                    hours: (project.hours && +project.hours?.toString()) || "",
                     amount: (project.amount && +project.amount) || 0,
                   };
                 }),
@@ -188,8 +188,8 @@ const GeneratePDF = () => {
           );
 
       // unset all
-      checkedInvoice?.map((_, indx) =>
-        dispatch(updatedChecked({ indx, checked: false }))
+      checkedInvoice?.map((project, indx) =>
+        dispatch(updatedChecked({ indx: project._id, checked: false }))
       );
       dispatch(setInvoiceNumber(""));
       dispatch(setDate(new window.Date()));
