@@ -1,4 +1,4 @@
-import { FormEvent, useState } from "react";
+import { FormEvent, useEffect, useState } from "react";
 import {
   Button,
   Modal,
@@ -15,6 +15,7 @@ import { useDispatch, useSelector } from "react-redux";
 import {
   clientStateType,
   clientType,
+  dataProps,
   invoiceStateType,
   userStateType,
 } from "@/types/types";
@@ -26,7 +27,7 @@ import {
   updatedChecked,
 } from "../store/invoice";
 
-const CheckedModal = ({ indx }: { indx: number }) => {
+const CheckedModal = ({ uniqueKey }: { uniqueKey: string }) => {
   const { invoiceType, isChecked, detailedProject } = useSelector<AppState>(
     (state) => state.invoice
   ) as invoiceStateType;
@@ -36,21 +37,36 @@ const CheckedModal = ({ indx }: { indx: number }) => {
   const client = useSelector<AppState>(
     (state) => state.client
   ) as clientStateType;
+  const { projects } = useSelector<AppState>(
+    (state) => state.client
+  ) as clientStateType;
   const dispatch = useDispatch<AppDispatch>();
 
-  const [period, setPeriod] = useState(detailedProject[indx].period);
-  const [workingDays, setworkingDays] = useState(
-    detailedProject[indx].workingDays
-  );
-  const [totalWorkingDays, settotalworkingDays] = useState(
-    detailedProject[indx].totalWorkingDays
-  );
-  const [hours, sethours] = useState<number>(+detailedProject[indx]?.hours);
+  const [period, setPeriod] = useState("");
+  const [workingDays, setworkingDays] = useState("");
+  const [totalWorkingDays, settotalworkingDays] = useState("");
+  const [hours, sethours] = useState<number>();
+  const [indx, setIndx] = useState<number>();
+
+  useEffect(() => {
+    const project = detailedProject.filter(
+      (project) => project._id === uniqueKey
+    )[0] as dataProps;
+
+    setIndx(detailedProject.findIndex((project) => project._id === uniqueKey));
+    setPeriod(project?.period || "");
+    setworkingDays(project?.workingDays || "");
+    settotalworkingDays(project?.totalWorkingDays || "");
+    sethours(project?.hours || "");
+  }, [detailedProject, uniqueKey]);
 
   const submitHandler = (e: FormEvent) => {
     e.preventDefault();
 
-    const project = detailedProject[indx];
+    const project = detailedProject.filter(
+      (project) => project._id === uniqueKey
+    )[0] as dataProps;
+
     if (workingDays && totalWorkingDays) {
       if (
         +workingDays > 0 &&
@@ -61,7 +77,7 @@ const CheckedModal = ({ indx }: { indx: number }) => {
           dispatch(
             updateDetailedProjectOnChecked({
               ...project,
-              id: indx,
+              indx: projects.findIndex((project) => project._id === uniqueKey),
               period,
               workingDays,
               totalWorkingDays,
@@ -88,13 +104,17 @@ const CheckedModal = ({ indx }: { indx: number }) => {
           return toast.error(
             `working days can'nt be greater than totalworking days`
           );
-      } else if (+workingDays < 0 || +totalWorkingDays < 0 || hours < 0)
+      } else if (
+        +workingDays < 0 ||
+        +totalWorkingDays < 0 ||
+        (hours && hours < 0)
+      )
         return toast.error("values can't be less than to 0");
-      else if (invoiceType === "hourly" && hours > 0) {
+      else if (invoiceType === "hourly" && hours && hours > 0) {
         dispatch(
           updateDetailedProjectOnChecked({
             ...project,
-            id: indx,
+            indx: projects.findIndex((project) => project._id === uniqueKey),
             hours: hours.toString(),
             rate: project.rate,
             conversionRate: project.conversionRate,
@@ -182,7 +202,7 @@ const CheckedModal = ({ indx }: { indx: number }) => {
                   <input
                     type="number"
                     step="0.01"
-                    value={hours !== 0.0 ? hours : ''}
+                    value={hours !== 0.0 ? hours : ""}
                     autoFocus
                     onChange={(e: any) => sethours(e.target.value)}
                     required
@@ -202,7 +222,9 @@ const CheckedModal = ({ indx }: { indx: number }) => {
                 <Button
                   onClick={() => {
                     dispatch(setisChecked(false));
-                    dispatch(updatedChecked({ indx, checked: false }));
+                    dispatch(
+                      updatedChecked({ indx: uniqueKey, checked: false })
+                    );
                   }}
                   className="bg-slate-100"
                 >

@@ -29,7 +29,7 @@ const Table = () => {
   ) as userStateType;
   const dispatch = useDispatch<AppDispatch>();
 
-  const [uniqueKey, setUniqueKey] = useState<number>(0);
+  const [uniqueKey, setUniqueKey] = useState<string>("");
 
   useEffect(() => {
     const Projects =
@@ -95,18 +95,28 @@ const Table = () => {
                             <input
                               type="checkbox"
                               className="outline-none accent-[#5a51be]"
-                              checked={detailedProject[indx]?.checked}
+                              checked={
+                                detailedProject.filter(
+                                  (val) => val._id === project._id
+                                )[0]?.checked
+                              }
                               onChange={(e) => {
                                 if (e.target.checked) {
+                                  setUniqueKey(project?._id || "");
                                   dispatch(setisChecked(true));
-                                  setUniqueKey(indx);
                                   dispatch(
-                                    updatedChecked({ indx, checked: true })
+                                    updatedChecked({
+                                      indx: project?._id || "",
+                                      checked: true,
+                                    })
                                   );
                                 } else {
                                   setisChecked(false);
                                   dispatch(
-                                    updatedChecked({ indx, checked: false })
+                                    updatedChecked({
+                                      indx: project?._id || "",
+                                      checked: false,
+                                    })
                                   );
                                   dispatch(calculateSubtotal());
                                 }
@@ -133,7 +143,10 @@ const Table = () => {
                           />
                         </tr>
                         {isChecked && (
-                          <CheckedModal key={project._id} indx={uniqueKey} />
+                          <CheckedModal
+                            key={project._id}
+                            uniqueKey={uniqueKey}
+                          />
                         )}
                       </>
                     );

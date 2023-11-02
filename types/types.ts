@@ -1,6 +1,7 @@
 export interface dataProps {
   _id: string;
   id: number;
+  indx?: number;
   description: string;
   period?: string;
   workingDays?: string;

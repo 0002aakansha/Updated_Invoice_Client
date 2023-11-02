@@ -24,7 +24,7 @@ const SelectClient = () => {
   const { user, isLoading } = useSelector<AppState>(
     (state) => state.user
   ) as userStateType;
-  const { clients, isHidden, projects } = useSelector<AppState>(
+  const { clients } = useSelector<AppState>(
     (state) => state.client
   ) as clientStateType;
   const invoice = useSelector<AppState>(
@@ -56,9 +56,9 @@ const SelectClient = () => {
 
   function changeInvoiceTypeHandler(e: { target: { value: any } }) {
     dispatch(setInvoiceType(e.target.value));
-    invoice.detailedProject.map((_, indx) => {
-      dispatch(updatedChecked({ indx, checked: false }));
-      dispatch(updateSpecificField({ indx, field: "amount", data: "0,0" }));
+    invoice.detailedProject.map((project) => {
+      dispatch(updatedChecked({ indx: project._id, checked: false }));
+      dispatch(updateSpecificField({ indx: project._id }));
     });
     dispatch(setTotalToZero());
   }
@@ -68,7 +68,11 @@ const SelectClient = () => {
   }, []);
 
   useEffect(() => {
-    if (clientId === "undefined" || clientId === undefined || invoice.invoiceType === '')
+    if (
+      clientId === "undefined" ||
+      clientId === undefined ||
+      invoice.invoiceType === ""
+    )
       dispatch(setHidden(true));
     else {
       dispatch(setHidden(false));

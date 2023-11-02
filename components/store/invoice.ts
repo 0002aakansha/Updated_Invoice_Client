@@ -1,5 +1,5 @@
 import { dataProps, invoiceStateType } from "@/types/types";
-import { createSlice } from "@reduxjs/toolkit";
+import { createSlice, current } from "@reduxjs/toolkit";
 
 const initialState: invoiceStateType = {
   invoiceType: "",
@@ -34,15 +34,24 @@ const invoiceslice = createSlice({
     },
     updatedChecked(
       state,
-      { payload }: { payload: { indx: number; checked: boolean } }
+      { payload }: { payload: { indx: string; checked: boolean } }
     ) {
-      state.detailedProject[+payload.indx].checked = payload.checked;
+      const projectIndx = current(state.detailedProject).findIndex(
+        (project) => project._id === payload.indx
+      );
+
+      state.detailedProject[projectIndx].checked = payload.checked;
     },
     setDetailedProject(state, action) {
       state.detailedProject = action.payload;
     },
     updateDetailedProjectOnChecked(state, { payload }: { payload: dataProps }) {
-      const project = state.detailedProject[payload.id];
+      const project = current(state.detailedProject).filter(
+        (project) => project._id === payload._id
+      )[0];
+      const projectIndx = current(state.detailedProject).findIndex(
+        (project) => project._id === payload._id
+      );
 
       if (
         state.invoiceType === "monthly" &&
@@ -58,7 +67,7 @@ const invoiceslice = createSlice({
           workingDays
         ).toFixed(3);
 
-        state.detailedProject[payload.id] = { ...payload, amount };
+        state.detailedProject[projectIndx] = { ...payload, amount };
       } else if (payload.hours) {
         const rate = Number(project?.rate?.rate);
         const currency = project?.rate?.currency;
@@ -68,10 +77,11 @@ const invoiceslice = createSlice({
         const amount =
           currency === "INR" ? rate * hours : rate * conversionRate * hours;
 
-        state.detailedProject[payload.id] = {
+        state.detailedProject[projectIndx] = {
           ...payload,
           amount: amount.toFixed(3),
         };
+        
       }
     },
     calculateSubtotal(state) {
@@ -117,19 +127,17 @@ const invoiceslice = createSlice({
         state.GST = 0;
       }
     },
-    updateSpecificField(
-      state,
-      {
-        payload,
-      }: { payload: { indx: number; field: string; data: string | number } }
-    ) {
-      const { indx, field, data } = payload;
+    updateSpecificField(state, { payload }: { payload: { indx: string } }) {
+      const { indx } = payload;
+      const pindex = state.detailedProject.findIndex(
+        (project) => project._id === indx
+      );
       if (state.invoiceType === "monthly") {
-        state.detailedProject[indx].period = "";
-        state.detailedProject[indx].totalWorkingDays = "0";
-        state.detailedProject[indx].workingDays = "0";
-      } else state.detailedProject[indx].hours = "0.0";
-      state.detailedProject[indx].amount = 0.0;
+        state.detailedProject[pindex].period = "";
+        state.detailedProject[pindex].totalWorkingDays = "0";
+        state.detailedProject[pindex].workingDays = "0";
+      } else state.detailedProject[pindex].hours = "0.0";
+      state.detailedProject[pindex].amount = 0.0;
     },
   },
   extraReducers: {},
