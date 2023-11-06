@@ -49,7 +49,7 @@ const Login = () => {
 
   return (
     <>
-      <form action="" onSubmit={submitHandler}>
+      <form action="" onSubmit={submitHandler} method="POST">
         <div className="flex flex-col">
           <label htmlFor="email" className="my-3">
             Email<span className="text-red-500"> *</span>

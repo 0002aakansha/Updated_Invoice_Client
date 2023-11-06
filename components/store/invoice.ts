@@ -62,6 +62,8 @@ const invoiceslice = createSlice({
         const projectAmount = Number(project?.projectAmount);
         const workingDays = Number(payload?.workingDays);
         const totalWorkingDays = Number(payload?.totalWorkingDays);
+
+        // formula
         const amount = (
           (projectAmount / totalWorkingDays) *
           workingDays
@@ -74,6 +76,7 @@ const invoiceslice = createSlice({
         const hours = Number(payload?.hours);
         const conversionRate = Number(project?.conversionRate);
 
+        // formula
         const amount =
           currency === "INR" ? rate * hours : rate * conversionRate * hours;
 
@@ -81,7 +84,6 @@ const invoiceslice = createSlice({
           ...payload,
           amount: amount.toFixed(3),
         };
-        
       }
     },
     calculateSubtotal(state) {
