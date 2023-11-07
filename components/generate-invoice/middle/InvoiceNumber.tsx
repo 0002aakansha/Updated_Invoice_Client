@@ -21,6 +21,7 @@ const InvoiceNumber = () => {
     dispatch(setInvoiceNumber(Math.floor(100000 + Math.random() * 900000)));
     dispatch(setDate(date));
     dispatch(setDueDate(dueDate));
+    
   }, [date, dueDate]);
 
   return (
@@ -76,9 +77,9 @@ const InvoiceNumber = () => {
             id="duedate"
             className="bg-transparent outline-none border px-2 border-stone-300 p-1 rounded-sm w-1/2 xs:text-xs sm:text-sm md:text-md"
             value={dueDate ? dueDate.toISOString().split("T")[0] : ""}
-            min={dueDate?.toISOString().split("T")[0]}
+            // min={dueDate?.toISOString().split("T")[0]}
             onChange={(e) => {
-              const dateValue = e.target.value;
+              const dateValue = (e.target.value);
               if (dateValue) {
                 setdueDate(new window.Date(dateValue));
               } else {

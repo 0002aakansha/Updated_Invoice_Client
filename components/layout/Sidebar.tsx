@@ -21,6 +21,8 @@ const SideBar = () => {
     const dispatch = useDispatch<AppDispatch>()
     const { collapseSidebar } = useProSidebar();
 
+    const [isCollapsed, setIsCollapsed] = useState<boolean>(true)
+
     useEffect(() => {
         const userId = localStorage.getItem('user') as string
         dispatch(fetchUserById(userId))
@@ -43,11 +45,38 @@ const SideBar = () => {
                             }
                         </div>
                     </MenuItem>
+
                     <MenuItem className='mt-4 mb-2'
                         icon={<FontAwesomeIcon icon={faHouse} className='text-stone-900 text-lg' />}
                         onClick={() => router.push('/dashboard')}>
                         <span className='capitalize tracking-normal font-semibold text-slate-700'>Dashboard</span>
                     </MenuItem>
+
+                    {/* <MenuItem className='mt-4 mb-2'
+                        icon={
+                            <div className={`group relative ${isCollapsed ? 'cursor-pointer' : ''}`} 
+                                onMouseEnter={() => {
+                                    if (isCollapsed) {
+                                        setIsCollapsed(true);
+                                    }
+                                }}
+                                onMouseLeave={() => setIsCollapsed(false)}>
+                                <FontAwesomeIcon icon={faHouse} className='text-stone-900 text-lg' />
+
+                                {isCollapsed && (
+                                    <div className='hidden group-hover:block absolute left-full top-0 bg-black text-white p-1 rounded-md shadow-lg'>
+                                        Dashboard
+                                    </div>
+                                )}
+                            </div>
+
+                        }
+
+                        onClick={() => router.push('/dashboard')}>
+                        <span className='capitalize tracking-normal font-semibold text-slate-700'>Dashboard</span>
+                    </MenuItem> */}
+                    
+
                     <MenuItem className='my-2'
                         icon={<FontAwesomeIcon icon={faSquarePlus} className='text-stone-900 text-lg' />}
                         onClick={() => router.push('/addClient')}>

@@ -9,6 +9,7 @@ export interface dataProps {
   hours?: string | number | any;
   amount?: string | number;
   projectAmount?: number;
+  projectCycle?: string | number;
   rate?: { currency: string; rate: string };
   conversionRate?: number;
   checked?: boolean;
@@ -73,6 +74,7 @@ export interface projectType {
     rate?: number;
   };
   projectAmount: number;
+  projectCycle : string | number;
   conversionRate?: number;
   projectBelongsTo?: string | clientType | any;
 }
@@ -85,6 +87,7 @@ export interface createProjectType {
     rate?: number;
   };
   amount?: number;
+  projectCycle : string | number;
   companyId: string;
   conversionRate?: number;
 }
@@ -154,6 +157,7 @@ export interface invoiceProjectType {
   totalWorkingDays?: string;
   hours?: string | number;
   amount: number;
+  projectCycle?: string | number;
 }
 
 export interface invoiceType {
