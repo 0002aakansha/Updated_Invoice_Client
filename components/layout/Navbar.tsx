@@ -23,6 +23,7 @@ const Navbar = () => {
                     {
                         auth ? (
                             <ul className='flex justify-end items-center'>
+                                
                                 <li className='font-semibold mx-3 text-md underline text-slate-700'>{uEmail}</li>
                                 <li className='font-bolder mx-3 text-lg cursor-pointer'>
                                     <Image src="/images/logout.png" alt="" width={100} height={100} className='w-6' onClick={() => onClose(true)} />
