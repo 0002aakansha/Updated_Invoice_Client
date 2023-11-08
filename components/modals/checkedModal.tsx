@@ -17,6 +17,7 @@ import {
   clientType,
   dataProps,
   invoiceStateType,
+  rateType,
   userStateType,
 } from "@/types/types";
 import {
@@ -42,10 +43,13 @@ const CheckedModal = ({ uniqueKey }: { uniqueKey: string }) => {
   ) as clientStateType;
   const dispatch = useDispatch<AppDispatch>();
 
+  const [description, setDescription] = useState("")
   const [period, setPeriod] = useState("");
   const [workingDays, setworkingDays] = useState("");
   const [totalWorkingDays, settotalworkingDays] = useState("");
+  const [rate, setRate] = useState<rateType>({ currency: "INR", rate: 0 });
   const [hours, sethours] = useState<number>(0.0);
+  const [conversionRate, setConversionRate] = useState<number>();
   const [indx, setIndx] = useState<number>();
 
   useEffect(() => {
@@ -55,9 +59,12 @@ const CheckedModal = ({ uniqueKey }: { uniqueKey: string }) => {
 
     setIndx(detailedProject.findIndex((project) => project._id === uniqueKey));
     setPeriod(project?.period || "");
+    setDescription(project?.description || "")
     setworkingDays(project?.workingDays || "");
     settotalworkingDays(project?.totalWorkingDays || "");
+    //setRate remaining here
     sethours(project?.hours || 0.0);
+    setConversionRate(project?.conversionRate || 0.0)
   }, [detailedProject, uniqueKey]);
 
   const submitHandler = (e: FormEvent) => {
@@ -78,6 +85,7 @@ const CheckedModal = ({ uniqueKey }: { uniqueKey: string }) => {
             updateDetailedProjectOnChecked({
               ...project,
               indx: projects.findIndex((project) => project._id === uniqueKey),
+              description,
               period,
               workingDays,
               totalWorkingDays,
@@ -115,6 +123,7 @@ const CheckedModal = ({ uniqueKey }: { uniqueKey: string }) => {
           updateDetailedProjectOnChecked({
             ...project,
             indx: projects.findIndex((project) => project._id === uniqueKey),
+            description,
             hours: hours.toString(),
             rate: project.rate,
             conversionRate: project.conversionRate,
@@ -153,7 +162,22 @@ const CheckedModal = ({ uniqueKey }: { uniqueKey: string }) => {
                 <>
                   <div className="flex flex-col my-2">
                     <label htmlFor="" className="font-semibold text-lg">
-                      Period*
+                      Description <span className="text-red-500">*</span>
+                    </label>
+                    <input
+                      type="text"
+                      value={description}
+                      onChange={(e) => setDescription(e.target.value)}
+                      required
+                      autoFocus
+                      placeholder="Some Message!"
+                      className="border-2 mt-2 px-4 py-2 rounded-sm outline-none"
+                    />
+                  </div>
+
+                  <div className="flex flex-col my-2">
+                    <label htmlFor="" className="font-semibold text-lg">
+                      Period <span className="text-red-500">*</span>
                     </label>
                     <input
                       type="text"
@@ -167,7 +191,7 @@ const CheckedModal = ({ uniqueKey }: { uniqueKey: string }) => {
                   </div>
                   <div className="flex flex-col my-2">
                     <label htmlFor="" className="font-semibold text-lg">
-                      Working Days*
+                      Working Days <span className="text-red-500">*</span>
                     </label>
                     <input
                       type="number"
@@ -181,7 +205,7 @@ const CheckedModal = ({ uniqueKey }: { uniqueKey: string }) => {
                   </div>
                   <div className="flex flex-col my-2">
                     <label htmlFor="" className="font-semibold text-lg">
-                      Total Working Days*
+                      Total Working Days <span className="text-red-500">*</span>
                     </label>
                     <input
                       type="number"
@@ -195,9 +219,38 @@ const CheckedModal = ({ uniqueKey }: { uniqueKey: string }) => {
                 </>
               )}
               {invoiceType === "hourly" && (
+              <>
+              <div className="flex flex-col my-2">
+                  <label htmlFor="" className="font-semibold text-lg">
+                    Description <span className="text-red-500">*</span>
+                  </label>
+                  <input
+                    type="text"
+                    value={description}
+                    autoFocus
+                    onChange={(e: any) => setDescription(e.target.value)}
+                    required
+                    placeholder=""
+                    className="border-2 mt-2 px-4 py-2 rounded-sm outline-none"
+                  />
+                </div>
+                {/* <div className="flex flex-col my-2">
+                  <label htmlFor="" className="font-semibold text-lg">
+                    Rate <span className="text-red-500">*</span>
+                  </label>
+                  <input
+                    type="text"
+                    value={description}
+                    autoFocus
+                    onChange={(e: any) => setDescription(e.target.value)}
+                    required
+                    placeholder=""
+                    className="border-2 mt-2 px-4 py-2 rounded-sm outline-none"
+                  />
+                </div> */}
                 <div className="flex flex-col my-2">
                   <label htmlFor="" className="font-semibold text-lg">
-                    Hours*
+                    Hours <span className="text-red-500">*</span>
                   </label>
                   <input
                     type="number"
@@ -210,6 +263,21 @@ const CheckedModal = ({ uniqueKey }: { uniqueKey: string }) => {
                     className="border-2 mt-2 px-4 py-2 rounded-sm outline-none"
                   />
                 </div>
+                <div className="flex flex-col my-2">
+                  <label htmlFor="" className="font-semibold text-lg">
+                    Conversion Rate <span className="text-red-500">*</span>
+                  </label>
+                  <input
+                    type="number"
+                    value={conversionRate}
+                    autoFocus
+                    onChange={(e: any) => setConversionRate(e.target.value)}
+                    required
+                    placeholder="0.0"
+                    className="border-2 mt-2 px-4 py-2 rounded-sm outline-none"
+                  />
+                </div>
+              </>
               )}
               <ModalFooter>
                 <Button

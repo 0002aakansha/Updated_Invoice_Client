@@ -140,7 +140,7 @@ const HistoryCard = ({ invoiceData }: { invoiceData: invoiceType }) => {
         subtotal: invoiceData?.subtotal,
         GST: invoiceData?.GST,
         GrandTotal: invoiceData?.GrandTotal,
-        status: "pending",
+        status: "raised",
         invoiceType: invoiceData?.invoiceType,
       })
     );
@@ -182,7 +182,7 @@ const HistoryCard = ({ invoiceData }: { invoiceData: invoiceType }) => {
           <FontAwesomeIcon
             icon={faCircle}
             className={`${
-              invoiceData.status === "pending"
+              invoiceData.status === "raised"
                 ? " text-orange-600"
                 : " text-green-600"
             }`}
@@ -302,8 +302,8 @@ const HistoryCard = ({ invoiceData }: { invoiceData: invoiceType }) => {
                     value={status}
                     onChange={(e) => setStatus(e.target.value)}
                   >
-                    <option value="pending">Pending</option>
-                    <option value="success">Success</option>
+                    <option value="raised">Raised</option>
+                    <option value="cleared">Cleared</option>
                   </select>
                 </div>
                 <ModalFooter>

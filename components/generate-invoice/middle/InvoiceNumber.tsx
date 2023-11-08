@@ -9,20 +9,37 @@ import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
 const InvoiceNumber = () => {
-  const { Date, DueDate, invoiceNumber } = useSelector<AppState>(
+  const { Date: currentDate, DueDate, invoiceNumber } = useSelector<AppState>(
     (state) => state.invoice
   ) as invoiceStateType;
   const dispatch = useDispatch<AppDispatch>();
 
-  const [date, setdate] = useState<Date | null>(Date);
+  const [date, setdate] = useState<Date | null>(currentDate);
   const [dueDate, setdueDate] = useState<Date | null>(DueDate);
 
   useEffect(() => {
+    setdate(new Date());
+    setdueDate(new Date());
+
     dispatch(setInvoiceNumber(Math.floor(100000 + Math.random() * 900000)));
     dispatch(setDate(date));
     dispatch(setDueDate(dueDate));
-    
-  }, [date, dueDate]);
+  }, []);
+
+  const handleDateChange = (selectedDate: Date) => {
+    const newDueDate = new Date(selectedDate);
+    newDueDate.setDate(selectedDate.getDate() + 5);
+
+    setdate(selectedDate);
+    setdueDate(newDueDate);
+    dispatch(setDate(selectedDate));
+    dispatch(setDueDate(newDueDate));
+  };
+
+  const handleDueDateChange = (selectedDate: Date) => {
+    setdueDate(selectedDate);
+    dispatch(setDueDate(selectedDate));
+  };
 
   return (
     <div>
@@ -56,12 +73,8 @@ const InvoiceNumber = () => {
             className="bg-transparent outline-none border px-2 border-stone-300 p-1 rounded-sm w-1/2 xs:text-xs sm:text-sm md:text-md"
             value={date ? date.toISOString().split("T")[0] : ""}
             onChange={(e) => {
-              const dateValue = e.target.value;
-              if (dateValue) {
-                setdate(new window.Date(dateValue));
-              } else {
-                setdate(null);
-              }
+              const dateValue = new Date(e.target.value);
+              handleDateChange(dateValue);
             }}
           />
         </div>
@@ -77,14 +90,10 @@ const InvoiceNumber = () => {
             id="duedate"
             className="bg-transparent outline-none border px-2 border-stone-300 p-1 rounded-sm w-1/2 xs:text-xs sm:text-sm md:text-md"
             value={dueDate ? dueDate.toISOString().split("T")[0] : ""}
-            // min={dueDate?.toISOString().split("T")[0]}
+            min={date ? date.toISOString().split("T")[0] : ""}
             onChange={(e) => {
-              const dateValue = (e.target.value);
-              if (dateValue) {
-                setdueDate(new window.Date(dateValue));
-              } else {
-                setdueDate(null);
-              }
+              const dateValue = new Date(e.target.value);
+              handleDueDateChange(dateValue);
             }}
           />
         </div>
@@ -94,3 +103,4 @@ const InvoiceNumber = () => {
 };
 
 export default InvoiceNumber;
+
