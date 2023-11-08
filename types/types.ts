@@ -63,6 +63,7 @@ export interface clientType {
   name: string;
   gstin: string;
   address: addressType;
+  active: boolean
 }
 
 export interface projectType {

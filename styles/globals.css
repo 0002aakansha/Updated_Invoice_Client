@@ -1,188 +1,210 @@
-@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;500&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;500&display=swap");
 
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 #cover-spin {
-    position: fixed;
-    height: 100vh;
-    width: 100%;
-    left: 0;
-    right: 0;
-    top: 0;
-    bottom: 0;
-    background-color: rgba(237, 237, 237, 0.7);
-    z-index: 9999;
+  position: fixed;
+  height: 100vh;
+  width: 100%;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  background-color: rgba(237, 237, 237, 0.7);
+  z-index: 9999;
 }
 
 .sk-cube-grid {
-    width: 40px;
-    height: 40px;
-    margin: 100px auto;
+  width: 40px;
+  height: 40px;
+  margin: 100px auto;
 }
 
 .sk-cube-grid .sk-cube {
-    width: 33%;
-    height: 33%;
-    background-color: rgba(92, 85, 185, 0.7);
-    float: left;
-    -webkit-animation: sk-cubeGridScaleDelay 1.3s infinite ease-in-out;
-    animation: sk-cubeGridScaleDelay 1.3s infinite ease-in-out;
+  width: 33%;
+  height: 33%;
+  background-color: rgba(92, 85, 185, 0.7);
+  float: left;
+  -webkit-animation: sk-cubeGridScaleDelay 1.3s infinite ease-in-out;
+  animation: sk-cubeGridScaleDelay 1.3s infinite ease-in-out;
 }
 
 .sk-cube-grid .sk-cube1 {
-    -webkit-animation-delay: 0.2s;
-    animation-delay: 0.2s;
+  -webkit-animation-delay: 0.2s;
+  animation-delay: 0.2s;
 }
 
 .sk-cube-grid .sk-cube2 {
-    -webkit-animation-delay: 0.3s;
-    animation-delay: 0.3s;
+  -webkit-animation-delay: 0.3s;
+  animation-delay: 0.3s;
 }
 
 .sk-cube-grid .sk-cube3 {
-    -webkit-animation-delay: 0.4s;
-    animation-delay: 0.4s;
+  -webkit-animation-delay: 0.4s;
+  animation-delay: 0.4s;
 }
 
 .sk-cube-grid .sk-cube4 {
-    -webkit-animation-delay: 0.1s;
-    animation-delay: 0.1s;
+  -webkit-animation-delay: 0.1s;
+  animation-delay: 0.1s;
 }
 
 .sk-cube-grid .sk-cube5 {
-    -webkit-animation-delay: 0.2s;
-    animation-delay: 0.2s;
+  -webkit-animation-delay: 0.2s;
+  animation-delay: 0.2s;
 }
 
 .sk-cube-grid .sk-cube6 {
-    -webkit-animation-delay: 0.3s;
-    animation-delay: 0.3s;
+  -webkit-animation-delay: 0.3s;
+  animation-delay: 0.3s;
 }
 
 .sk-cube-grid .sk-cube7 {
-    -webkit-animation-delay: 0s;
-    animation-delay: 0s;
+  -webkit-animation-delay: 0s;
+  animation-delay: 0s;
 }
 
 .sk-cube-grid .sk-cube8 {
-    -webkit-animation-delay: 0.1s;
-    animation-delay: 0.1s;
+  -webkit-animation-delay: 0.1s;
+  animation-delay: 0.1s;
 }
 
 .sk-cube-grid .sk-cube9 {
-    -webkit-animation-delay: 0.2s;
-    animation-delay: 0.2s;
+  -webkit-animation-delay: 0.2s;
+  animation-delay: 0.2s;
 }
 
 @-webkit-keyframes sk-cubeGridScaleDelay {
+  0%,
+  70%,
+  100% {
+    -webkit-transform: scale3D(1, 1, 1);
+    transform: scale3D(1, 1, 1);
+  }
 
-    0%,
-    70%,
-    100% {
-        -webkit-transform: scale3D(1, 1, 1);
-        transform: scale3D(1, 1, 1);
-    }
-
-    35% {
-        -webkit-transform: scale3D(0, 0, 1);
-        transform: scale3D(0, 0, 1);
-    }
+  35% {
+    -webkit-transform: scale3D(0, 0, 1);
+    transform: scale3D(0, 0, 1);
+  }
 }
 
 @keyframes sk-cubeGridScaleDelay {
+  0%,
+  70%,
+  100% {
+    -webkit-transform: scale3D(1, 1, 1);
+    transform: scale3D(1, 1, 1);
+  }
 
-    0%,
-    70%,
-    100% {
-        -webkit-transform: scale3D(1, 1, 1);
-        transform: scale3D(1, 1, 1);
-    }
-
-    35% {
-        -webkit-transform: scale3D(0, 0, 1);
-        transform: scale3D(0, 0, 1);
-    }
+  35% {
+    -webkit-transform: scale3D(0, 0, 1);
+    transform: scale3D(0, 0, 1);
+  }
 }
 
 .loader {
-    width: 30px;
-    height: 30px;
-    border: 5px dotted #FFF;
-    border-radius: 50%;
-    display: inline-block;
-    position: relative;
-    box-sizing: border-box;
-    animation: rotation 2s linear infinite;
+  width: 30px;
+  height: 30px;
+  border: 5px dotted #fff;
+  border-radius: 50%;
+  display: inline-block;
+  position: relative;
+  box-sizing: border-box;
+  animation: rotation 2s linear infinite;
 }
 
 @keyframes rotation {
-    0% {
-        transform: rotate(0deg);
-    }
+  0% {
+    transform: rotate(0deg);
+  }
 
-    100% {
-        transform: rotate(360deg);
-    }
+  100% {
+    transform: rotate(360deg);
+  }
 }
 
 select:hover option:hover {
-    background-color: rgb(0, 0, 0);
+  background-color: rgb(0, 0, 0);
 }
 
 .card,
 .invoice {
-    position: relative;
-    overflow: hidden;
+  position: relative;
+  overflow: hidden;
 }
 
 .card::before,
 .invoice::before {
-    content: '';
-    background-color: #ffffff1e;
-    position: absolute;
-    width: 91px;
-    height: 92px;
-    top: -20px;
-    border: 1px solid #ffffff12;
-    right: -20px;
-    border-radius: 50%;
+  content: "";
+  background-color: #ffffff1e;
+  position: absolute;
+  width: 91px;
+  height: 92px;
+  top: -20px;
+  border: 1px solid #ffffff12;
+  right: -20px;
+  border-radius: 50%;
 }
 
 .card::after,
 .invoice::after {
-    content: '';
-    background-color: #ffffff1e;
-    position: absolute;
-    width: 150px;
-    height: 150px;
-    top: 20px;
-    right: -20px;
-    border-radius: 50%;
-    border: 1px solid #ffffff12;
+  content: "";
+  background-color: #ffffff1e;
+  position: absolute;
+  width: 150px;
+  height: 150px;
+  top: 20px;
+  right: -20px;
+  border-radius: 50%;
+  border: 1px solid #ffffff12;
 }
 
 .card:first-child {
-    background: linear-gradient(45deg, #5145a0, #a97ff8);
+  background: linear-gradient(45deg, #5145a0, #a97ff8);
 }
 
 .card:nth-child(2) {
-    background: linear-gradient(45deg, #3ec6ff, #081576);
+  background: linear-gradient(45deg, #3ec6ff, #081576);
 }
 
 .card:last-child {
-    background: linear-gradient(45deg, #f1a056, #eb2f2f);
+  background: linear-gradient(45deg, #f1a056, #eb2f2f);
 }
 
 .success {
-    background: linear-gradient(70deg, #00ff4f5c, #006a2e);
+  background: linear-gradient(70deg, #00ff4f5c, #006a2e);
 }
 
 .pending {
-    background: linear-gradient(70deg, #ffb66c, #ff6c00);
+  background: linear-gradient(70deg, #ffb66c, #ff6c00);
 }
 
-.font{
-    font-family: 'Poppins', sans-serif;
+.font {
+  font-family: "Poppins", sans-serif;
 }
+
+.ag-header-viewport {
+  background-color: rgb(
+    90 81 190 / var(--tw-bg-opacity)
+  ); /* Specify your desired background color */
+  color: white; /* Optional: Text color */
+  &:hover {
+    background-color: rgb(90 81 190 / var(--tw-bg-opacity));
+  }
+}
+.custom-header {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+}
+.centered-cell {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+/* .ag-cell{
+  text-align: center;
+} */
