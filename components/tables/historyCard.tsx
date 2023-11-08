@@ -29,7 +29,7 @@ const HistoryCard = ({ invoiceData }: { invoiceData: invoiceType }) => {
   const [isAlertOpen, setAlertOpen] = useState<boolean>(false);
   const [invoiceNumber, setInvoiceNumber] = useState<string>("");
   const [status, setStatus] = useState<string>(invoiceData?.status);
-  const [date, setDate] = useState<Date | null>(null);
+  const [date, setDate] = useState<Date | null>();
   const [dueDate, setDueDate] = useState<Date | null>(null);
   const dispatch = useDispatch<AppDispatch>();
   const [isUpdateOpen, onUpdateOpen] = useState<boolean>(false);

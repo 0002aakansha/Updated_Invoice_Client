@@ -1,5 +1,6 @@
 import { AppState } from "@/components/store/store";
 import { invoiceStateType } from "@/types/types";
+import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 
 const Total = () => {
@@ -7,11 +8,34 @@ const Total = () => {
     (state) => state.invoice
   ) as invoiceStateType;
 
+  const [discount, setDiscount] = useState(0);
+  const [discountedSubtotal, setDiscountedSubtotal] = useState(subtotal);
+  
+  useEffect(() => {
+   
+    const discountValue = (discount / 100) * subtotal;
+    const updatedDiscountedSubtotal = subtotal - discountValue;
+    setDiscountedSubtotal(updatedDiscountedSubtotal);
+
+  }, [discount, subtotal]);
+  
+
   return (
     <div className="">
       <div className="flex justify-between space-x-12 font-semibold">
+        <h1>DISCOUNT</h1>
+        <input type="number" 
+               placeholder="0%" 
+               style={{ width: '2em', textAlign : 'end' }}
+               className="border  rounded-md focus:border-gray-400 outline-none p-1"
+               value={discount}
+               onChange={(e: any) => setDiscount(e.target.value)}
+        />
+      </div>
+      <div className="flex justify-between space-x-12 font-semibold">
         <h1>SUBTOTAL</h1>
-        <h5>{subtotal}</h5>
+        {/* <h5>{subtotal}</h5> */}
+        <h5>{discountedSubtotal.toFixed(2)}</h5>
       </div>
       {typeof GST === 'object' ? (
         <>

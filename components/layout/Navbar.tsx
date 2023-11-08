@@ -16,6 +16,20 @@ const Navbar = () => {
         getCookie() ? setAuth(true) : setAuth(false)
     }, [])
 
+    const getDynamicText = () => {
+        const currentRoute = router.asPath;
+        switch (currentRoute) {
+          case '/dashboard':
+            return 'Welcome to your dashboard';
+          case '/generateInvoice':
+            return 'Generate Invoice';
+          case '/history':
+            return 'Invoice History';
+          default:
+            return ''; 
+        }
+      };
+
     return (
         <>
             <header className='p-4 w-full bg-white'>
@@ -23,7 +37,9 @@ const Navbar = () => {
                     {
                         auth ? (
                             <ul className='flex justify-end items-center'>
-                                
+                                <li className='font-semibold mr-80 text-md text-[#5a51be]' style={{marginRight : '30rem'}}>
+                                   {getDynamicText()}
+                                </li>
                                 <li className='font-semibold mx-3 text-md underline text-slate-700'>{uEmail}</li>
                                 <li className='font-bolder mx-3 text-lg cursor-pointer'>
                                     <Image src="/images/logout.png" alt="" width={100} height={100} className='w-6' onClick={() => onClose(true)} />
