@@ -3,6 +3,7 @@ import {
   PdfPreviewProps,
   clientStateType,
   dataProps,
+  invoiceHistoryType,
   invoiceStateType,
   userType,
 } from "@/types/types";
@@ -18,17 +19,20 @@ import {
   ModalOverlay,
 } from "@chakra-ui/react";
 import PdfPreview from "../PdfPreview/PdfPreview";
-import {
+import invoice, {
   setDate,
   setDueDate,
   setInvoiceNumber,
+  setInvoiceType,
   updatedChecked,
 } from "@/components/store/invoice";
 import toast from "react-hot-toast";
 import { getClientById } from "@/components/store/client";
 import { postInvoiceHistory } from "@/components/store/invoiceHistory";
+import { useRouter } from "next/router";
 
 const GeneratePDF = () => {
+  const router = useRouter();
   const [pdfBlob, setPdfBlob] = useState<Blob | MediaSource>();
   const [isOpen, onClose] = useState(false);
   const [checkedInvoice, setCheckedInvoice] = useState<
@@ -51,6 +55,9 @@ const GeneratePDF = () => {
   const { clientById } = useSelector<AppState>(
     (state) => state.client
   ) as clientStateType;
+  const { invoice } = useSelector<AppState>(
+    (state) => state.history
+  ) as invoiceHistoryType;
 
   const dispatch = useDispatch<AppDispatch>();
 
@@ -83,6 +90,7 @@ const GeneratePDF = () => {
         name: clientById?.name,
         gstin: clientById?.gstin,
         address: clientById?.address,
+        active: true,
       },
       total: {
         subtotal,
@@ -114,6 +122,7 @@ const GeneratePDF = () => {
   const generatePDF = async () => {
     if (invoiceNumber === "" || !Date || !DueDate)
       return toast.error("All fileds are required!");
+
     if (!checkedInvoice || checkedInvoice.length === 0) {
       return toast.error(
         "No rows Selected. Please select records to generate an invoice."
@@ -158,8 +167,9 @@ const GeneratePDF = () => {
               subtotal,
               GST,
               GrandTotal,
-              status: "pending",
+              status: "raised",
               invoiceType,
+              active: true,
             })
           )
         : dispatch(
@@ -182,8 +192,9 @@ const GeneratePDF = () => {
               subtotal,
               GST,
               GrandTotal,
-              status: "pending",
+              status: "raised",
               invoiceType,
+              active: true,
             })
           );
 
@@ -194,6 +205,8 @@ const GeneratePDF = () => {
       dispatch(setInvoiceNumber(""));
       dispatch(setDate(new window.Date()));
       dispatch(setDueDate(new window.Date()));
+      dispatch(setInvoiceType(''))
+      router.push("/history");
     }
     onClose(false);
   };

@@ -11,6 +11,7 @@ const initialState: invoiceStateType = {
   subtotal: 0.0,
   GST: 0,
   GrandTotal: 0.0,
+  active: true,
 };
 
 const invoiceslice = createSlice({
@@ -82,41 +83,65 @@ const invoiceslice = createSlice({
 
         state.detailedProject[projectIndx] = {
           ...payload,
-          amount: amount.toFixed(3),
+          amount: amount.toFixed(2),
         };
       }
     },
-    calculateSubtotal(state ) {
-      const istrue = state.detailedProject.filter(
-        (project) => project.checked === true
-      );
+    calculateSubtotal(
+      state,
+      { payload }: { payload?: { flag: boolean; discount: number } }
+    ) {
+      if (payload?.flag) {
+        state.subtotal = +payload.discount.toFixed(2);
+      } else {
+        const istrue = state.detailedProject.filter(
+          (project) => project.checked === true
+        );
 
-      const data = istrue.reduce(
-        (value, project) => (value += Number(project.amount)),
-        0
-      );
-      state.subtotal = +data.toFixed(3);
+        const data = istrue.reduce(
+          (value, project) => (value += Number(project.amount)),
+          0
+        );
+        state.subtotal = +data.toFixed(2);
+      }
     },
     calculateGST(
       state,
       { payload }: { payload: { userState: string; clientState: string } }
     ) {
-      if (
-        payload?.userState?.toLowerCase() ===
-        payload?.clientState?.toLowerCase()
-      ) {
-        const CGST = +((state.subtotal * 9) / 100).toFixed(3);
-        const SGST = +((state.subtotal * 9) / 100).toFixed(3);
+      if (payload.userState && payload.clientState) {
+        if (
+          payload?.userState?.toLowerCase() ===
+          payload?.clientState?.toLowerCase()
+        ) {
+          const CGST = +((state.subtotal * 9) / 100).toFixed(2);
+          const SGST = +((state.subtotal * 9) / 100).toFixed(2);
 
-        state.GST = { CGST, SGST };
-        state.GrandTotal = +(
-          state.subtotal +
-          state.GST.CGST +
-          state.GST.SGST
-        ).toFixed(3);
+          state.GST = { CGST, SGST };
+          state.GrandTotal = +(
+            state.subtotal +
+            state.GST.CGST +
+            state.GST.SGST
+          ).toFixed(3);
+        } else {
+          state.GST = +((state.subtotal * 18) / 100).toFixed(2);
+          state.GrandTotal = +(state.subtotal + state.GST).toFixed(2);
+        }
       } else {
-        state.GST = +((state.subtotal * 18) / 100).toFixed(3);
-        state.GrandTotal = +(state.subtotal + state.GST).toFixed(3);
+        if (typeof state.GST === "object") {
+          const CGST = +((state.subtotal * 9) / 100).toFixed(2);
+          const SGST = +((state.subtotal * 9) / 100).toFixed(2);
+
+          state.GST = { CGST, SGST };
+          state.GrandTotal = +(
+            state.subtotal +
+            state.GST.CGST +
+            state.GST.SGST
+          ).toFixed(3);
+        } else {
+          state.GST = +((state.subtotal * 18) / 100).toFixed(2);
+          state.GrandTotal = +(state.subtotal + state.GST).toFixed(2);
+        }
       }
     },
     setTotalToZero(state) {

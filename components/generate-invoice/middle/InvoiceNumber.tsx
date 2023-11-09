@@ -3,28 +3,59 @@ import {
   setDueDate,
   setInvoiceNumber,
 } from "@/components/store/invoice";
+import { getAllInvoice } from "@/components/store/invoiceHistory";
 import { AppDispatch, AppState } from "@/components/store/store";
-import { invoiceStateType } from "@/types/types";
+import { invoiceHistoryType, invoiceStateType } from "@/types/types";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
 const InvoiceNumber = () => {
-  const { Date: currentDate, DueDate, invoiceNumber } = useSelector<AppState>(
+  const { Date: currentDate, DueDate } = useSelector<AppState>(
     (state) => state.invoice
   ) as invoiceStateType;
+  const { invoice } = useSelector<AppState>(
+    (state) => state.history
+  ) as invoiceHistoryType;
   const dispatch = useDispatch<AppDispatch>();
 
   const [date, setdate] = useState<Date | null>(currentDate);
   const [dueDate, setdueDate] = useState<Date | null>(DueDate);
+  const [lastInvoiceNumber, setLastInvoiceNumber] = useState<number | string>("");
+  const [error, setError] = useState<string>("");
+
+  useEffect(() => {
+    (async function () {
+      await dispatch(getAllInvoice());
+    })();
+    invoice.length !== 0
+      ? setLastInvoiceNumber(
+          `${invoice[invoice.length - 1]?.invoiceNumber
+            .toString()
+            .slice(0, 4)}` +
+            (+invoice[invoice.length - 1]?.invoiceNumber.toString().slice(4) +
+              1)
+        )
+      : setLastInvoiceNumber("");
+  }, []);
 
   useEffect(() => {
     setdate(new Date());
     setdueDate(new Date());
 
-    dispatch(setInvoiceNumber(Math.floor(100000 + Math.random() * 900000)));
+    if (
+      invoice.filter((invoice) => +invoice.invoiceNumber === lastInvoiceNumber)
+        .length === 0
+    ) {
+      dispatch(setInvoiceNumber(lastInvoiceNumber));
+      setError("");
+    } else {
+      setError("Invoice Number is already in use!");
+      dispatch(setInvoiceNumber(""));
+      return;
+    }
     dispatch(setDate(date));
     dispatch(setDueDate(dueDate));
-  }, []);
+  }, [invoice, lastInvoiceNumber]);
 
   const handleDateChange = (selectedDate: Date) => {
     const newDueDate = new Date(selectedDate);
@@ -51,14 +82,22 @@ const InvoiceNumber = () => {
           >
             Invoice Number:{" "}
           </label>
-          <input
-            type="text"
-            id="invoice"
-            className="bg-transparent outline-none border px-2 border-stone-300 p-1 rounded-sm w-1/2 xs:text-xs sm:text-sm md:text-md"
-            value={invoiceNumber}
-            disabled
-            maxLength={8}
-          />
+          <div className="w-1/2">
+            <input
+              type="text"
+              id="invoice"
+              className="bg-transparent outline-none border px-2 border-stone-300 p-1 rounded-sm xs:text-xs w-full sm:text-sm md:text-md"
+              value={lastInvoiceNumber}
+              onChange={(e) => {
+                setLastInvoiceNumber(+e.target.value);
+              }}
+            />
+            {error && (
+              <p className="text-red-500 text-[10pt] py-1 px-2 font-semibold">
+                {error}
+              </p>
+            )}
+          </div>
         </div>
         <div className="my-2 p-1 rounded-sm flex justify-between">
           <label
@@ -103,4 +142,3 @@ const InvoiceNumber = () => {
 };
 
 export default InvoiceNumber;
-

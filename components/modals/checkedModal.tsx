@@ -27,6 +27,7 @@ import {
   updateDetailedProjectOnChecked,
   updatedChecked,
 } from "../store/invoice";
+import project from "../store/project";
 
 const CheckedModal = ({ uniqueKey }: { uniqueKey: string }) => {
   const { invoiceType, isChecked, detailedProject } = useSelector<AppState>(
@@ -47,7 +48,7 @@ const CheckedModal = ({ uniqueKey }: { uniqueKey: string }) => {
   const [period, setPeriod] = useState("");
   const [workingDays, setworkingDays] = useState("");
   const [totalWorkingDays, settotalworkingDays] = useState("");
-  const [rate, setRate] = useState<rateType>({ currency: "INR", rate: 0 });
+  const [rate, setRate] = useState<rateType | any>({ currency: "INR", rate: 0 });
   const [hours, sethours] = useState<number>(0.0);
   const [conversionRate, setConversionRate] = useState<number>();
   const [indx, setIndx] = useState<number>();
@@ -62,14 +63,15 @@ const CheckedModal = ({ uniqueKey }: { uniqueKey: string }) => {
     setDescription(project?.description || "")
     setworkingDays(project?.workingDays || "");
     settotalworkingDays(project?.totalWorkingDays || "");
-    //setRate remaining here
+    setRate(project?.rate)
     sethours(project?.hours || 0.0);
-    setConversionRate(project?.conversionRate || 0.0)
+    setConversionRate(project?.conversionRate)
   }, [detailedProject, uniqueKey]);
 
   const submitHandler = (e: FormEvent) => {
     e.preventDefault();
-
+    console.log(conversionRate);
+    
     const project = detailedProject.filter(
       (project) => project._id === uniqueKey
     )[0] as dataProps;
@@ -91,7 +93,7 @@ const CheckedModal = ({ uniqueKey }: { uniqueKey: string }) => {
               totalWorkingDays,
               amount: "0,0.0",
               rate: project.rate,
-              conversionRate: project.conversionRate,
+              conversionRate,
               projectBelongsTo: project.projectBelongsTo,
             })
           );
@@ -126,7 +128,7 @@ const CheckedModal = ({ uniqueKey }: { uniqueKey: string }) => {
             description,
             hours: hours.toString(),
             rate: project.rate,
-            conversionRate: project.conversionRate,
+            conversionRate,
           })
         );
         dispatch(calculateSubtotal());
@@ -234,20 +236,20 @@ const CheckedModal = ({ uniqueKey }: { uniqueKey: string }) => {
                     className="border-2 mt-2 px-4 py-2 rounded-sm outline-none"
                   />
                 </div>
-                {/* <div className="flex flex-col my-2">
+                <div className="flex flex-col my-2">
                   <label htmlFor="" className="font-semibold text-lg">
                     Rate <span className="text-red-500">*</span>
                   </label>
                   <input
                     type="text"
-                    value={description}
+                    value={rate?.rate}
                     autoFocus
-                    onChange={(e: any) => setDescription(e.target.value)}
+                    onChange={(e: any) => setRate({...rate, rate: +e.target.value})}
                     required
                     placeholder=""
                     className="border-2 mt-2 px-4 py-2 rounded-sm outline-none"
                   />
-                </div> */}
+                </div>
                 <div className="flex flex-col my-2">
                   <label htmlFor="" className="font-semibold text-lg">
                     Hours <span className="text-red-500">*</span>
@@ -273,8 +275,9 @@ const CheckedModal = ({ uniqueKey }: { uniqueKey: string }) => {
                     autoFocus
                     onChange={(e: any) => setConversionRate(e.target.value)}
                     required
+                    disabled={rate?.currency !== 'INR' ? false : true }
                     placeholder="0.0"
-                    className="border-2 mt-2 px-4 py-2 rounded-sm outline-none"
+                    className={`border-2 mt-2 px-4 py-2 rounded-sm outline-none ${rate?.currency !== 'INR' ? 'cursor-text': 'cursor-not-allowed'}`}
                   />
                 </div>
               </>

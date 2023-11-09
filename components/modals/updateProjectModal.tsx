@@ -17,7 +17,7 @@ import {
   rateType,
 } from "@/types/types";
 import { FormEvent, useEffect, useState } from "react";
-import { UpdateProject, setUpdate } from "../store/project";
+import project, { UpdateProject, setUpdate } from "../store/project";
 import toast from "react-hot-toast";
 
 const UpdateProjectModal = ({
@@ -52,7 +52,7 @@ const UpdateProjectModal = ({
     setConversionRate(project?.conversionRate);
     setProjectAmount(project?.projectAmount);
     setBelongsTo(project?.projectBelongsTo?._id || project?.projectBelongsTo);
-    setProjectCycle(project?.projectCycle)
+    setProjectCycle(project?.projectCycle);
 
     if (error.message !== "") toast.error(error.message);
     else if (updated) {
@@ -80,7 +80,7 @@ const UpdateProjectModal = ({
               rate.currency !== "INR" ? conversionRate : undefined,
             projectAmount,
             projectCycle,
-            active: true
+            active: true,
           },
         })
       );
@@ -91,7 +91,7 @@ const UpdateProjectModal = ({
 
   return (
     <>
-      <Modal isOpen={isOpen} onClose={() => onClose(false)}>
+      <Modal isOpen={isOpen} onClose={() => onClose(false)} size='2xl'>
         <ModalOverlay />
         <ModalContent className="mt-4 w-full">
           <ModalHeader>Update Project!</ModalHeader>
@@ -132,22 +132,24 @@ const UpdateProjectModal = ({
                   <option value="hourly">Hourly</option>
                 </select>
               </div>
-              <div className="flex flex-col my-2">
-                <label
-                  htmlFor="name"
-                  className="font-semibold tracking-wide mb-2"
-                >
-                  Project Amount
-                </label>
-                <input
-                  type="number"
-                  step="0.01"
-                  placeholder="Project Amount"
-                  value={projectAmount}
-                  className="outline-none border-2 px-4 py-2 rounded-md"
-                  onChange={(e) => setProjectAmount(+e.target.value)}
-                />
-              </div>
+              {projectAmount && (
+                <div className="flex flex-col my-2">
+                  <label
+                    htmlFor="name"
+                    className="font-semibold tracking-wide mb-2"
+                  >
+                    Project Amount
+                  </label>
+                  <input
+                    type="number"
+                    step="0.01"
+                    placeholder="Project Amount"
+                    value={projectAmount}
+                    className="outline-none border-2 px-4 py-2 rounded-md"
+                    onChange={(e) => setProjectAmount(+e.target.value)}
+                  />
+                </div>
+              )}
               <div className="flex flex-col my-2">
                 <label
                   htmlFor="name"

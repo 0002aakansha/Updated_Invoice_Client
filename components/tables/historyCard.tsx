@@ -1,4 +1,8 @@
-import { PdfPreviewProps, invoiceType } from "@/types/types";
+import {
+  PdfPreviewProps,
+  invoiceHistoryType,
+  invoiceType,
+} from "@/types/types";
 import { GrRotateRight } from "react-icons/gr";
 import { AiOutlineDelete } from "react-icons/ai";
 import { TbEditCircle } from "react-icons/tb";
@@ -6,8 +10,8 @@ import PdfPreview from "../generate-invoice/PdfPreview/PdfPreview";
 import { FormEvent, useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import { PDFViewer, pdf } from "@react-pdf/renderer";
-import { useDispatch } from "react-redux";
-import { AppDispatch } from "../store/store";
+import { useDispatch, useSelector } from "react-redux";
+import { AppDispatch, AppState } from "../store/store";
 import {
   Button,
   Modal,
@@ -20,6 +24,7 @@ import { postInvoiceHistory, updateInvoice } from "../store/invoiceHistory";
 import AlertDialogExample from "../alerts/AlertDialog";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCircle } from "@fortawesome/free-solid-svg-icons";
+import { setInvoiceNumber } from "../store/invoice";
 
 const HistoryCard = ({ invoiceData }: { invoiceData: invoiceType }) => {
   const [pdfBlob, setPdfBlob] = useState<Blob | MediaSource>();
@@ -27,14 +32,52 @@ const HistoryCard = ({ invoiceData }: { invoiceData: invoiceType }) => {
   const [isPreviewOpen, onPreviewClose] = useState(false);
   const [isEditOpen, onEditClose] = useState(false);
   const [isAlertOpen, setAlertOpen] = useState<boolean>(false);
-  const [invoiceNumber, setInvoiceNumber] = useState<string>("");
   const [status, setStatus] = useState<string>(invoiceData?.status);
   const [date, setDate] = useState<Date | null>();
   const [dueDate, setDueDate] = useState<Date | null>(null);
   const dispatch = useDispatch<AppDispatch>();
   const [isUpdateOpen, onUpdateOpen] = useState<boolean>(false);
 
+  // invoice number
+  const { invoice } = useSelector<AppState>(
+    (state) => state.history
+  ) as invoiceHistoryType;
+  const [error, setError] = useState<string>("");
+  const [lastInvoiceNumber, setLastInvoiceNumber] = useState<number | string>(
+    ""
+  );
+
   const today = new Date().toISOString().split("T")[0];
+
+  useEffect(() => {
+    invoice.length !== 0
+      ? setLastInvoiceNumber(
+          `${invoice[invoice.length - 1]?.invoiceNumber
+            .toString()
+            .slice(0, 4)}` +
+            (
+              +invoice[invoice.length - 1]?.invoiceNumber.toString().slice(4) +
+              1
+            )
+              .toString()
+              .padStart(2, '0')
+        )
+      : setLastInvoiceNumber("");
+  }, [invoice]);
+
+  useEffect(() => {
+    if (
+      invoice.filter((invoice) => +invoice.invoiceNumber === +lastInvoiceNumber)
+        .length === 0
+    ) {
+      dispatch(setInvoiceNumber(lastInvoiceNumber));
+      setError("");
+    } else {
+      setError("Invoice Number is already in use!");
+      dispatch(setInvoiceNumber(""));
+      return;
+    }
+  }, [invoice, lastInvoiceNumber]);
 
   useEffect(() => {
     if (
@@ -47,7 +90,7 @@ const HistoryCard = ({ invoiceData }: { invoiceData: invoiceType }) => {
         invoice: {
           invoice: invoiceData?.projects,
           invoiceType: invoiceData?.invoiceType,
-          invoiceNumber: invoiceNumber,
+          invoiceNumber: lastInvoiceNumber,
           Date: date,
           DueDate: dueDate,
         },
@@ -85,13 +128,13 @@ const HistoryCard = ({ invoiceData }: { invoiceData: invoiceType }) => {
     invoiceData?.invoiceType,
     invoiceData?.projects,
     invoiceData?.subtotal,
-    invoiceNumber,
+    lastInvoiceNumber,
   ]);
 
   const generatePDF = async (e: FormEvent) => {
     e.preventDefault();
 
-    if (invoiceNumber !== "" && date && dueDate) {
+    if (lastInvoiceNumber !== "" && date && dueDate) {
       onPreviewClose(true);
       onEditClose(false);
 
@@ -115,7 +158,7 @@ const HistoryCard = ({ invoiceData }: { invoiceData: invoiceType }) => {
     dispatch(
       postInvoiceHistory({
         createdFor: invoiceData?.createdFor?._id,
-        invoiceNumber,
+        invoiceNumber: lastInvoiceNumber.toString(),
         createdOn: date?.toLocaleDateString("en-GB"),
         dueDate: dueDate?.toLocaleDateString("en-GB"),
         projects: invoiceData?.projects?.map(
@@ -142,6 +185,7 @@ const HistoryCard = ({ invoiceData }: { invoiceData: invoiceType }) => {
         GrandTotal: invoiceData?.GrandTotal,
         status: "raised",
         invoiceType: invoiceData?.invoiceType,
+        active: true,
       })
     );
     onPreviewClose(false);
@@ -190,19 +234,19 @@ const HistoryCard = ({ invoiceData }: { invoiceData: invoiceType }) => {
           <span className="ms-1">{invoiceData?.status}</span>
         </td>
         <td className="my-2 px-4 py-4 text-center capitalize flex justify-around">
-          <span className="block">
+          <span className="block" title="Repeat">
             <GrRotateRight
               className="text-xl text-slate-700 cursor-pointer"
               onClick={() => onEditClose(true)}
             />
           </span>
-          <span>
+          <span title="Edit">
             <TbEditCircle
               className="text-xl text-slate-500 cursor-pointer"
               onClick={() => onUpdateOpen(true)}
             />
           </span>
-          <span className="block">
+          <span className="block" title="Remove">
             <AiOutlineDelete
               className="text-xl text-red-500 cursor-pointer"
               onClick={() => setAlertOpen(true)}
@@ -220,13 +264,21 @@ const HistoryCard = ({ invoiceData }: { invoiceData: invoiceType }) => {
                   <label htmlFor="" className="font-semibold text-lg">
                     Invoice Number
                   </label>
-                  <input
-                    type="text"
-                    placeholder="Invoice Number"
-                    className="border-2 mt-2 px-4 py-2 rounded-sm outline-none"
-                    maxLength={8}
-                    onChange={(e) => setInvoiceNumber(e.target.value)}
-                  />
+                  <div className="flex flex-col">
+                    <input
+                      type="text"
+                      placeholder="Invoice Number"
+                      className="border-2 mt-2 px-4 py-2 rounded-sm outline-none"
+                      maxLength={8}
+                      value={lastInvoiceNumber}
+                      onChange={(e) => setLastInvoiceNumber(e.target.value)}
+                    />
+                    {error && (
+                      <p className="text-red-500 text-[10pt] py-1 px-2 font-semibold">
+                        {error}
+                      </p>
+                    )}
+                  </div>
                 </div>
                 <div className="flex flex-col my-2">
                   <label htmlFor="" className="font-semibold text-lg">
@@ -361,7 +413,7 @@ const HistoryCard = ({ invoiceData }: { invoiceData: invoiceType }) => {
       )}
       {isAlertOpen && (
         <AlertDialogExample
-          _id={invoiceData?._id || ''}
+          _id={invoiceData?._id || ""}
           isOpen={isAlertOpen}
           onClose={setAlertOpen}
           filter="invoiceDelete"

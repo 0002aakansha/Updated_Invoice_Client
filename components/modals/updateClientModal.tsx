@@ -43,7 +43,7 @@ const UpdateClientModal = ({
   const submitHandler = async (e: FormEvent) => {
     e.preventDefault();
 
-    await dispatch(UpdateClient({ _id, name, gstin, address }));
+    await dispatch(UpdateClient({ _id, name, gstin, address, active: true }));
 
     onClose(false);
   };

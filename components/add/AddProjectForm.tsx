@@ -13,7 +13,7 @@ const AddProjectForm = () => {
   const [projectType, setProjectType] = useState<string>("monthly");
   const [conversionRate, setConversionRate] = useState<number>();
   const [projectAmount, setProjectAmount] = useState<number>();
-  const [projectCycle, setProjectCycle] = useState('')
+  const [projectCycle, setProjectCycle] = useState("");
   const [BelongsTo, setBelongsTo] = useState("");
   const dispatch = useDispatch<AppDispatch>();
   const router = useRouter();
@@ -29,7 +29,6 @@ const AddProjectForm = () => {
   const calculateConvertedAmount = () => {
     if (rate.currency === "USD" || rate.currency === "POUND") {
       if (conversionRate !== undefined && projectAmount !== undefined) {
-
         return +(projectAmount * conversionRate).toFixed(2);
       }
     }
@@ -49,7 +48,7 @@ const AddProjectForm = () => {
       conversionRate,
       amount: convertedAmount,
       companyId: BelongsTo,
-      active: true
+      active: true,
     };
     await dispatch(createProject(projectData));
 
@@ -89,7 +88,11 @@ const AddProjectForm = () => {
   const handleProjectTypeChange = (newProjectType: string) => {
     setProjectType(newProjectType);
 
-    if (newProjectType === "monthly" || newProjectType === "hourly" || newProjectType === "fixedbudget") {
+    if (
+      newProjectType === "monthly" ||
+      newProjectType === "hourly" ||
+      newProjectType === "fixedbudget"
+    ) {
       setRate({ currency: "INR", rate: 0 });
     }
   };
@@ -144,7 +147,7 @@ const AddProjectForm = () => {
               >
                 <option value="monthly">Monthly</option>
                 <option value="hourly">Hourly</option>
-                <option value='fixedbudget'>Fixed Budget</option>
+                <option value="fixedbudget">Fixed Budget</option>
               </select>
             </div>
 
@@ -175,32 +178,29 @@ const AddProjectForm = () => {
                 htmlFor="name"
                 className="font-semibold tracking-wide mb-2 xs:text-xs sm:text-sm md:text-md"
               >
-
                 {projectType === "monthly"
                   ? `Monthly Rate (${rate.currency})`
                   : projectType === "hourly"
-                    ? `Hourly Rate (${rate.currency})`
-                    : `Project Amount (${rate.currency})`
-                }
-              
+                  ? `Hourly Rate (${rate.currency})`
+                  : `Project Amount (${rate.currency})`}
               </label>
               <input
                 type="number"
                 step="0.01"
                 placeholder={
-                  projectType === 'monthly'
-                  ? `Monthly Rate (${rate.currency})`
-                  : projectType === 'hourly'
-                  ? `Hourly Rate (${rate.currency})`
-                  : `Project Amount (${rate.currency})`
+                  projectType === "monthly"
+                    ? `Monthly Rate (${rate.currency})`
+                    : projectType === "hourly"
+                    ? `Hourly Rate (${rate.currency})`
+                    : `Project Amount (${rate.currency})`
                 }
                 className="outline-none border-2 px-4 py-2 rounded-md xs:text-xs sm:text-sm md:text-md"
                 value={projectAmount === 0 ? "" : projectAmount}
                 onChange={(e) => {
                   const input = e.target.value;
-                  if (input === "" || !isNaN(+input)) {
-                    setProjectAmount(input === "" ? 0 : parseFloat(input));
-                  }
+                  projectType === "hourly"
+                    ? setRate({ ...rate, rate: +input })
+                    : setProjectAmount(+input);
                 }}
               />
             </div>
@@ -216,7 +216,7 @@ const AddProjectForm = () => {
                 type="text"
                 step="0.01"
                 placeholder="Project Cycle"
-                className='outline-none border-2 px-4 py-2 rounded-md xs:text-xs sm:text-sm md:text-md'
+                className="outline-none border-2 px-4 py-2 rounded-md xs:text-xs sm:text-sm md:text-md"
                 value={projectCycle}
                 onChange={(e) => setProjectCycle(e.target.value)}
               />
@@ -235,10 +235,11 @@ const AddProjectForm = () => {
                 step="0.01"
                 disabled={rate.currency === "INR" ? true : false}
                 placeholder="Conversion Rate"
-                className={`outline-none border-2 px-4 py-2 rounded-md xs:text-xs sm:text-sm md:text-md  ${rate.currency === "INR"
+                className={`outline-none border-2 px-4 py-2 rounded-md xs:text-xs sm:text-sm md:text-md  ${
+                  rate.currency === "INR"
                     ? "cursor-not-allowed bg-stone-100"
                     : "cursor-text"
-                  }`}
+                }`}
                 value={conversionRate || ""}
                 onChange={(e) => {
                   const input = e.target.value;
@@ -260,11 +261,13 @@ const AddProjectForm = () => {
                 value={BelongsTo}
                 onChange={(e) => setBelongsTo(e.target.value)}
               >
-                {clients?.filter(client => client?.active === true)?.map((client) => (
-                  <option value={client?._id} key={client._id}>
-                    {client?.name.toUpperCase()}
-                  </option>
-                ))}
+                {clients
+                  ?.filter((client) => client?.active === true)
+                  ?.map((client) => (
+                    <option value={client?._id} key={client._id}>
+                      {client?.name.toUpperCase()}
+                    </option>
+                  ))}
               </select>
             </div>
           </div>

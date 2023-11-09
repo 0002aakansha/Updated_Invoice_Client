@@ -132,6 +132,7 @@ export interface invoiceStateType {
   subtotal: number;
   GST: { CGST: number; SGST: number } | number;
   GrandTotal: number;
+  active: true
 }
 
 export interface PdfPreviewProps {
@@ -176,6 +177,7 @@ export interface invoiceType {
   status: string;
   invoiceType: string;
   invoiceCreatedBy?: userType;
+  active: true
 }
 
 export interface invoiceHistoryType {
