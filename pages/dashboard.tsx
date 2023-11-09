@@ -9,15 +9,18 @@ import Cards from "@/components/cards/Cards";
 import MainTable from "@/components/tables/MainTable";
 import { fetchProjects } from "@/components/store/project";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faPlus } from "@fortawesome/free-solid-svg-icons";
+import { faPlus, faSync } from "@fortawesome/free-solid-svg-icons";
 import Link from "next/link";
 import { getAllInvoice } from "@/components/store/invoiceHistory";
+import ResetYearModal from "@/components/modals/resetYearModal";
 
 const Dashboard = () => {
   const { isLoading, error } = useSelector<AppState>(
     (state) => state.client
   ) as clientStateType;
   const dispatch = useDispatch<AppDispatch>();
+  
+  const [isResetYearOpen, setIsResetYearOpen] = useState(false);
 
   useEffect(() => {
     (async function () {
@@ -36,6 +39,15 @@ const Dashboard = () => {
           <>
             <Cards />
             <div className="flex justify-end my-8 space-x-4 mr-4">
+
+              <button className="flex items-center" onClick={() => setIsResetYearOpen(true)}>
+                <FontAwesomeIcon
+                  icon={faSync}
+                  className="bg-[#5a51be] text-white text-[1.4rem] p-3 shadow-lg rounded-[50%] font-bold mx-1 transition-all delay-100 hover:bg-[#665dc7]"
+                />
+                <span className="font-bold text-slate-800">Reset Year</span>
+              </button>
+
               <Link href="/addClient">
                 <button className="flex items-center">
                   <FontAwesomeIcon
@@ -58,6 +70,10 @@ const Dashboard = () => {
             <MainTable />
           </>
         )}
+        <ResetYearModal 
+        isOpen={isResetYearOpen}
+        onClose={() => setIsResetYearOpen(false)}
+        />
       </Layout>
     );
 };

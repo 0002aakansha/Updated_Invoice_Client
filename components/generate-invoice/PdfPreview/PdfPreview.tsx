@@ -146,6 +146,8 @@ const styles = StyleSheet.create({
   },
 });
 
+
+
 const PdfPreview = ({ data }: { data: PdfPreviewProps | any }) => {
   const [formattedInvoiceDate, setformattedInvoiceDate] = useState("");
   const [formattedDueDate, setformattedDueDate] = useState("");
@@ -160,6 +162,7 @@ const PdfPreview = ({ data }: { data: PdfPreviewProps | any }) => {
 
   return (
     <Document>
+      
       <Page size={[800, 1000]} orientation="landscape" style={styles.page}>
         <View style={styles.section}>
           {/* top */}
