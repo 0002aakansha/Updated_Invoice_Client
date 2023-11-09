@@ -16,19 +16,19 @@ const Navbar = () => {
         getCookie() ? setAuth(true) : setAuth(false)
     }, [])
 
+
     const getDynamicText = () => {
-        const currentRoute = router.asPath;
-        switch (currentRoute) {
-          case '/dashboard':
-            return 'Welcome to your dashboard';
-          case '/generateInvoice':
-            return 'Generate Invoice';
-          case '/history':
-            return 'Invoice History';
-          default:
-            return ''; 
-        }
-      };
+        
+        const currentRoute = router.asPath as keyof typeof textMap;
+        const textMap = {
+            '/dashboard': { text: 'Welcome to your dashboard!', marginRight: '39.5rem' },
+            '/generateInvoice': { text: 'Generate Invoice', marginRight: '46rem' },
+            '/history': { text: 'Invoice History', marginRight: '48rem' },
+        };
+        
+        return textMap[currentRoute] || { text: '', marginRight: '' };
+    };
+    
 
     return (
         <>
@@ -37,8 +37,8 @@ const Navbar = () => {
                     {
                         auth ? (
                             <ul className='flex justify-end items-center'>
-                                <li className='font-semibold mr-80 text-md text-[#5a51be]' style={{marginRight : '30rem'}}>
-                                   {getDynamicText()}
+                                <li className='font-semibold mr-80 text-md text-[#5a51be]' style={{ marginRight: getDynamicText().marginRight }}>
+                                    {getDynamicText().text}
                                 </li>
                                 <li className='font-semibold mx-3 text-md underline text-slate-700'>{uEmail}</li>
                                 <li className='font-bolder mx-3 text-lg cursor-pointer'>
