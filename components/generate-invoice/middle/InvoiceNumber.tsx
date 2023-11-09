@@ -26,9 +26,6 @@ const InvoiceNumber = () => {
   const [error, setError] = useState<string>("");
 
   useEffect(() => {
-    (async function () {
-      await dispatch(getAllInvoice());
-    })();
     invoice.length !== 0
       ? setLastInvoiceNumber(
           `${invoice[invoice.length - 1]?.invoiceNumber
@@ -42,7 +39,7 @@ const InvoiceNumber = () => {
               .padStart(2, "0")
         )
       : setLastInvoiceNumber("");
-  }, []);
+  }, [invoice]);
 
   useEffect(() => {
     setdate(new Date());
