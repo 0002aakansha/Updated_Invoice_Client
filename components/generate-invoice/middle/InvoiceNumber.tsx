@@ -20,7 +20,9 @@ const InvoiceNumber = () => {
 
   const [date, setdate] = useState<Date | null>(currentDate);
   const [dueDate, setdueDate] = useState<Date | null>(DueDate);
-  const [lastInvoiceNumber, setLastInvoiceNumber] = useState<number | string>("");
+  const [lastInvoiceNumber, setLastInvoiceNumber] = useState<number | string>(
+    ""
+  );
   const [error, setError] = useState<string>("");
 
   useEffect(() => {
@@ -32,8 +34,12 @@ const InvoiceNumber = () => {
           `${invoice[invoice.length - 1]?.invoiceNumber
             .toString()
             .slice(0, 4)}` +
-            (+invoice[invoice.length - 1]?.invoiceNumber.toString().slice(4) +
-              1)
+            (
+              +invoice[invoice.length - 1]?.invoiceNumber.toString().slice(4) +
+              1
+            )
+              .toString()
+              .padStart(2, "0")
         )
       : setLastInvoiceNumber("");
   }, []);
