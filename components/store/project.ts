@@ -96,6 +96,8 @@ export const UpdateProject = createAsyncThunk(
           conversionRate: project.conversionRate,
           rate: project.rate,
           projectAmount: project.projectAmount,
+          projectCycle: project.projectCycle,
+          active: project.active
         }),
       });
 

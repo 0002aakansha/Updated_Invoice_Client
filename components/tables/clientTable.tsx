@@ -51,12 +51,13 @@ const ClientTable = () => {
       field: "gstin",
       resizable: true,
       headerClass: "custom-header",
+      cellClass: "centered-cell",
     },
     {
       headerName: "Address",
       field: "address",
       resizable: true,
-      width: 600,
+      width: 500,
       headerClass: "custom-header",
     },
     {
@@ -64,12 +65,12 @@ const ClientTable = () => {
       field: "projects",
       resizable: true,
       headerClass: "custom-header",
+      cellClass: "centered-cell",
     },
     {
       headerName: "Actions",
       field: "actions",
       headerClass: "custom-header",
-      cellClass: "centered-cell",
       cellRenderer: (params: any) => (
         <div className="md:p-2 sm:pr-0 sm:pl-0 text-center cursor-pointer space-x-10">
           <FontAwesomeIcon

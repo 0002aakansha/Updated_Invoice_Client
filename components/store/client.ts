@@ -18,6 +18,7 @@ const initialState: clientStateType = {
       state: "",
       country: "",
     },
+    active: true
   },
   clientState: "",
   projects: [],

@@ -63,7 +63,8 @@ export interface clientType {
   name: string;
   gstin: string;
   address: addressType;
-  active: boolean
+  projects?: string[];
+  active: boolean;
 }
 
 export interface projectType {
@@ -75,9 +76,10 @@ export interface projectType {
     rate?: number;
   };
   projectAmount: number;
-  projectCycle : string | number;
+  projectCycle: string | number;
   conversionRate?: number;
   projectBelongsTo?: string | clientType | any;
+  active: boolean;
 }
 
 export interface createProjectType {
@@ -88,7 +90,7 @@ export interface createProjectType {
     rate?: number;
   };
   amount?: number;
-  projectCycle : string | number;
+  projectCycle: string | number;
   companyId: string;
   conversionRate?: number;
 }

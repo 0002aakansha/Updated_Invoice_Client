@@ -40,6 +40,7 @@ const UpdateProjectModal = ({
   const [conversionRate, setConversionRate] = useState<number | undefined>(0);
   const [projectAmount, setProjectAmount] = useState(0);
   const [BelongsTo, setBelongsTo] = useState<string>("");
+  const [projectCycle, setProjectCycle] = useState<string | number>("");
 
   useEffect(() => {
     const project = projects?.filter(
@@ -51,6 +52,7 @@ const UpdateProjectModal = ({
     setConversionRate(project?.conversionRate);
     setProjectAmount(project?.projectAmount);
     setBelongsTo(project?.projectBelongsTo?._id || project?.projectBelongsTo);
+    setProjectCycle(project?.projectCycle)
 
     if (error.message !== "") toast.error(error.message);
     else if (updated) {
@@ -77,6 +79,8 @@ const UpdateProjectModal = ({
             conversionRate:
               rate.currency !== "INR" ? conversionRate : undefined,
             projectAmount,
+            projectCycle,
+            active: true
           },
         })
       );
@@ -142,6 +146,22 @@ const UpdateProjectModal = ({
                   value={projectAmount}
                   className="outline-none border-2 px-4 py-2 rounded-md"
                   onChange={(e) => setProjectAmount(+e.target.value)}
+                />
+              </div>
+              <div className="flex flex-col my-2">
+                <label
+                  htmlFor="name"
+                  className="font-semibold tracking-wide mb-2"
+                >
+                  Project Cycle
+                </label>
+                <input
+                  type="number"
+                  step="0.01"
+                  placeholder="Project Cycle"
+                  value={projectCycle}
+                  className="outline-none border-2 px-4 py-2 rounded-md"
+                  onChange={(e) => setProjectCycle(e.target.value)}
                 />
               </div>
               <div>

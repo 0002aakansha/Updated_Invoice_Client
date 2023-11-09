@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { AppState } from "../store/store";
-import { clientStateType } from "@/types/types";
+import { clientStateType, projectStateType } from "@/types/types";
 
 const useRowData = () => {
   const { clients } = useSelector<AppState>(
@@ -15,8 +15,6 @@ const useRowData = () => {
       clients
         ?.filter((client) => client.active === true)
         .map((client, indx) => {
-          console.log(client.projects);
-
           return {
             _id: client?._id,
             sno: indx + 1,
@@ -30,6 +28,39 @@ const useRowData = () => {
   }, [clients]);
 
   return { clientRow };
+};
+
+export const useProjectRowData = () => {
+  const { projects } = useSelector<AppState>(
+    (state) => state.project
+  ) as projectStateType;
+
+  const [projectRow, setProjectRow] = useState<any>();
+
+  useEffect(() => {
+    setProjectRow(
+      projects
+        ?.filter((project) => project.active === true)
+        ?.map((project, indx) => ({
+          _id: project?._id,
+          sno: indx + 1,
+          description: project.description,
+          client: project?.projectBelongsTo?.name,
+          projectCycle: project?.projectCycle,
+          projectType: project?.projectType,
+          projectAmount: project?.projectAmount,
+          rate: `${
+            project?.rate?.rate
+              ? `${project?.rate?.rate} ${project?.rate?.currency}`
+              : "N/A"
+          }`,
+          conversionRate: `${
+            project?.conversionRate ? project?.conversionRate : "N/A"
+          }`,
+        }))
+    );
+  }, [projects]);
+  return { projectRow };
 };
 
 export default useRowData;

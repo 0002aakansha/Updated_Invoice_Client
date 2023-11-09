@@ -49,6 +49,7 @@ const AddProjectForm = () => {
       conversionRate,
       amount: convertedAmount,
       companyId: BelongsTo,
+      active: true
     };
     await dispatch(createProject(projectData));
 
@@ -259,7 +260,7 @@ const AddProjectForm = () => {
                 value={BelongsTo}
                 onChange={(e) => setBelongsTo(e.target.value)}
               >
-                {clients?.map((client) => (
+                {clients?.filter(client => client?.active === true)?.map((client) => (
                   <option value={client?._id} key={client._id}>
                     {client?.name.toUpperCase()}
                   </option>

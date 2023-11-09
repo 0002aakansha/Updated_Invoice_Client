@@ -184,7 +184,11 @@ select:hover option:hover {
 .font {
   font-family: "Poppins", sans-serif;
 }
-
+.ag-header{
+  background-color: rgb(
+    90 81 190 / var(--tw-bg-opacity)
+  ) !important;
+}
 .ag-header-viewport {
   background-color: rgb(
     90 81 190 / var(--tw-bg-opacity)
@@ -199,12 +203,30 @@ select:hover option:hover {
   align-items: center;
   justify-content: center;
   color: white;
+  text-transform: capitalize;
 }
 .centered-cell {
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  text-align: center;
 }
 /* .ag-cell{
   text-align: center;
 } */
+
+.ag-icon-menu {
+  color: white;
+}
+
+#myAgGrid .ag-header-group-cell-label, .ag-header-cell-label {
+  font-size: .9rem;
+  display: flex;
+  align-items: center;
+  justify-content: center; /* Center horizontally */
+  text-overflow: ellipsis;
+  white-space: nowrap; /* Prevent text from wrapping */
+  overflow: hidden;
+  text-align: center; /* Center the text within the header cell */
+}
+
+.ag-cell{
+  font-size: 10pt;
+}

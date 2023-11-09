@@ -86,7 +86,7 @@ const invoiceslice = createSlice({
         };
       }
     },
-    calculateSubtotal(state) {
+    calculateSubtotal(state ) {
       const istrue = state.detailedProject.filter(
         (project) => project.checked === true
       );
