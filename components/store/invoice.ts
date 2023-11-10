@@ -89,7 +89,7 @@ const invoiceslice = createSlice({
     },
     calculateSubtotal(
       state,
-      { payload }: { payload?: { flag: boolean; discount: number } }
+      { payload }: { payload: { flag?: boolean; discount?: any } }
     ) {
       if (payload?.flag) {
         state.subtotal = +payload.discount.toFixed(2);

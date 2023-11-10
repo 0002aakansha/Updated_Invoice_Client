@@ -87,7 +87,7 @@ export const useInvoiceRowData = () => {
           invoiceNumber: invoice.invoiceNumber,
           client: invoice?.createdFor?.name,
           projects: invoice?.projects?.map(
-            (project: invoiceProjectType) => project.projectDetails.description
+            (project: any) => project.projectDetails.description
           ),
           createdOn: invoice?.createdOn,
           dueDate: invoice?.dueDate,

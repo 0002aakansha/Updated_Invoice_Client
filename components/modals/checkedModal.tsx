@@ -44,11 +44,14 @@ const CheckedModal = ({ uniqueKey }: { uniqueKey: string }) => {
   ) as clientStateType;
   const dispatch = useDispatch<AppDispatch>();
 
-  const [description, setDescription] = useState("")
+  const [description, setDescription] = useState("");
   const [period, setPeriod] = useState("");
   const [workingDays, setworkingDays] = useState("");
   const [totalWorkingDays, settotalworkingDays] = useState("");
-  const [rate, setRate] = useState<rateType | any>({ currency: "INR", rate: 0 });
+  const [rate, setRate] = useState<rateType | any>({
+    currency: "INR",
+    rate: 0,
+  });
   const [hours, sethours] = useState<number>(0.0);
   const [conversionRate, setConversionRate] = useState<number>();
   const [indx, setIndx] = useState<number>();
@@ -60,18 +63,18 @@ const CheckedModal = ({ uniqueKey }: { uniqueKey: string }) => {
 
     setIndx(detailedProject.findIndex((project) => project._id === uniqueKey));
     setPeriod(project?.period || "");
-    setDescription(project?.description || "")
+    setDescription(project?.description || "");
     setworkingDays(project?.workingDays || "");
     settotalworkingDays(project?.totalWorkingDays || "");
-    setRate(project?.rate)
+    setRate(project?.rate);
     sethours(project?.hours || 0.0);
-    setConversionRate(project?.conversionRate)
+    setConversionRate(project?.conversionRate);
   }, [detailedProject, uniqueKey]);
 
   const submitHandler = (e: FormEvent) => {
     e.preventDefault();
     console.log(conversionRate);
-    
+
     const project = detailedProject.filter(
       (project) => project._id === uniqueKey
     )[0] as dataProps;
@@ -97,7 +100,7 @@ const CheckedModal = ({ uniqueKey }: { uniqueKey: string }) => {
               projectBelongsTo: project.projectBelongsTo,
             })
           );
-          dispatch(calculateSubtotal());
+          dispatch(calculateSubtotal({ flag: undefined }));
 
           const clientState = client.clients.filter(
             (client) => client._id === project?.projectBelongsTo
@@ -131,7 +134,7 @@ const CheckedModal = ({ uniqueKey }: { uniqueKey: string }) => {
             conversionRate,
           })
         );
-        dispatch(calculateSubtotal());
+        dispatch(calculateSubtotal({ flag: undefined }));
 
         const clientState = client.clients.filter(
           (client) => client._id === project?.projectBelongsTo
@@ -221,66 +224,72 @@ const CheckedModal = ({ uniqueKey }: { uniqueKey: string }) => {
                 </>
               )}
               {invoiceType === "hourly" && (
-              <>
-              <div className="flex flex-col my-2">
-                  <label htmlFor="" className="font-semibold text-lg">
-                    Description <span className="text-red-500">*</span>
-                  </label>
-                  <input
-                    type="text"
-                    value={description}
-                    autoFocus
-                    onChange={(e: any) => setDescription(e.target.value)}
-                    required
-                    placeholder=""
-                    className="border-2 mt-2 px-4 py-2 rounded-sm outline-none"
-                  />
-                </div>
-                <div className="flex flex-col my-2">
-                  <label htmlFor="" className="font-semibold text-lg">
-                    Rate <span className="text-red-500">*</span>
-                  </label>
-                  <input
-                    type="text"
-                    value={rate?.rate}
-                    autoFocus
-                    onChange={(e: any) => setRate({...rate, rate: +e.target.value})}
-                    required
-                    placeholder=""
-                    className="border-2 mt-2 px-4 py-2 rounded-sm outline-none"
-                  />
-                </div>
-                <div className="flex flex-col my-2">
-                  <label htmlFor="" className="font-semibold text-lg">
-                    Hours <span className="text-red-500">*</span>
-                  </label>
-                  <input
-                    type="number"
-                    step="0.01"
-                    value={hours !== 0.0 ? hours : ""}
-                    autoFocus
-                    onChange={(e: any) => sethours(e.target.value)}
-                    required
-                    placeholder="0.0"
-                    className="border-2 mt-2 px-4 py-2 rounded-sm outline-none"
-                  />
-                </div>
-                <div className="flex flex-col my-2">
-                  <label htmlFor="" className="font-semibold text-lg">
-                    Conversion Rate <span className="text-red-500">*</span>
-                  </label>
-                  <input
-                    type="number"
-                    value={conversionRate}
-                    autoFocus
-                    onChange={(e: any) => setConversionRate(e.target.value)}
-                    required
-                    disabled={rate?.currency !== 'INR' ? false : true }
-                    placeholder="0.0"
-                    className={`border-2 mt-2 px-4 py-2 rounded-sm outline-none ${rate?.currency !== 'INR' ? 'cursor-text': 'cursor-not-allowed'}`}
-                  />
-                </div>
-              </>
+                <>
+                  <div className="flex flex-col my-2">
+                    <label htmlFor="" className="font-semibold text-lg">
+                      Description <span className="text-red-500">*</span>
+                    </label>
+                    <input
+                      type="text"
+                      value={description}
+                      autoFocus
+                      onChange={(e: any) => setDescription(e.target.value)}
+                      required
+                      placeholder=""
+                      className="border-2 mt-2 px-4 py-2 rounded-sm outline-none"
+                    />
+                  </div>
+                  <div className="flex flex-col my-2">
+                    <label htmlFor="" className="font-semibold text-lg">
+                      Rate <span className="text-red-500">*</span>
+                    </label>
+                    <input
+                      type="text"
+                      value={rate?.rate}
+                      autoFocus
+                      onChange={(e: any) =>
+                        setRate({ ...rate, rate: +e.target.value })
+                      }
+                      required
+                      placeholder=""
+                      className="border-2 mt-2 px-4 py-2 rounded-sm outline-none"
+                    />
+                  </div>
+                  <div className="flex flex-col my-2">
+                    <label htmlFor="" className="font-semibold text-lg">
+                      Hours <span className="text-red-500">*</span>
+                    </label>
+                    <input
+                      type="number"
+                      step="0.01"
+                      value={hours !== 0.0 ? hours : ""}
+                      autoFocus
+                      onChange={(e: any) => sethours(e.target.value)}
+                      required
+                      placeholder="0.0"
+                      className="border-2 mt-2 px-4 py-2 rounded-sm outline-none"
+                    />
+                  </div>
+                  <div className="flex flex-col my-2">
+                    <label htmlFor="" className="font-semibold text-lg">
+                      Conversion Rate <span className="text-red-500">*</span>
+                    </label>
+                    <input
+                      type="number"
+                      value={conversionRate}
+                      autoFocus
+                      onChange={(e: any) => setConversionRate(e.target.value)}
+                      required
+                      disabled={rate?.currency !== "INR" ? false : true}
+                      placeholder="0.0"
+                      className={`border-2 mt-2 px-4 py-2 rounded-sm outline-none ${
+                        rate?.currency !== "INR"
+                          ? "cursor-text"
+                          : "cursor-not-allowed"
+                      }`}
+                    />
+                  </div>
+                </>
               )}
               <ModalFooter>
                 <Button
