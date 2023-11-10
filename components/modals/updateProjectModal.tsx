@@ -61,8 +61,20 @@ const UpdateProjectModal = ({
     }
   }, [_id, projects, error.message, updated]);
 
+  const calculateConvertedAmount = () => {
+    if (rate.currency === "USD" || rate.currency === "POUND") {
+      if (conversionRate !== undefined && projectAmount !== undefined) {
+
+        return +(projectAmount * conversionRate).toFixed(2);
+      }
+    }
+    return projectAmount;
+  };
+
   const submitHandler = async (e: FormEvent) => {
     e.preventDefault();
+
+    const convertedAmount = calculateConvertedAmount();
 
     if (projectType) {
       await dispatch(
@@ -78,7 +90,7 @@ const UpdateProjectModal = ({
             },
             conversionRate:
               rate.currency !== "INR" ? conversionRate : undefined,
-            projectAmount,
+            projectAmount: convertedAmount,
             projectCycle,
             active: true,
           },
@@ -88,6 +100,14 @@ const UpdateProjectModal = ({
       onClose(false);
     } else toast.error("Please select invoice type!");
   };
+
+  const handleProjectTypeChange = (newProjectType : string) => {
+    setProjectType(newProjectType);
+
+    if(newProjectType === 'monthly' || newProjectType === 'hourly' || newProjectType === 'fixedbudget'){
+       setRate({ currency: "INR", rate: 0 })
+    }
+  }
 
   return (
     <>
@@ -125,31 +145,42 @@ const UpdateProjectModal = ({
                   id=""
                   className="bg-white outline-none border-2 px-4 py-2 rounded-md xs:text-xs sm:text-sm md:text-md"
                   value={!projectType ? "Select project type" : projectType}
-                  onChange={(e) => setProjectType(e.target.value)}
+                  // onChange={(e) => setProjectType(e.target.value)}
+                  onChange={(e) => handleProjectTypeChange(e.target.value)}
                 >
-                  <option value="">Select project type</option>
+                  {/* <option value="">Select project type</option> */}
                   <option value="monthly">Monthly</option>
                   <option value="hourly">Hourly</option>
+                  <option value='fixedbudget'>Fixed Budget</option>
                 </select>
               </div>
-              {projectAmount && (
-                <div className="flex flex-col my-2">
-                  <label
-                    htmlFor="name"
-                    className="font-semibold tracking-wide mb-2"
-                  >
-                    Project Amount
-                  </label>
-                  <input
-                    type="number"
-                    step="0.01"
-                    placeholder="Project Amount"
-                    value={projectAmount}
-                    className="outline-none border-2 px-4 py-2 rounded-md"
-                    onChange={(e) => setProjectAmount(+e.target.value)}
-                  />
-                </div>
-              )}
+              <div className="flex flex-col my-2">
+                <label
+                  htmlFor="name"
+                  className="font-semibold tracking-wide mb-2"
+                >
+                  {projectType === "monthly"
+                  ? `Monthly Rate (${rate?.currency || ''})`
+                  : projectType === "hourly"
+                    ? `Hourly Rate (${rate?.currency || ''})`
+                    : `Project Amount (${rate?.currency || ''})`
+                }
+                </label>
+                <input
+                  type="number"
+                  step="0.01"
+                  placeholder={
+                    projectType === 'monthly'
+                    ? `Monthly Rate (${rate?.currency || ''})`
+                    : projectType === 'hourly'
+                    ? `Hourly Rate (${rate?.currency || ''})`
+                    : `Project Amount (${rate?.currency || ''})`
+                  }
+                  value={projectAmount}
+                  className="outline-none border-2 px-4 py-2 rounded-md"
+                  onChange={(e) => setProjectAmount(+e.target.value)}
+                />
+              </div>
               <div className="flex flex-col my-2">
                 <label
                   htmlFor="name"

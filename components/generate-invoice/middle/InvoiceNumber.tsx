@@ -41,8 +41,11 @@ const InvoiceNumber = () => {
   }, [invoice]);
 
   useEffect(() => {
+    
     setdate(new Date());
-    setdueDate(new Date());
+    const initialDueDate = new Date();
+    initialDueDate.setDate(initialDueDate.getDate() + 5);
+    setdueDate(initialDueDate);
 
     if (
       invoice.filter((invoice) => +invoice.invoiceNumber === lastInvoiceNumber)
