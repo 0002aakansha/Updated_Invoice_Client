@@ -40,8 +40,8 @@ const HistoryTable = () => {
   const [isEditOpen, onEditClose] = useState(false);
   const [isAlertOpen, setAlertOpen] = useState<boolean>(false);
   const [status, setStatus] = useState<string>();
-  const [date, setDate] = useState<Date | null>();
-  const [dueDate, setDueDate] = useState<Date | null>(null);
+  const [date, setDate] = useState<Date | null>(new Date());
+  const [dueDate, setDueDate] = useState<Date | null>(new Date());
   const dispatch = useDispatch<AppDispatch>();
   const [isUpdateOpen, onUpdateOpen] = useState<boolean>(false);
 
@@ -240,6 +240,14 @@ const HistoryTable = () => {
   }, [invoice]);
 
   useEffect(() => {
+
+    if (isEditOpen) {
+      setDate(new Date());
+      const initialDueDate = new Date();
+      initialDueDate.setDate(initialDueDate.getDate() + 5);
+      setDueDate(initialDueDate);
+    }
+
     if (
       invoice.filter((invoice) => +invoice.invoiceNumber === +lastInvoiceNumber)
         .length === 0
@@ -439,13 +447,21 @@ const HistoryTable = () => {
                     type="date"
                     placeholder="Date"
                     className="border-2 mt-2 px-4 py-2 rounded-sm outline-none"
+                    value={date ? date.toISOString().split('T')[0] : ''}
+                    // onChange={(e) => {
+                    //   const dateValue = e.target.value;
+                    //   if (dateValue) {
+                    //     setDate(new window.Date(dateValue));
+                    //   } else {
+                    //     setDate(null);
+                    //   }
+                    // }}
                     onChange={(e) => {
-                      const dateValue = e.target.value;
-                      if (dateValue) {
-                        setDate(new window.Date(dateValue));
-                      } else {
-                        setDate(null);
-                      }
+                      const selectedDate = new Date(e.target.value);
+                      const dueDate = new Date(selectedDate);
+                      dueDate.setDate(selectedDate.getDate() + 5); 
+                      setDate(selectedDate); 
+                      setDueDate(dueDate); 
                     }}
                     required
                   />
@@ -458,7 +474,9 @@ const HistoryTable = () => {
                     type="date"
                     placeholder="Due Date"
                     className="border-2 mt-2 px-4 py-2 rounded-sm outline-none"
-                    min={today}
+                    // min={today}
+                    value={dueDate ? dueDate.toISOString().split('T')[0] : ''}
+                    min={date ? date.toISOString().split("T")[0] : ""}
                     onChange={(e) => {
                       const dateValue = e.target.value;
                       if (dateValue) {
