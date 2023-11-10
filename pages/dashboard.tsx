@@ -9,7 +9,7 @@ import Cards from "@/components/cards/Cards";
 import MainTable from "@/components/tables/MainTable";
 import { fetchProjects } from "@/components/store/project";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faPlus, faSync } from "@fortawesome/free-solid-svg-icons";
+import { faPlus, faSync, faUserPlus } from "@fortawesome/free-solid-svg-icons";
 import Link from "next/link";
 import { getAllInvoice } from "@/components/store/invoiceHistory";
 import ResetYearModal from "@/components/modals/resetYearModal";
@@ -19,14 +19,14 @@ const Dashboard = () => {
     (state) => state.client
   ) as clientStateType;
   const dispatch = useDispatch<AppDispatch>();
-  
+
   const [isResetYearOpen, setIsResetYearOpen] = useState(false);
 
   useEffect(() => {
     (async function () {
       await dispatch(fetchClient());
       await dispatch(fetchProjects());
-      await dispatch(getAllInvoice())
+      await dispatch(getAllInvoice());
     })();
   }, []);
 
@@ -37,9 +37,30 @@ const Dashboard = () => {
           <FullPageLoader />
         ) : (
           <>
+            {/* <nav className="flex justify-end space-x-2 p-4 mr-4">
+              <button
+                className="flex items-center space-x-2 bg-[#5a51be] text-white py-2 px-3 rounded-md text-sm hover:bg-[#6860c7] transition-all delay-[.1s] ease-in"
+                // onClick={() => setIsResetYearOpen(true)}
+              >
+                <FontAwesomeIcon icon={faSync} />
+                <span className="font-bold ">Reset Year</span>
+              </button>
+
+              <Link href="/addClient">
+                <button className="flex items-center space-x-2 bg-[#5a51be] text-white py-2 px-3 rounded-md text-sm hover:bg-[#6860c7] transition-all delay-[.1s] ease-in">
+                  <FontAwesomeIcon icon={faUserPlus} />
+                  <span className="font-bold ">Add Client</span>
+                </button>
+              </Link>
+              <Link href="/addProject">
+                <button className="flex items-center space-x-2 bg-[#5a51be] text-white py-2 px-3 rounded-md text-sm hover:bg-[#6860c7] transition-all delay-[.1s] ease-in">
+                  <FontAwesomeIcon icon={faPlus} />
+                  <span className="font-bold">New Project</span>
+                </button>
+              </Link>
+            </nav> */}
             <Cards />
             <div className="flex justify-end my-8 space-x-4 mr-4">
-
               <button className="flex items-center" onClick={() => setIsResetYearOpen(true)}>
                 <FontAwesomeIcon
                   icon={faSync}
@@ -70,9 +91,9 @@ const Dashboard = () => {
             <MainTable />
           </>
         )}
-        <ResetYearModal 
-        isOpen={isResetYearOpen}
-        onClose={() => setIsResetYearOpen(false)}
+        <ResetYearModal
+          isOpen={isResetYearOpen}
+          onClose={() => setIsResetYearOpen(false)}
         />
       </Layout>
     );

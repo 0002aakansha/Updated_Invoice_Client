@@ -3,7 +3,6 @@ import {
   setDueDate,
   setInvoiceNumber,
 } from "@/components/store/invoice";
-import { getAllInvoice } from "@/components/store/invoiceHistory";
 import { AppDispatch, AppState } from "@/components/store/store";
 import { invoiceHistoryType, invoiceStateType } from "@/types/types";
 import { useEffect, useState } from "react";
