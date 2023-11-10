@@ -26,7 +26,7 @@ const TableTr = ({ project, indx }: Props) => {
         {indx + 1}
       </td>
       <td className="border-2 border-[#9d96e4] px-4 py-1">
-        {project?.description}
+        {filteredProject?.description}
       </td>
       {invoiceType === "monthly" ? (
         <>
@@ -64,9 +64,9 @@ const TableTr = ({ project, indx }: Props) => {
 
           <td className="border-2 border-[#9d96e4] px-4 py-1 text-center">
             {project?.rate?.currency === "USD" ? (
-              `1$ = ${project?.conversionRate}`
+              `1$ = ${filteredProject?.conversionRate}`
             ) : project?.rate?.currency === "POUND" ? (
-              `1£ = ${project?.conversionRate} POUND`
+              `1£ = ${filteredProject?.conversionRate} POUND`
             ) : project?.rate?.currency === "INR" ? (
               <span className="text-red-500 font-semibold">N/A</span>
             ) : (

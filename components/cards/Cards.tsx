@@ -9,10 +9,11 @@ const Cards = () => {
   const { invoice } = useSelector<AppState>(state => state.history) as invoiceHistoryType
 
   return (
-    <div className='grid md:grid-cols-3 xs:grid-cols-1 w-full gap-4 my-1a p-4'>
+    <div className='grid md:grid-cols-4 xs:grid-cols-1 w-full gap-4 my-1a p-4'>
       <Card color='bg-[#519fbe]' title='Total Clients' total={client?.clients?.length} isLoading={client?.isLoading} />
       <Card color='bg-[#a851be]' title='Total Projects' total={projects?.projects?.length} isLoading={client?.isLoading} />
-      <Card color='bg-[#be9851]' title='Total Invoice' total={invoice.length} isLoading={false} />
+      <Card color='bg-[#be9851]' title='Invoice Raised' total={invoice.filter(invoice => invoice.status === 'raised' && invoice.active === true).length} isLoading={false} />
+      <Card color='bg-[#be9851]' title='Invoice Cleared' total={invoice.filter(invoice => invoice.status === 'cleared' && invoice.active === true).length} isLoading={false} />
     </div>
   )
 }

@@ -17,7 +17,7 @@ import {
   rateType,
 } from "@/types/types";
 import { FormEvent, useEffect, useState } from "react";
-import { UpdateProject, setUpdate } from "../store/project";
+import project, { UpdateProject, setUpdate } from "../store/project";
 import toast from "react-hot-toast";
 
 const UpdateProjectModal = ({
@@ -52,7 +52,7 @@ const UpdateProjectModal = ({
     setConversionRate(project?.conversionRate);
     setProjectAmount(project?.projectAmount);
     setBelongsTo(project?.projectBelongsTo?._id || project?.projectBelongsTo);
-    setProjectCycle(project?.projectCycle)
+    setProjectCycle(project?.projectCycle);
 
     if (error.message !== "") toast.error(error.message);
     else if (updated) {
@@ -92,7 +92,7 @@ const UpdateProjectModal = ({
               rate.currency !== "INR" ? conversionRate : undefined,
             projectAmount: convertedAmount,
             projectCycle,
-            active: true
+            active: true,
           },
         })
       );
@@ -111,7 +111,7 @@ const UpdateProjectModal = ({
 
   return (
     <>
-      <Modal isOpen={isOpen} onClose={() => onClose(false)}>
+      <Modal isOpen={isOpen} onClose={() => onClose(false)} size='2xl'>
         <ModalOverlay />
         <ModalContent className="mt-4 w-full">
           <ModalHeader>Update Project!</ModalHeader>

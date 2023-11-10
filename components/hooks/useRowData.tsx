@@ -48,7 +48,11 @@ export const useProjectRowData = () => {
           client: project?.projectBelongsTo?.name,
           projectCycle: project?.projectCycle,
           projectType: project?.projectType,
-          projectAmount: project?.projectAmount,
+          projectAmount: `${
+            project?.projectAmount
+              ? `${project?.projectAmount}`
+              : "N/A"
+          }`,
           rate: `${
             project?.rate?.rate
               ? `${project?.rate?.rate} ${project?.rate?.currency}`

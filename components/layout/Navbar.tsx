@@ -1,16 +1,18 @@
-import { useSelector } from 'react-redux'
-import { AppState } from '../store/store'
-import Image from 'next/image'
-import { useEffect, useState } from 'react'
-import AlertDialogExample from '../alerts/AlertDialog'
-import { getCookie } from '@/utils/cookies'
-import { useRouter } from 'next/router'
+import { useDispatch, useSelector } from "react-redux";
+import { AppDispatch, AppState } from "../store/store";
+import Image from "next/image";
+import { useEffect, useState } from "react";
+import AlertDialogExample from "../alerts/AlertDialog";
+import { getCookie } from "@/utils/cookies";
+import { useRouter } from "next/router";
 
 const Navbar = () => {
-    const uEmail = useSelector<AppState>(state => state.user.user.email) as string
-    const [isOpen, onClose] = useState<boolean>(false)
-    const [auth, setAuth] = useState<boolean>(false)
-    const router = useRouter()
+  const uEmail = useSelector<AppState>(
+    (state) => state.user.user.email
+  ) as string;
+  const [isOpen, onClose] = useState<boolean>(false);
+  const [auth, setAuth] = useState<boolean>(false);
+  const router = useRouter();
 
     useEffect(() => {
         getCookie() ? setAuth(true) : setAuth(false)
@@ -58,4 +60,4 @@ const Navbar = () => {
     )
 }
 
-export default Navbar
+export default Navbar;

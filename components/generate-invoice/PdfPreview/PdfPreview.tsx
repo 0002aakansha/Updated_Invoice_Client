@@ -280,7 +280,7 @@ const PdfPreview = ({ data }: { data: PdfPreviewProps | any }) => {
                 )}
                 {data?.invoice?.invoiceType === "hourly" && (
                   <Text style={styles.tableCell}>
-                    {invoice?.rate?.rate || invoice?.projectDetails?.rate.rate}
+                    {invoice?.rate?.rate || invoice?.projectDetails?.rate?.rate}
                     {invoice?.rate?.currency === 'USD' ? '$' :
                       invoice?.rate?.currency === 'POUND' ? '£' :
                         invoice?.rate?.currency === 'INR' ? 'INR' : ''} / Hour

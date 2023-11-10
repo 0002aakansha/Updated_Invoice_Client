@@ -17,6 +17,7 @@ const initialState: invoiceHistoryType = {
       GrandTotal: 0.0,
       status: "",
       invoiceType: "",
+      active: true,
     },
   ],
   isLoading: false,
