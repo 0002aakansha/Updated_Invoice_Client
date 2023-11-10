@@ -29,14 +29,15 @@ const HistoryCard = ({ invoiceData }: { invoiceData: invoiceType }) => {
   const [isAlertOpen, setAlertOpen] = useState<boolean>(false);
   const [invoiceNumber, setInvoiceNumber] = useState<string>("");
   const [status, setStatus] = useState<string>(invoiceData?.status);
-  const [date, setDate] = useState<Date | null>();
-  const [dueDate, setDueDate] = useState<Date | null>(null);
+  const [date, setDate] = useState<Date | null>(new Date());
+  const [dueDate, setDueDate] = useState<Date | null>(new Date());
   const dispatch = useDispatch<AppDispatch>();
   const [isUpdateOpen, onUpdateOpen] = useState<boolean>(false);
 
   const today = new Date().toISOString().split("T")[0];
 
   useEffect(() => {
+   
     if (
       typeof invoiceData?.createdFor !== "string" &&
       invoiceData?.invoiceCreatedBy &&
@@ -236,6 +237,7 @@ const HistoryCard = ({ invoiceData }: { invoiceData: invoiceType }) => {
                     type="date"
                     placeholder="Date"
                     className="border-2 mt-2 px-4 py-2 rounded-sm outline-none"
+                    value={date ? date.toISOString().split('T')[0] : ''}
                     onChange={(e) => {
                       const dateValue = e.target.value;
                       if (dateValue) {
@@ -256,6 +258,7 @@ const HistoryCard = ({ invoiceData }: { invoiceData: invoiceType }) => {
                     placeholder="Due Date"
                     className="border-2 mt-2 px-4 py-2 rounded-sm outline-none"
                     min={today}
+                    value={dueDate ? dueDate.toISOString().split('T')[0] : ''}
                     onChange={(e) => {
                       const dateValue = e.target.value;
                       if (dateValue) {
