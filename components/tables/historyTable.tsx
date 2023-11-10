@@ -7,7 +7,7 @@ import { GrRotateRight } from "react-icons/gr";
 import { AiOutlineDelete } from "react-icons/ai";
 import { TbEditCircle } from "react-icons/tb";
 import PdfPreview from "../generate-invoice/PdfPreview/PdfPreview";
-import { FormEvent, useEffect, useState } from "react";
+import { FormEvent, useEffect, useMemo, useState } from "react";
 import toast from "react-hot-toast";
 import { PDFViewer, pdf } from "@react-pdf/renderer";
 import { useDispatch, useSelector } from "react-redux";
@@ -25,29 +25,203 @@ import AlertDialogExample from "../alerts/AlertDialog";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCircle } from "@fortawesome/free-solid-svg-icons";
 import { setInvoiceNumber } from "../store/invoice";
+import FullPageLoader from "../spinners/fullPageLoader";
+import NotFound from "../alerts/notFound";
+import { AgGridReact } from "ag-grid-react";
+import { useInvoiceRowData } from "../hooks/useRowData";
 
-const HistoryCard = ({ invoiceData }: { invoiceData: invoiceType }) => {
+import "ag-grid-community/styles/ag-grid.css";
+import "ag-grid-community/styles/ag-theme-alpine.css";
+
+const HistoryTable = () => {
   const [pdfBlob, setPdfBlob] = useState<Blob | MediaSource>();
   const [pdfPreviewData, setpdfPreviewData] = useState<PdfPreviewProps | any>();
   const [isPreviewOpen, onPreviewClose] = useState(false);
   const [isEditOpen, onEditClose] = useState(false);
   const [isAlertOpen, setAlertOpen] = useState<boolean>(false);
-  const [status, setStatus] = useState<string>(invoiceData?.status);
+  const [status, setStatus] = useState<string>();
   const [date, setDate] = useState<Date | null>();
   const [dueDate, setDueDate] = useState<Date | null>(null);
   const dispatch = useDispatch<AppDispatch>();
   const [isUpdateOpen, onUpdateOpen] = useState<boolean>(false);
 
   // invoice number
-  const { invoice } = useSelector<AppState>(
+  const { invoice, isLoading } = useSelector<AppState>(
     (state) => state.history
   ) as invoiceHistoryType;
+  const { historyRow } = useInvoiceRowData();
+  const [_id, setId] = useState<string | any>(invoice[0]?._id);
+  const [invoiceData, setInvoiceData] = useState<invoiceType>(
+    invoice.filter((invoice) => invoice?._id === _id)[0]
+  );
+
+  const tableColumn = [
+    {
+      headerName: "S. No.",
+      field: "sno",
+      resizable: true,
+      headerClass: "custom-header",
+      cellClass: "centered-cell",
+      width: 80,
+      pinned: "left",
+      lockPinned: true,
+    },
+    {
+      headerName: "Invoice Number",
+      field: "invoiceNumber",
+      resizable: true,
+      headerClass: "custom-header",
+      filter: true,
+      pinned: "left",
+      lockPinned: true,
+      cellClass: "centered-cell",
+    },
+    {
+      headerName: "Client",
+      field: "client",
+      resizable: true,
+      headerClass: "custom-header",
+      filter: true,
+      cellClass: "centered-cell",
+      width: 300,
+      // floatingFilter: true
+    },
+    {
+      headerName: "Projects",
+      field: "projects",
+      resizable: true,
+      headerClass: "custom-header",
+      filter: true,
+      cellClass: "centered-cell",
+      width: 300,
+    },
+    {
+      headerName: "Created On",
+      field: "createdOn",
+      resizable: true,
+      headerClass: "custom-header",
+      filter: true,
+      cellClass: "centered-cell",
+    },
+    {
+      headerName: "Due Date",
+      field: "dueDate",
+      resizable: true,
+      headerClass: "custom-header",
+      filter: true,
+      cellClass: "centered-cell",
+    },
+    {
+      headerName: "Total",
+      field: "subtotal",
+      resizable: true,
+      headerClass: "custom-header",
+      filter: true,
+      cellClass: "centered-cell",
+    },
+    {
+      headerName: "GST",
+      field: "gst",
+      resizable: true,
+      headerClass: "custom-header",
+      filter: true,
+      cellClass: "centered-cell",
+      width: 300,
+    },
+    {
+      headerName: "Subtotal",
+      field: "total",
+      resizable: true,
+      headerClass: "custom-header",
+      filter: true,
+      cellClass: "centered-cell",
+    },
+    {
+      headerName: "Status",
+      field: "status",
+      resizable: true,
+      headerClass: "custom-header",
+      filter: true,
+      cellClass: "centered-cell",
+      cellRenderer: (params: any) => {
+        return (
+          <div className="flex items-center space-x-2 justify-center">
+            <FontAwesomeIcon
+              icon={faCircle}
+              className={`${
+                params?.data?.status === "raised"
+                  ? " text-orange-600"
+                  : " text-green-600"
+              }`}
+            />
+            {params?.data?.status === "raised" ? (
+              <p className="text-stone-800">Raised</p>
+            ) : (
+              <p className="text-stone-800">Cleared</p>
+            )}
+          </div>
+        );
+      },
+    },
+    {
+      headerName: "Actions",
+      field: "actions",
+      headerClass: "custom-header",
+      cellClass: "centered-cell",
+      pinned: "right",
+      lockPinned: true,
+      cellRenderer: (params: any) => (
+        <div className="md:p-2 sm:pr-0 sm:pl-0 text-center cursor-pointer space-x-8 flex">
+          <span className="block" title="Repeat">
+            <GrRotateRight
+              className="text-xl text-slate-700 cursor-pointer"
+              onClick={() => {
+                setId(params?.data?._id);
+                onEditClose(true);
+              }}
+            />
+          </span>
+          <span title="Edit">
+            <TbEditCircle
+              className="text-xl text-slate-500 cursor-pointer"
+              onClick={() => {
+                setId(params?.data?._id);
+                onUpdateOpen(true);
+              }}
+            />
+          </span>
+          <span className="block" title="Remove">
+            <AiOutlineDelete
+              className="text-xl text-red-500 cursor-pointer"
+              onClick={() => {
+                setId(params?.data?._id);
+                setAlertOpen(true);
+              }}
+            />
+          </span>
+        </div>
+      ),
+    },
+  ];
+  const defaultColDef = useMemo(
+    () => ({
+      sortable: true,
+    }),
+    []
+  );
+  const pagination = true;
+  const paginationPageSize = 15;
+
   const [error, setError] = useState<string>("");
   const [lastInvoiceNumber, setLastInvoiceNumber] = useState<number | string>(
     ""
   );
 
   const today = new Date().toISOString().split("T")[0];
+
+  useEffect(() => {
+    setInvoiceData(invoice.filter((invoice) => invoice?._id === _id)[0]);
+  }, [_id, invoice]);
 
   useEffect(() => {
     invoice.length !== 0
@@ -60,7 +234,7 @@ const HistoryCard = ({ invoiceData }: { invoiceData: invoiceType }) => {
               1
             )
               .toString()
-              .padStart(2, '0')
+              .padStart(2, "0")
         )
       : setLastInvoiceNumber("");
   }, [invoice]);
@@ -80,6 +254,8 @@ const HistoryCard = ({ invoiceData }: { invoiceData: invoiceType }) => {
   }, [invoice, lastInvoiceNumber]);
 
   useEffect(() => {
+    console.log(invoiceData);
+    
     if (
       typeof invoiceData?.createdFor !== "string" &&
       invoiceData?.invoiceCreatedBy &&
@@ -129,6 +305,7 @@ const HistoryCard = ({ invoiceData }: { invoiceData: invoiceType }) => {
     invoiceData?.projects,
     invoiceData?.subtotal,
     lastInvoiceNumber,
+    invoiceData
   ]);
 
   const generatePDF = async (e: FormEvent) => {
@@ -144,6 +321,8 @@ const HistoryCard = ({ invoiceData }: { invoiceData: invoiceType }) => {
   };
 
   const downloadPDF = () => {
+    // console.log(invoiceData);
+    
     if (pdfBlob) {
       const pdfUrl = URL.createObjectURL(pdfBlob);
       const a = document.createElement("a");
@@ -168,6 +347,7 @@ const HistoryCard = ({ invoiceData }: { invoiceData: invoiceType }) => {
             period: any;
             workingDays: any;
             totalWorkingDays: any;
+            hours: string,
             amount: string | number;
           }) => {
             return {
@@ -176,6 +356,7 @@ const HistoryCard = ({ invoiceData }: { invoiceData: invoiceType }) => {
               period: project?.period,
               workingDays: project?.workingDays,
               totalWorkingDays: project?.totalWorkingDays,
+              hours: project?.hours,
               amount: +project?.amount,
             };
           }
@@ -205,55 +386,25 @@ const HistoryCard = ({ invoiceData }: { invoiceData: invoiceType }) => {
 
   return (
     <>
-      <tr className=" h-10 bg-white my-2 border-spacing-3 font">
-        <td className="my-2 px-4 py-4 text-center capitalize font-medium">
-          {invoiceData?.invoiceNumber}
-        </td>
-        <td className="my-2 px-4 py-4 text-center capitalize text-stone-800 font-medium">
-          {typeof invoiceData?.createdFor !== "string" &&
-            invoiceData?.createdFor?.name}
-        </td>
-        <td className="my-2 px-4 py-4 text-center capitalize">
-          {invoiceData?.createdOn}
-        </td>
-        <td className="my-2 px-4 py-4 text-center capitalize">
-          {invoiceData?.dueDate}
-        </td>
-        <td className="my-2 px-4 py-4 text-center capitalize">
-          {invoiceData?.GrandTotal}
-        </td>
-        <td className="my-2 px-4 py-4 text-center capitalize text-sm font-medium">
-          <FontAwesomeIcon
-            icon={faCircle}
-            className={`${
-              invoiceData.status === "raised"
-                ? " text-orange-600"
-                : " text-green-600"
-            }`}
+      {isLoading && <FullPageLoader />}
+      {isLoading && invoice?.length ? (
+        <NotFound
+          title="Not Found"
+          description="There are 0 projects. Please create project first!"
+        />
+      ) : (
+        <div className="ag-theme-alpine" style={{ width: "100%" }}>
+          <AgGridReact
+            defaultColDef={defaultColDef}
+            pagination={pagination}
+            paginationPageSize={paginationPageSize}
+            columnDefs={tableColumn} // header
+            rowData={historyRow} // cells
+            animateRows={true}
+            domLayout="autoHeight"
           />
-          <span className="ms-1">{invoiceData?.status}</span>
-        </td>
-        <td className="my-2 px-4 py-4 text-center capitalize flex justify-around">
-          <span className="block" title="Repeat">
-            <GrRotateRight
-              className="text-xl text-slate-700 cursor-pointer"
-              onClick={() => onEditClose(true)}
-            />
-          </span>
-          <span title="Edit">
-            <TbEditCircle
-              className="text-xl text-slate-500 cursor-pointer"
-              onClick={() => onUpdateOpen(true)}
-            />
-          </span>
-          <span className="block" title="Remove">
-            <AiOutlineDelete
-              className="text-xl text-red-500 cursor-pointer"
-              onClick={() => setAlertOpen(true)}
-            />
-          </span>
-        </td>
-      </tr>
+        </div>
+      )}
       {isEditOpen && (
         <Modal isOpen={isEditOpen} onClose={() => onEditClose(false)}>
           <ModalOverlay />
@@ -423,4 +574,4 @@ const HistoryCard = ({ invoiceData }: { invoiceData: invoiceType }) => {
   );
 };
 
-export default HistoryCard;
+export default HistoryTable;

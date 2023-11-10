@@ -146,9 +146,9 @@ const styles = StyleSheet.create({
   },
 });
 
-
-
 const PdfPreview = ({ data }: { data: PdfPreviewProps | any }) => {
+  // console.log(data);
+  
   const [formattedInvoiceDate, setformattedInvoiceDate] = useState("");
   const [formattedDueDate, setformattedDueDate] = useState("");
 
@@ -227,17 +227,17 @@ const PdfPreview = ({ data }: { data: PdfPreviewProps | any }) => {
               <Text style={[styles.tableHead, { fontWeight: "bold" }]}>
                 Description
               </Text>
-              {data?.invoice?.invoiceType === "monthly" && (
+              {data?.invoice?.invoiceType !== "hourly" && (
                 <Text style={[styles.tableHead, { fontWeight: "bold" }]}>
                   Period
                 </Text>
               )}
-              {data?.invoice?.invoiceType === "monthly" && (
+              {data?.invoice?.invoiceType !== "hourly" && (
                 <Text style={[styles.tableHead, { fontWeight: "bold" }]}>
                   Working Days
                 </Text>
               )}
-              {data?.invoice?.invoiceType === "monthly" && (
+              {data?.invoice?.invoiceType !== "hourly" && (
                 <Text style={[styles.tableHead, { fontWeight: "bold" }]}>
                   Total Working Days
                 </Text>
@@ -267,13 +267,13 @@ const PdfPreview = ({ data }: { data: PdfPreviewProps | any }) => {
                 <Text style={styles.tableCell}>
                   {invoice?.description || invoice?.projectDetails?.description}
                 </Text>
-                {data?.invoice?.invoiceType === "monthly" && (
+                {data?.invoice?.invoiceType !== "hourly" && (
                   <Text style={styles.tableCell}>{invoice?.period}</Text>
                 )}
-                {data.invoice.invoiceType === "monthly" && (
+                {data.invoice.invoiceType !== "hourly" && (
                   <Text style={styles.tableCell}>{invoice.workingDays}</Text>
                 )}
-                {data?.invoice?.invoiceType === "monthly" && (
+                {data?.invoice?.invoiceType !== "hourly" && (
                   <Text style={styles.tableCell}>
                     {invoice.totalWorkingDays}
                   </Text>
@@ -296,8 +296,6 @@ const PdfPreview = ({ data }: { data: PdfPreviewProps | any }) => {
                       "N/A"}
                   </Text>
                 )}
-                
-
                 <Text style={styles.tableCell}>{invoice?.amount}</Text>
               </View>
             ))}

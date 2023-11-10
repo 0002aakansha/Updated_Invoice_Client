@@ -1,7 +1,13 @@
 import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { AppState } from "../store/store";
-import { clientStateType, projectStateType } from "@/types/types";
+import {
+  clientStateType,
+  invoiceHistoryType,
+  invoiceProjectType,
+  projectStateType,
+  projectType,
+} from "@/types/types";
 
 const useRowData = () => {
   const { clients } = useSelector<AppState>(
@@ -49,9 +55,7 @@ export const useProjectRowData = () => {
           projectCycle: project?.projectCycle,
           projectType: project?.projectType,
           projectAmount: `${
-            project?.projectAmount
-              ? `${project?.projectAmount}`
-              : "N/A"
+            project?.projectAmount ? `${project?.projectAmount}` : "N/A"
           }`,
           rate: `${
             project?.rate?.rate
@@ -65,6 +69,36 @@ export const useProjectRowData = () => {
     );
   }, [projects]);
   return { projectRow };
+};
+
+export const useInvoiceRowData = () => {
+  const { invoice } = useSelector<AppState>(
+    (state) => state.history
+  ) as invoiceHistoryType;
+  const [historyRow, setHistoryRow] = useState<any>();
+
+  useEffect(() => {
+    setHistoryRow(
+      invoice
+        ?.filter((invoice) => invoice.active === true)
+        ?.map((invoice, indx) => ({
+          _id: invoice?._id,
+          sno: indx + 1,
+          invoiceNumber: invoice.invoiceNumber,
+          client: invoice?.createdFor?.name,
+          projects: invoice?.projects?.map(
+            (project: invoiceProjectType) => project.projectDetails.description
+          ),
+          createdOn: invoice?.createdOn,
+          dueDate: invoice?.dueDate,
+          subtotal: invoice?.subtotal,
+          gst: typeof invoice?.GST === 'object' ? `CGST: ${invoice?.GST?.CGST}, SGST: ${invoice?.GST?.CGST}`: invoice?.GST,
+          total: invoice?.GrandTotal,
+          status: invoice?.status,
+        }))
+    );
+  }, [invoice]);
+  return { historyRow };
 };
 
 export default useRowData;
