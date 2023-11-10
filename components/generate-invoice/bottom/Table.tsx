@@ -118,7 +118,7 @@ const Table = () => {
                                       checked: false,
                                     })
                                   );
-                                  dispatch(calculateSubtotal());
+                                  dispatch(calculateSubtotal({flag: undefined}));
                                 }
 
                                 const clientState = clients.filter(

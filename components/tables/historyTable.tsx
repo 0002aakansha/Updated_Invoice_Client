@@ -55,7 +55,7 @@ const HistoryTable = () => {
     invoice.filter((invoice) => invoice?._id === _id)[0]
   );
 
-  const tableColumn = [
+  const tableColumn: any = [
     {
       headerName: "S. No.",
       field: "sno",
@@ -254,8 +254,7 @@ const HistoryTable = () => {
   }, [invoice, lastInvoiceNumber]);
 
   useEffect(() => {
-    console.log(invoiceData);
-    
+
     if (
       typeof invoiceData?.createdFor !== "string" &&
       invoiceData?.invoiceCreatedBy &&
@@ -305,7 +304,7 @@ const HistoryTable = () => {
     invoiceData?.projects,
     invoiceData?.subtotal,
     lastInvoiceNumber,
-    invoiceData
+    invoiceData,
   ]);
 
   const generatePDF = async (e: FormEvent) => {
@@ -322,7 +321,7 @@ const HistoryTable = () => {
 
   const downloadPDF = () => {
     // console.log(invoiceData);
-    
+
     if (pdfBlob) {
       const pdfUrl = URL.createObjectURL(pdfBlob);
       const a = document.createElement("a");
@@ -347,7 +346,7 @@ const HistoryTable = () => {
             period: any;
             workingDays: any;
             totalWorkingDays: any;
-            hours: string,
+            hours: string;
             amount: string | number;
           }) => {
             return {

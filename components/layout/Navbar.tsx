@@ -33,18 +33,79 @@ const Navbar = () => {
             <span className="mx-2 text-sm text-stone-600">
               <FontAwesomeIcon icon={faGreaterThan} />
             </span>
-            <Link
-              href={"/dashboard"}
+            <p
               className="text-stone-500 font-light text-sm tracking-wide hover:text-stone-400 transition-colors delay-[.1s] ease-in"
             >
               Dashboard
-            </Link>
+            </p>
           </div>
         ),
         marginRight: "39.5rem",
       },
-      "/generateInvoice": { text: "Generate Invoice", marginRight: "46rem" },
-      "/history": { text: "Invoice History", marginRight: "48rem" },
+      "/addClient": {
+        text: (
+          <div className="flex items-center uppercase">
+            <h1>Home</h1>
+            <span className="mx-2 text-sm text-stone-600">
+              <FontAwesomeIcon icon={faGreaterThan} />
+            </span>
+            <p
+              className="text-stone-500 font-light text-sm tracking-wide hover:text-stone-400 transition-colors delay-[.1s] ease-in"
+            >
+              Add Client
+            </p>
+          </div>
+        ),
+        marginRight: "39.5rem",
+      },
+      "/addProject": {
+        text: (
+          <div className="flex items-center uppercase">
+            <h1>Home</h1>
+            <span className="mx-2 text-sm text-stone-600">
+              <FontAwesomeIcon icon={faGreaterThan} />
+            </span>
+            <p
+              className="text-stone-500 font-light text-sm tracking-wide hover:text-stone-400 transition-colors delay-[.1s] ease-in"
+            >
+              Add Project
+            </p>
+          </div>
+        ),
+        marginRight: "39.5rem",
+      },
+      "/generateInvoice": {
+        text: (
+          <div className="flex items-center uppercase">
+            <h1>Home</h1>
+            <span className="mx-2 text-sm text-stone-600">
+              <FontAwesomeIcon icon={faGreaterThan} />
+            </span>
+            <p
+              className="text-stone-500 font-light text-sm tracking-wide hover:text-stone-400 transition-colors delay-[.1s] ease-in"
+            >
+              Generate Invoice
+            </p>
+          </div>
+        ),
+        marginRight: "39.5rem",
+      },
+      "/history": {
+        text: (
+          <div className="flex items-center uppercase">
+            <h1>Home</h1>
+            <span className="mx-2 text-sm text-stone-600">
+              <FontAwesomeIcon icon={faGreaterThan} />
+            </span>
+            <p
+              className="text-stone-500 font-light text-sm tracking-wide hover:text-stone-400 transition-colors delay-[.1s] ease-in"
+            >
+              History
+            </p>
+          </div>
+        ),
+        marginRight: "39.5rem",
+      },
     };
 
     return textMap[currentRoute] || { text: "", marginRight: "" };

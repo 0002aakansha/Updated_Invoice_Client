@@ -24,7 +24,7 @@ const ProjectTable = () => {
   const [updateOpen, setUpdateOpen] = useState<boolean>(false);
   const [deleteOpen, setDeleteOpen] = useState<boolean>(false);
 
-  const tableColumn = [
+  const tableColumn:any = [
     {
       headerName: "S. No.",
       field: "sno",

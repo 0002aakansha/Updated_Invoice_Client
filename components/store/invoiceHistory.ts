@@ -83,7 +83,7 @@ export const getAllInvoice = createAsyncThunk(
 export const updateInvoice = createAsyncThunk(
   "invoice/history/update",
   async (
-    { id, dataToUpdate }: { id: string; dataToUpdate: { status: string } },
+    { id, dataToUpdate }: { id: string; dataToUpdate: { status: string | undefined } },
     { rejectWithValue }
   ) => {
     try {
