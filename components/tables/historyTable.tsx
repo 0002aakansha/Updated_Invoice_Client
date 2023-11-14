@@ -7,7 +7,7 @@ import { GrRotateRight } from "react-icons/gr";
 import { AiOutlineDelete } from "react-icons/ai";
 import { TbEditCircle } from "react-icons/tb";
 import PdfPreview from "../generate-invoice/PdfPreview/PdfPreview";
-import { FormEvent, useEffect, useMemo, useState } from "react";
+import { FormEvent, useEffect, useMemo, useRef, useState } from "react";
 import toast from "react-hot-toast";
 import { PDFViewer, pdf } from "@react-pdf/renderer";
 import { useDispatch, useSelector } from "react-redux";
@@ -259,7 +259,7 @@ const HistoryTable = () => {
       dispatch(setInvoiceNumber(""));
       return;
     }
-  }, [invoice, lastInvoiceNumber]);
+  }, [invoice, lastInvoiceNumber, isEditOpen]);
 
   useEffect(() => {
 
@@ -391,6 +391,21 @@ const HistoryTable = () => {
       );
   };
 
+  //export invoice history to csv file
+  const gridApiRef = useRef<any>(null);
+
+  const onGridReady = (params: any) => {
+    gridApiRef.current = params.api;
+  };
+  
+  const onExportClick = () => {
+    if (gridApiRef.current) {
+      gridApiRef.current.exportDataAsCsv();
+    } else {
+      console.error('Grid API is not initialized');
+    }
+  };
+
   return (
     <>
       {isLoading && <FullPageLoader />}
@@ -400,6 +415,7 @@ const HistoryTable = () => {
           description="There are 0 projects. Please create project first!"
         />
       ) : (
+        <>
         <div className="ag-theme-alpine" style={{ width: "100%" }}>
           <AgGridReact
             defaultColDef={defaultColDef}
@@ -409,8 +425,17 @@ const HistoryTable = () => {
             rowData={historyRow} // cells
             animateRows={true}
             domLayout="autoHeight"
+            onGridReady={onGridReady}
           />
         </div>
+        
+        <div className="mt-[2rem]">
+          <button className="bg-[#5a51be] cursor-pointer text-stone-100 px-4 py-2 rounded-sm tracking-wider"  onClick={onExportClick}>
+            Export
+          </button>
+        </div>
+
+        </>
       )}
       {isEditOpen && (
         <Modal isOpen={isEditOpen} onClose={() => onEditClose(false)}>

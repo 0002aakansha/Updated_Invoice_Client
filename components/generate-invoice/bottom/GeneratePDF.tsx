@@ -213,8 +213,8 @@ const GeneratePDF = () => {
 
   return (
     <div className="flex justify-center mt-[5rem]" onClick={generatePDF}>
-      <button className="bg-[#5a51be] cursor-pointer text-stone-100 px-4 py-2 rounded-sm tracking-wider font-bold">
-        Generate PDF
+      <button className=" cursor-pointer text-stone-100 px-4 py-2 rounded-sm tracking-wider font-bold">
+        Generate PDFbg-[#5a51be]
       </button>
 
       {isOpen && (
