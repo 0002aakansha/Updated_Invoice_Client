@@ -241,7 +241,7 @@ const CheckedModal = ({ uniqueKey }: { uniqueKey: string }) => {
                   </div>
                   <div className="flex flex-col my-2">
                     <label htmlFor="" className="font-semibold text-lg">
-                      Rate <span className="text-red-500">*</span>
+                      Rate {rate?.currency === 'USD' ? '$' : rate?.currency === 'POUND'? '£' : 'INR'} / Hour <span className="text-red-500">*</span>
                     </label>
                     <input
                       type="text"
@@ -295,6 +295,7 @@ const CheckedModal = ({ uniqueKey }: { uniqueKey: string }) => {
                 <Button
                   type="submit"
                   mr={3}
+                  colorScheme="purple"
                   className="bg-[#5a51be] text-stone-100 hover:bg-[#5a51be]"
                 >
                   Save

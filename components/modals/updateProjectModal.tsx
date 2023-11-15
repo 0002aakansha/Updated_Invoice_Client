@@ -263,6 +263,7 @@ const UpdateProjectModal = ({
                 type="submit"
                 className="bg-[#5a51be] text-stone-100 hover:bg-[#645bc5]"
                 mr={3}
+                colorScheme="purple"
               >
                 Save
               </Button>

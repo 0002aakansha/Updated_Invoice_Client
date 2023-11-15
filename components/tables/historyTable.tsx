@@ -498,7 +498,6 @@ const HistoryTable = () => {
                     type="date"
                     placeholder="Due Date"
                     className="border-2 mt-2 px-4 py-2 rounded-sm outline-none"
-                    // min={today}
                     value={dueDate ? dueDate.toISOString().split('T')[0] : ''}
                     min={date ? date.toISOString().split("T")[0] : ""}
                     onChange={(e) => {
@@ -516,6 +515,7 @@ const HistoryTable = () => {
                   <Button
                     className="bg-stone-200"
                     mr={3}
+                    size={'sm'}
                     onClick={() => onEditClose(false)}
                   >
                     Close
@@ -523,6 +523,8 @@ const HistoryTable = () => {
                   <Button
                     type="submit"
                     className="bg-[#5a51be] text-stone-100 px-4 py-2 hover:bg-[#6960cc]"
+                    size={'sm'}
+                    colorScheme="purple"
                   >
                     Download PDF
                   </Button>
@@ -562,6 +564,7 @@ const HistoryTable = () => {
                   <Button
                     type="submit"
                     className="bg-[#5a51be] text-stone-100 px-4 py-2 hover:bg-[#6960cc]"
+                    colorScheme="purple"
                   >
                     Update
                   </Button>
@@ -597,6 +600,7 @@ const HistoryTable = () => {
                 className="bg-[#5a51be] text-stone-100 px-4  hover:bg-[#6960cc]"
                 onClick={downloadPDF}
                 size={"sm"}
+                colorScheme="purple"
               >
                 Download PDF
               </Button>
