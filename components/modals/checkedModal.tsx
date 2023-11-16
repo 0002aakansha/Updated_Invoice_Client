@@ -55,6 +55,7 @@ const CheckedModal = ({ uniqueKey }: { uniqueKey: string }) => {
   const [hours, sethours] = useState<number>(0.0);
   const [conversionRate, setConversionRate] = useState<number>();
   const [indx, setIndx] = useState<number>();
+  const [projectAmount, setProjectAmount] = useState<number>(0.0);
 
   useEffect(() => {
     const project = detailedProject.filter(
@@ -69,6 +70,7 @@ const CheckedModal = ({ uniqueKey }: { uniqueKey: string }) => {
     setRate(project?.rate);
     sethours(project?.hours || 0.0);
     setConversionRate(project?.conversionRate);
+    setProjectAmount(project?.projectAmount  || 0.0)
   }, [detailedProject, uniqueKey]);
 
   const submitHandler = (e: FormEvent) => {
@@ -79,7 +81,23 @@ const CheckedModal = ({ uniqueKey }: { uniqueKey: string }) => {
       (project) => project._id === uniqueKey
     )[0] as dataProps;
 
-    if (workingDays && totalWorkingDays) {
+    // if (invoiceType === "fixedbudget") {
+    //   dispatch(
+    //     updateDetailedProjectOnChecked({
+    //       ...project,
+    //       indx: projects.findIndex((project) => project._id === uniqueKey),
+    //       description,
+    //       // projectAmount,
+    //       // amount: projectAmount.toFixed(2),
+    //       projectAmount: Number(projectAmount), 
+    //       amount: Number(projectAmount).toFixed(2),
+    //       rate: project.rate,
+    //       conversionRate,
+    //       projectBelongsTo: project.projectBelongsTo,
+    //     })
+    //   );
+    // } 
+   if (workingDays && totalWorkingDays) {
       if (
         +workingDays > 0 &&
         +totalWorkingDays > 0 &&
@@ -287,6 +305,41 @@ const CheckedModal = ({ uniqueKey }: { uniqueKey: string }) => {
                           ? "cursor-text"
                           : "cursor-not-allowed"
                       }`}
+                    />
+                  </div>
+                </>
+              )}
+               {invoiceType === "fixedbudget" && (
+                <>
+                  {/* Fixed Budget fields */}
+                  <div className="flex flex-col my-2">
+                    <label htmlFor="" className="font-semibold text-lg">
+                      Description <span className="text-red-500">*</span>
+                    </label>
+                    <input
+                      type="text"
+                      value={description}
+                      onChange={(e) => setDescription(e.target.value)}
+                      required
+                      autoFocus
+                      placeholder=""
+                      className="border-2 mt-2 px-4 py-2 rounded-sm outline-none"
+                    />
+                  </div>
+                  <div className="flex flex-col my-2">
+                    <label htmlFor="" className="font-semibold text-lg">
+                      Project Amount (INR) <span className="text-red-500">*</span>
+                    </label>
+                    <input
+                      type="number"
+                      step="0.01"
+                      value={projectAmount !== 0.0 ? projectAmount : ""}
+                      // value={projectAmount}
+                      onChange={(e) => setProjectAmount(+e.target.value)}
+                     
+                      required
+                      placeholder="0.0"
+                      className="border-2 mt-2 px-4 py-2 rounded-sm outline-none"
                     />
                   </div>
                 </>

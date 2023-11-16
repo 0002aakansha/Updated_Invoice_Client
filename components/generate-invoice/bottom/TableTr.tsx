@@ -44,7 +44,7 @@ const TableTr = ({ project, indx }: Props) => {
             {filteredProject?.totalWorkingDays}
           </td>
         </>
-      ) : (
+      ) : invoiceType === "hourly" ? (
         <>
           <td className="border-2 border-[#9d96e4] px-4 py-1 text-center">
             {/* {project?.rate?.rate} {project?.rate?.currency}/Hour */}
@@ -74,9 +74,16 @@ const TableTr = ({ project, indx }: Props) => {
             )}
           </td>
         </>
-      )}
+      ): invoiceType === "fixedbudget" ? (
+        <>
+          <td className="border-2 border-[#9d96e4] px-4 py-1 text-center">
+             {project?.projectAmount} INR
+          </td>
+        </>
+      ): null }
       <td className="border-2 border-[#9d96e4] px-4 py-1 text-center font-semibold">
-        INR {filteredProject?.amount}
+        {/* INR {filteredProject?.amount} */}
+        INR {invoiceType === "fixedbudget" ? project?.projectAmount : filteredProject?.amount}
       </td>
     </>
   );

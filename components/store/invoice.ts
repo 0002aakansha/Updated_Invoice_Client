@@ -54,7 +54,19 @@ const invoiceslice = createSlice({
         (project) => project._id === payload._id
       );
 
-      if (
+      // if (
+      //   state.invoiceType === "fixedbudget" &&
+      //   payload.projectAmount !== undefined
+      // ) {
+      //   // Update the project amount for fixed budget type
+      //   state.detailedProject[projectIndx] = {
+      //     ...payload,
+      //     amount: payload.projectAmount.toFixed(2),
+      //   };
+        
+      // } 
+
+     if (
         state.invoiceType === "monthly" &&
         payload.period &&
         payload.workingDays &&
