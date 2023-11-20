@@ -256,7 +256,6 @@ const HistoryTable = () => {
   }, [invoice, year]);
 
   useEffect(() => {
-
     if (isEditOpen) {
       setDate(new Date());
       const initialDueDate = new Date();
@@ -410,12 +409,12 @@ const HistoryTable = () => {
   const onGridReady = (params: any) => {
     gridApiRef.current = params.api;
   };
-  
+
   const onExportClick = () => {
     if (gridApiRef.current) {
       gridApiRef.current.exportDataAsCsv();
     } else {
-      console.error('Grid API is not initialized');
+      console.error("Grid API is not initialized");
     }
   };
 
@@ -429,25 +428,26 @@ const HistoryTable = () => {
         />
       ) : (
         <>
-        <div className="ag-theme-alpine" style={{ width: "100%" }}>
-          <AgGridReact
-            defaultColDef={defaultColDef}
-            pagination={pagination}
-            paginationPageSize={paginationPageSize}
-            columnDefs={tableColumn} // header
-            rowData={historyRow} // cells
-            animateRows={true}
-            domLayout="autoHeight"
-            onGridReady={onGridReady}
-          />
-        </div>
-        
-        <div className="mt-[2rem]">
-          <button className="bg-[#5a51be] cursor-pointer text-stone-100 px-4 py-2 rounded-sm tracking-wider"  onClick={onExportClick}>
-            Export
-          </button>
-        </div>
-
+          <div className="ag-theme-alpine" style={{ width: "100%" }}>
+            <AgGridReact
+              defaultColDef={defaultColDef}
+              pagination={pagination}
+              paginationPageSize={paginationPageSize}
+              columnDefs={tableColumn} // header
+              rowData={historyRow} // cells
+              animateRows={true}
+              domLayout="autoHeight"
+              onGridReady={onGridReady}
+            />
+          </div>
+          <div className="flex justify-end my-8">
+            <button
+              className="bg-[#5a51be] cursor-pointer text-stone-100 px-4 py-2 rounded-sm tracking-wider"
+              onClick={onExportClick}
+            >
+              Export
+            </button>
+          </div>
         </>
       )}
       {isEditOpen && (
@@ -487,7 +487,7 @@ const HistoryTable = () => {
                     type="date"
                     placeholder="Date"
                     className="border-2 mt-2 px-4 py-2 rounded-sm outline-none"
-                    value={date ? date.toISOString().split('T')[0] : ''}
+                    value={date ? date.toISOString().split("T")[0] : ""}
                     // onChange={(e) => {
                     //   const dateValue = e.target.value;
                     //   if (dateValue) {
@@ -499,9 +499,9 @@ const HistoryTable = () => {
                     onChange={(e) => {
                       const selectedDate = new Date(e.target.value);
                       const dueDate = new Date(selectedDate);
-                      dueDate.setDate(selectedDate.getDate() + 5); 
-                      setDate(selectedDate); 
-                      setDueDate(dueDate); 
+                      dueDate.setDate(selectedDate.getDate() + 5);
+                      setDate(selectedDate);
+                      setDueDate(dueDate);
                     }}
                     required
                   />
@@ -514,7 +514,7 @@ const HistoryTable = () => {
                     type="date"
                     placeholder="Due Date"
                     className="border-2 mt-2 px-4 py-2 rounded-sm outline-none"
-                    value={dueDate ? dueDate.toISOString().split('T')[0] : ''}
+                    value={dueDate ? dueDate.toISOString().split("T")[0] : ""}
                     min={date ? date.toISOString().split("T")[0] : ""}
                     onChange={(e) => {
                       const dateValue = e.target.value;
@@ -531,7 +531,7 @@ const HistoryTable = () => {
                   <Button
                     className="bg-stone-200"
                     mr={3}
-                    size={'sm'}
+                    size={"sm"}
                     onClick={() => onEditClose(false)}
                   >
                     Close
@@ -539,7 +539,7 @@ const HistoryTable = () => {
                   <Button
                     type="submit"
                     className="bg-[#5a51be] text-stone-100 px-4 py-2 hover:bg-[#6960cc]"
-                    size={'sm'}
+                    size={"sm"}
                     colorScheme="purple"
                   >
                     Download PDF

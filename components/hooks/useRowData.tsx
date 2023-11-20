@@ -4,9 +4,7 @@ import { AppState } from "../store/store";
 import {
   clientStateType,
   invoiceHistoryType,
-  invoiceProjectType,
   projectStateType,
-  projectType,
 } from "@/types/types";
 
 const useRowData = () => {
@@ -26,7 +24,7 @@ const useRowData = () => {
             sno: indx + 1,
             client: client?.name,
             gstin: client?.gstin,
-            address: `${client?.address?.street}, ${client?.address?.city}, ${client?.address?.pin}${client?.address?.state}, ${client?.address?.country}`,
+            address: `${client?.address?.street}, ${client?.address?.city} ${client?.address?.pin}, ${client?.address?.state}, ${client?.address?.country}`,
             projects: client?.projects?.length,
           };
         })

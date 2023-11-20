@@ -77,13 +77,13 @@ const TableTr = ({ project, indx }: Props) => {
       ): invoiceType === "fixedbudget" ? (
         <>
           <td className="border-2 border-[#9d96e4] px-4 py-1 text-center">
-             {project?.projectAmount} INR
+             {filteredProject?.projectAmount} INR
           </td>
         </>
       ): null }
       <td className="border-2 border-[#9d96e4] px-4 py-1 text-center font-semibold">
         {/* INR {filteredProject?.amount} */}
-        INR {invoiceType === "fixedbudget" ? project?.projectAmount : filteredProject?.amount}
+        INR {invoiceType === "fixedbudget" && filteredProject?.projectAmount}
       </td>
     </>
   );
