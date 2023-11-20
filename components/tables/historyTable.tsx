@@ -32,6 +32,10 @@ import { useInvoiceRowData } from "../hooks/useRowData";
 
 import "ag-grid-community/styles/ag-grid.css";
 import "ag-grid-community/styles/ag-theme-alpine.css";
+import getFilteredInvoiceNumber, {
+  generateInvoiceNumber,
+  getLocalStorage,
+} from "@/utils/invoiceNumber";
 
 const HistoryTable = () => {
   const [pdfBlob, setPdfBlob] = useState<Blob | MediaSource>();
@@ -84,7 +88,6 @@ const HistoryTable = () => {
       filter: true,
       cellClass: "centered-cell",
       width: 300,
-      // floatingFilter: true
     },
     {
       headerName: "Projects",
@@ -206,9 +209,15 @@ const HistoryTable = () => {
   const defaultColDef = useMemo(
     () => ({
       sortable: true,
+      flex: 1,
     }),
     []
   );
+  const autoGroupColumnDef = useMemo(() => {
+    return {
+      minWidth: 200,
+    };
+  }, []);
   const pagination = true;
   const paginationPageSize = 15;
 
@@ -219,25 +228,32 @@ const HistoryTable = () => {
 
   const today = new Date().toISOString().split("T")[0];
 
+  const [year] = useState<string | null>(
+    typeof window !== "undefined" && window.localStorage
+      ? getLocalStorage("year")
+      : null
+  );
+
   useEffect(() => {
     setInvoiceData(invoice.filter((invoice) => invoice?._id === _id)[0]);
   }, [_id, invoice]);
 
   useEffect(() => {
-    invoice.length !== 0
-      ? setLastInvoiceNumber(
-          `${invoice[invoice.length - 1]?.invoiceNumber
-            .toString()
-            .slice(0, 4)}` +
-            (
-              +invoice[invoice.length - 1]?.invoiceNumber.toString().slice(4) +
-              1
-            )
-              .toString()
-              .padStart(2, "0")
-        )
-      : setLastInvoiceNumber("");
-  }, [invoice]);
+    if (invoice.length !== 0) {
+      if (year) {
+        const filteredYear = getFilteredInvoiceNumber(invoice, year);
+        if (filteredYear.length !== 0) {
+          setLastInvoiceNumber(generateInvoiceNumber(filteredYear));
+        } else setLastInvoiceNumber(`${localStorage.getItem("year")}001`);
+      } else
+        !getLocalStorage("year") &&
+          localStorage.setItem(
+            "year",
+            invoice[invoice.length - 1]?.invoiceNumber.toString().slice(0, 4)
+          );
+      setLastInvoiceNumber(generateInvoiceNumber(invoice));
+    } else setLastInvoiceNumber("");
+  }, [invoice, year]);
 
   useEffect(() => {
     if (
@@ -254,7 +270,6 @@ const HistoryTable = () => {
   }, [invoice, lastInvoiceNumber]);
 
   useEffect(() => {
-
     if (
       typeof invoiceData?.createdFor !== "string" &&
       invoiceData?.invoiceCreatedBy &&
@@ -320,8 +335,6 @@ const HistoryTable = () => {
   };
 
   const downloadPDF = () => {
-    // console.log(invoiceData);
-
     if (pdfBlob) {
       const pdfUrl = URL.createObjectURL(pdfBlob);
       const a = document.createElement("a");
@@ -420,7 +433,10 @@ const HistoryTable = () => {
                       placeholder="Invoice Number"
                       className="border-2 mt-2 px-4 py-2 rounded-sm outline-none"
                       maxLength={8}
-                      value={lastInvoiceNumber}
+                      value={`${
+                        getLocalStorage("year") ||
+                        invoice[invoice.length - 1].invoiceNumber.slice(0, 4)
+                      }${lastInvoiceNumber.toString().slice(4)}`}
                       onChange={(e) => setLastInvoiceNumber(e.target.value)}
                     />
                     {error && (

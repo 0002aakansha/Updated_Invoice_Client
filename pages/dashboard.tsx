@@ -37,10 +37,10 @@ const Dashboard = () => {
           <FullPageLoader />
         ) : (
           <>
-            {/* <nav className="flex justify-end space-x-2 p-4 mr-4">
+            <nav className="flex justify-end space-x-2 p-4 mr-4">
               <button
                 className="flex items-center space-x-2 bg-[#5a51be] text-white py-2 px-3 rounded-md text-sm hover:bg-[#6860c7] transition-all delay-[.1s] ease-in"
-                // onClick={() => setIsResetYearOpen(true)}
+                onClick={() => setIsResetYearOpen(true)}
               >
                 <FontAwesomeIcon icon={faSync} />
                 <span className="font-bold ">Reset Year</span>
@@ -58,9 +58,9 @@ const Dashboard = () => {
                   <span className="font-bold">New Project</span>
                 </button>
               </Link>
-            </nav> */}
+            </nav>
             <Cards />
-            <div className="flex justify-end my-8 space-x-4 mr-4">
+            {/* <div className="flex justify-end my-8 space-x-4 mr-4">
               <button className="flex items-center" onClick={() => setIsResetYearOpen(true)}>
                 <FontAwesomeIcon
                   icon={faSync}
@@ -87,7 +87,7 @@ const Dashboard = () => {
                   <span className="font-bold text-slate-800">Add Project</span>
                 </button>
               </Link>
-            </div>
+            </div> */}
             <MainTable />
           </>
         )}

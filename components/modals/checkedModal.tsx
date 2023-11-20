@@ -27,7 +27,6 @@ import {
   updateDetailedProjectOnChecked,
   updatedChecked,
 } from "../store/invoice";
-import project from "../store/project";
 
 const CheckedModal = ({ uniqueKey }: { uniqueKey: string }) => {
   const { invoiceType, isChecked, detailedProject } = useSelector<AppState>(
@@ -73,8 +72,6 @@ const CheckedModal = ({ uniqueKey }: { uniqueKey: string }) => {
 
   const submitHandler = (e: FormEvent) => {
     e.preventDefault();
-    console.log(conversionRate);
-
     const project = detailedProject.filter(
       (project) => project._id === uniqueKey
     )[0] as dataProps;
@@ -124,13 +121,15 @@ const CheckedModal = ({ uniqueKey }: { uniqueKey: string }) => {
       )
         return toast.error("values can't be less than to 0");
       else if (invoiceType === "hourly" && hours && hours > 0) {
+        console.log(rate);
+
         dispatch(
           updateDetailedProjectOnChecked({
             ...project,
             indx: projects.findIndex((project) => project._id === uniqueKey),
             description,
             hours: hours.toString(),
-            rate: project.rate,
+            rate: rate,
             conversionRate,
           })
         );

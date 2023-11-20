@@ -11,6 +11,7 @@ const initialState: invoiceStateType = {
   subtotal: 0.0,
   GST: 0,
   GrandTotal: 0.0,
+  resetYear: new Date().getFullYear(),
   active: true,
 };
 
@@ -32,6 +33,11 @@ const invoiceslice = createSlice({
     },
     setDueDate(state, { payload }) {
       state.DueDate = payload;
+    },
+    setResetYear(state, { payload }) {
+      console.log(payload);
+
+      state.resetYear = payload;
     },
     updatedChecked(
       state,
@@ -182,6 +188,7 @@ export const {
   setDate,
   setDueDate,
   setTotalToZero,
+  setResetYear,
   updateSpecificField,
 } = invoiceslice.actions;
 export default invoiceslice.reducer;

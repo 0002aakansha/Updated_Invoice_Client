@@ -5,13 +5,19 @@ import {
 } from "@/components/store/invoice";
 import { AppDispatch, AppState } from "@/components/store/store";
 import { invoiceHistoryType, invoiceStateType } from "@/types/types";
+import getFilteredInvoiceNumber, {
+  generateInvoiceNumber,
+  getLocalStorage,
+} from "@/utils/invoiceNumber";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
 const InvoiceNumber = () => {
-  const { Date: currentDate, DueDate } = useSelector<AppState>(
-    (state) => state.invoice
-  ) as invoiceStateType;
+  const {
+    Date: currentDate,
+    DueDate,
+    resetYear,
+  } = useSelector<AppState>((state) => state.invoice) as invoiceStateType;
   const { invoice } = useSelector<AppState>(
     (state) => state.history
   ) as invoiceHistoryType;
@@ -19,29 +25,34 @@ const InvoiceNumber = () => {
 
   const [date, setdate] = useState<Date | null>(currentDate);
   const [dueDate, setdueDate] = useState<Date | null>(DueDate);
-  const [lastInvoiceNumber, setLastInvoiceNumber] = useState<number | string>(
-    ""
-  );
+  const [lastInvoiceNumber, setLastInvoiceNumber] = useState<
+    number | string | any
+  >("");
   const [error, setError] = useState<string>("");
+  const [year] = useState<string | null>(
+    typeof window !== "undefined" && window.localStorage
+      ? getLocalStorage("year")
+      : null
+  );
 
   useEffect(() => {
-    invoice.length !== 0
-      ? setLastInvoiceNumber(
-          `${invoice[invoice.length - 1]?.invoiceNumber
-            .toString()
-            .slice(0, 4)}` +
-            (
-              +invoice[invoice.length - 1]?.invoiceNumber.toString().slice(4) +
-              1
-            )
-              .toString()
-              .padStart(2, "0")
-        )
-      : setLastInvoiceNumber("");
-  }, [invoice]);
+    if (invoice.length !== 0) {
+      if (year) {
+        const filteredYear = getFilteredInvoiceNumber(invoice, year);
+        if (filteredYear.length !== 0) {
+          setLastInvoiceNumber(generateInvoiceNumber(filteredYear));
+        } else setLastInvoiceNumber(`${localStorage.getItem("year")}001`);
+      } else if (!getLocalStorage("year")) {
+        localStorage.setItem(
+          "year",
+          invoice[invoice.length - 1]?.invoiceNumber.toString().slice(0, 4)
+        );
+        setLastInvoiceNumber(generateInvoiceNumber(invoice));
+      }
+    } else setLastInvoiceNumber("");
+  }, [invoice, year, lastInvoiceNumber]);
 
   useEffect(() => {
-    
     setdate(new Date());
     const initialDueDate = new Date();
     initialDueDate.setDate(initialDueDate.getDate() + 5);
@@ -92,7 +103,9 @@ const InvoiceNumber = () => {
               type="text"
               id="invoice"
               className="bg-transparent outline-none border px-2 border-stone-300 p-1 rounded-sm xs:text-xs w-full sm:text-sm md:text-md"
-              value={lastInvoiceNumber}
+              value={`${getLocalStorage("year")}${lastInvoiceNumber
+                .toString()
+                .slice(4)}`}
               onChange={(e) => {
                 setLastInvoiceNumber(+e.target.value);
               }}

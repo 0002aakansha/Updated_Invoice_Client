@@ -48,7 +48,7 @@ const TableTr = ({ project, indx }: Props) => {
         <>
           <td className="border-2 border-[#9d96e4] px-4 py-1 text-center">
             {/* {project?.rate?.rate} {project?.rate?.currency}/Hour */}
-            {`${project?.rate?.rate} ${
+            {`${filteredProject?.rate?.rate} ${
               project?.rate?.currency === "USD"
                 ? "$"
                 : project?.rate?.currency === "POUND"
