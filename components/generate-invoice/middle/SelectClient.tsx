@@ -124,6 +124,7 @@ const SelectClient = () => {
             <option value="">Select project type</option>
             <option value="monthly">Monthly</option>
             <option value="hourly">Hourly</option>
+            <option value='fixedbudget'>Fixed Budget</option>
           </select>
         </form>
       </div>

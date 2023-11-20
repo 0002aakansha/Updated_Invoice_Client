@@ -70,13 +70,17 @@ const Table = () => {
                     <th className="p-2">Working Days</th>
                     <th className="p-2">Total Working Days</th>
                   </>
-                ) : (
+                ) : invoiceType === "hourly" ? (
                   <>
                     <th className="p-2">Rate</th>
                     <th className="p-2">Hours</th>
                     <th className="p-2">Conversion Rate</th>
                   </>
-                )}
+                ) : invoiceType === "fixedbudget" ? (
+                  <>
+                    <th className="p-2">Project Amount</th>
+                  </>
+                ) : null }
                 <th>Amount</th>
               </tr>
             </thead>

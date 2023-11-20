@@ -7,7 +7,7 @@ import { GrRotateRight } from "react-icons/gr";
 import { AiOutlineDelete } from "react-icons/ai";
 import { TbEditCircle } from "react-icons/tb";
 import PdfPreview from "../generate-invoice/PdfPreview/PdfPreview";
-import { FormEvent, useEffect, useMemo, useState } from "react";
+import { FormEvent, useEffect, useMemo, useRef, useState } from "react";
 import toast from "react-hot-toast";
 import { PDFViewer, pdf } from "@react-pdf/renderer";
 import { useDispatch, useSelector } from "react-redux";
@@ -44,8 +44,8 @@ const HistoryTable = () => {
   const [isEditOpen, onEditClose] = useState(false);
   const [isAlertOpen, setAlertOpen] = useState<boolean>(false);
   const [status, setStatus] = useState<string>();
-  const [date, setDate] = useState<Date | null>();
-  const [dueDate, setDueDate] = useState<Date | null>(null);
+  const [date, setDate] = useState<Date | null>(new Date());
+  const [dueDate, setDueDate] = useState<Date | null>(new Date());
   const dispatch = useDispatch<AppDispatch>();
   const [isUpdateOpen, onUpdateOpen] = useState<boolean>(false);
 
@@ -256,6 +256,14 @@ const HistoryTable = () => {
   }, [invoice, year]);
 
   useEffect(() => {
+
+    if (isEditOpen) {
+      setDate(new Date());
+      const initialDueDate = new Date();
+      initialDueDate.setDate(initialDueDate.getDate() + 5);
+      setDueDate(initialDueDate);
+    }
+
     if (
       invoice.filter((invoice) => +invoice.invoiceNumber === +lastInvoiceNumber)
         .length === 0
@@ -267,7 +275,7 @@ const HistoryTable = () => {
       dispatch(setInvoiceNumber(""));
       return;
     }
-  }, [invoice, lastInvoiceNumber]);
+  }, [invoice, lastInvoiceNumber, isEditOpen]);
 
   useEffect(() => {
     if (
@@ -396,6 +404,21 @@ const HistoryTable = () => {
       );
   };
 
+  //export invoice history to csv file
+  const gridApiRef = useRef<any>(null);
+
+  const onGridReady = (params: any) => {
+    gridApiRef.current = params.api;
+  };
+  
+  const onExportClick = () => {
+    if (gridApiRef.current) {
+      gridApiRef.current.exportDataAsCsv();
+    } else {
+      console.error('Grid API is not initialized');
+    }
+  };
+
   return (
     <>
       {isLoading && <FullPageLoader />}
@@ -405,6 +428,7 @@ const HistoryTable = () => {
           description="There are 0 projects. Please create project first!"
         />
       ) : (
+        <>
         <div className="ag-theme-alpine" style={{ width: "100%" }}>
           <AgGridReact
             defaultColDef={defaultColDef}
@@ -414,8 +438,17 @@ const HistoryTable = () => {
             rowData={historyRow} // cells
             animateRows={true}
             domLayout="autoHeight"
+            onGridReady={onGridReady}
           />
         </div>
+        
+        <div className="mt-[2rem]">
+          <button className="bg-[#5a51be] cursor-pointer text-stone-100 px-4 py-2 rounded-sm tracking-wider"  onClick={onExportClick}>
+            Export
+          </button>
+        </div>
+
+        </>
       )}
       {isEditOpen && (
         <Modal isOpen={isEditOpen} onClose={() => onEditClose(false)}>
@@ -454,13 +487,21 @@ const HistoryTable = () => {
                     type="date"
                     placeholder="Date"
                     className="border-2 mt-2 px-4 py-2 rounded-sm outline-none"
+                    value={date ? date.toISOString().split('T')[0] : ''}
+                    // onChange={(e) => {
+                    //   const dateValue = e.target.value;
+                    //   if (dateValue) {
+                    //     setDate(new window.Date(dateValue));
+                    //   } else {
+                    //     setDate(null);
+                    //   }
+                    // }}
                     onChange={(e) => {
-                      const dateValue = e.target.value;
-                      if (dateValue) {
-                        setDate(new window.Date(dateValue));
-                      } else {
-                        setDate(null);
-                      }
+                      const selectedDate = new Date(e.target.value);
+                      const dueDate = new Date(selectedDate);
+                      dueDate.setDate(selectedDate.getDate() + 5); 
+                      setDate(selectedDate); 
+                      setDueDate(dueDate); 
                     }}
                     required
                   />
@@ -473,7 +514,8 @@ const HistoryTable = () => {
                     type="date"
                     placeholder="Due Date"
                     className="border-2 mt-2 px-4 py-2 rounded-sm outline-none"
-                    min={today}
+                    value={dueDate ? dueDate.toISOString().split('T')[0] : ''}
+                    min={date ? date.toISOString().split("T")[0] : ""}
                     onChange={(e) => {
                       const dateValue = e.target.value;
                       if (dateValue) {
@@ -489,6 +531,7 @@ const HistoryTable = () => {
                   <Button
                     className="bg-stone-200"
                     mr={3}
+                    size={'sm'}
                     onClick={() => onEditClose(false)}
                   >
                     Close
@@ -496,6 +539,8 @@ const HistoryTable = () => {
                   <Button
                     type="submit"
                     className="bg-[#5a51be] text-stone-100 px-4 py-2 hover:bg-[#6960cc]"
+                    size={'sm'}
+                    colorScheme="purple"
                   >
                     Download PDF
                   </Button>
@@ -535,6 +580,7 @@ const HistoryTable = () => {
                   <Button
                     type="submit"
                     className="bg-[#5a51be] text-stone-100 px-4 py-2 hover:bg-[#6960cc]"
+                    colorScheme="purple"
                   >
                     Update
                   </Button>
@@ -570,6 +616,7 @@ const HistoryTable = () => {
                 className="bg-[#5a51be] text-stone-100 px-4  hover:bg-[#6960cc]"
                 onClick={downloadPDF}
                 size={"sm"}
+                colorScheme="purple"
               >
                 Download PDF
               </Button>
