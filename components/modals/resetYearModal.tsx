@@ -53,7 +53,7 @@ function ResetYearModal({
           <ModalCloseButton />
           <form onSubmit={resetYearFn}>
             <ModalBody>
-              <select
+              {/* <select
                 name=""
                 id=""
                 className="bg-transparent outline-none border-2 mt-2 px-4 py-2 w-full rounded-sm"
@@ -65,7 +65,11 @@ function ResetYearModal({
                     {year}
                   </option>
                 ))}
-              </select>
+              </se> */}
+              <input
+                type="text"
+                className="bg-transparent outline-none border-2 mt-2 px-4 py-2 w-full rounded-sm"
+              />
               {/* <input
                 type="month"
                 value={

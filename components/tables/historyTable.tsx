@@ -318,17 +318,17 @@ const HistoryTable = () => {
     invoiceData?.GST,
     invoiceData?.GrandTotal,
     invoiceData?.createdFor,
-    invoiceData.createdOn,
-    invoiceData.dueDate,
+    invoiceData?.createdOn,
+    invoiceData?.dueDate,
     invoiceData?.invoiceCreatedBy,
-    invoiceData.invoiceNumber,
+    invoiceData?.invoiceNumber,
     invoiceData?.invoiceType,
     invoiceData?.projects,
     invoiceData?.subtotal,
     lastInvoiceNumber,
     invoiceData,
   ]);
-
+  
   const generatePDF = async (e: FormEvent) => {
     e.preventDefault();
 
@@ -428,6 +428,19 @@ const HistoryTable = () => {
         />
       ) : (
         <>
+          <div className="flex justify-between items-center px-4">
+            <h1 className="font-semibold tracking-wider text-[#5a51be] text-xl">
+              History
+            </h1>
+            <div className="flex justify-end my-8">
+              <button
+                className="cursor-pointer text-stone-600 bg-white border-[#e8e8ea] font-semibold hover:bg-slate-100 transition-all duration-75 ease-in-out border-2 px-4 py-1 rounded-sm tracking-wider"
+                onClick={onExportClick}
+              >
+                Export
+              </button>
+            </div>
+          </div>
           <div className="ag-theme-alpine" style={{ width: "100%" }}>
             <AgGridReact
               defaultColDef={defaultColDef}
@@ -439,14 +452,6 @@ const HistoryTable = () => {
               domLayout="autoHeight"
               onGridReady={onGridReady}
             />
-          </div>
-          <div className="flex justify-end my-8">
-            <button
-              className="bg-[#5a51be] cursor-pointer text-stone-100 px-4 py-2 rounded-sm tracking-wider"
-              onClick={onExportClick}
-            >
-              Export
-            </button>
           </div>
         </>
       )}
@@ -488,14 +493,6 @@ const HistoryTable = () => {
                     placeholder="Date"
                     className="border-2 mt-2 px-4 py-2 rounded-sm outline-none"
                     value={date ? date.toISOString().split("T")[0] : ""}
-                    // onChange={(e) => {
-                    //   const dateValue = e.target.value;
-                    //   if (dateValue) {
-                    //     setDate(new window.Date(dateValue));
-                    //   } else {
-                    //     setDate(null);
-                    //   }
-                    // }}
                     onChange={(e) => {
                       const selectedDate = new Date(e.target.value);
                       const dueDate = new Date(selectedDate);

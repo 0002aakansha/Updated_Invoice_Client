@@ -13,11 +13,9 @@ import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
 const InvoiceNumber = () => {
-  const {
-    Date: currentDate,
-    DueDate,
-    resetYear,
-  } = useSelector<AppState>((state) => state.invoice) as invoiceStateType;
+  const { Date: currentDate, DueDate } = useSelector<AppState>(
+    (state) => state.invoice
+  ) as invoiceStateType;
   const { invoice } = useSelector<AppState>(
     (state) => state.history
   ) as invoiceHistoryType;
@@ -50,7 +48,7 @@ const InvoiceNumber = () => {
         setLastInvoiceNumber(generateInvoiceNumber(invoice));
       }
     } else setLastInvoiceNumber("");
-  }, [invoice, year, lastInvoiceNumber]);
+  }, [invoice, year]);
 
   useEffect(() => {
     setdate(new Date());

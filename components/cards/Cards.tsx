@@ -19,8 +19,8 @@ const Cards = () => {
   ) as invoiceHistoryType;
 
   return (
-    <div className="flex justify-center">
-      <div className="grid md:grid-cols-4 xs:grid-cols-1 w-full gap-4 my-1a p-4 place-content-center ">
+    <div className="flex justify-center bg-[#5a51be] h-[150px] relative mb-[5rem]">
+      <div className="grid md:grid-cols-4 xs:grid-cols-1 w-full my-1a p-4 place-content-center absolute bottom-[-32px]">
         <Card
           color="bg-[#519fbe]"
           title="Total Clients"

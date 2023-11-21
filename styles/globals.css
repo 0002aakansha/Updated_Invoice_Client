@@ -162,11 +162,14 @@ select:hover option:hover {
 }
 
 .card:first-child {
-  background: linear-gradient(45deg, #5145a0, #a97ff8);
+  background: linear-gradient(45deg, #3ec6ff, #081576);
 }
 
 .card:nth-child(2) {
-  background: linear-gradient(45deg, #3ec6ff, #081576);
+  background: linear-gradient(45deg,#b14b4b,#f87fe0);
+}
+.card:nth-child(3) {
+  background: linear-gradient(45deg,#bf4d4d,#f87f7f);
 }
 
 .card:last-child {

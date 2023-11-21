@@ -12,7 +12,7 @@ const Layout = ({ children }: Props) => {
             <Sidebar />
             <div className='bg-[#f2f2f2] w-full'>
                 <Navbar />
-                <div  className='p-4'>
+                <div>
                     {children}
                 </div>
             </div>

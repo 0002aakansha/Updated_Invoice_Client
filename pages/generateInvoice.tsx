@@ -22,17 +22,17 @@ const GenerateInvoice = () => {
 
   return (
     <Layout>
-      <>
+      <div className="p-4">
         {user.isLoading && client.isLoading ? (
           <FullPageLoader />
         ) : (
-          <div className="bg-[#fff] py-8 px-16 xs:px-8 ">
+          <div className="bg-[#fff] py-8 px-16 xs:px-8">
             <TopHeader />
             <MiddleMain />
             <BottomMain />
           </div>
         )}
-      </>
+      </div>
     </Layout>
   );
 };

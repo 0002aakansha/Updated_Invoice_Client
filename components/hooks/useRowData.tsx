@@ -82,7 +82,7 @@ export const useInvoiceRowData = () => {
         ?.map((invoice, indx) => ({
           _id: invoice?._id,
           sno: indx + 1,
-          invoiceNumber: invoice.invoiceNumber,
+          invoiceNumber: invoice?.invoiceNumber,
           client: invoice?.createdFor?.name,
           projects: invoice?.projects?.map(
             (project: any) => project.projectDetails.description
