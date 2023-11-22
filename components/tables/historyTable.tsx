@@ -46,8 +46,11 @@ const HistoryTable = () => {
   const [status, setStatus] = useState<string>();
   const [date, setDate] = useState<Date | null>(new Date());
   const [dueDate, setDueDate] = useState<Date | null>(new Date());
+  const [amountReceived, setAmountReceived] = useState<number | string>();
+  const [amountDate, setAmountDate] = useState<Date| null >(new Date());
   const dispatch = useDispatch<AppDispatch>();
   const [isUpdateOpen, onUpdateOpen] = useState<boolean>(false);
+  const [isAmountReceivedOpen, onAmountReceivedOpen] = useState<boolean>(false);
 
   // invoice number
   const { invoice, isLoading } = useSelector<AppState>(
@@ -115,7 +118,7 @@ const HistoryTable = () => {
       cellClass: "centered-cell",
     },
     {
-      headerName: "Total",
+      headerName: "Subtotal",
       field: "subtotal",
       resizable: true,
       headerClass: "custom-header",
@@ -132,7 +135,23 @@ const HistoryTable = () => {
       width: 300,
     },
     {
-      headerName: "Subtotal",
+      headerName: "Total Amount",
+      field: "total",
+      resizable: true,
+      headerClass: "custom-header",
+      filter: true,
+      cellClass: "centered-cell",
+    },
+    {
+      headerName: "Amount Received",
+      field: "total",
+      resizable: true,
+      headerClass: "custom-header",
+      filter: true,
+      cellClass: "centered-cell",
+    },
+    {
+      headerName: "Pending Amount",
       field: "total",
       resizable: true,
       headerClass: "custom-header",
@@ -151,11 +170,10 @@ const HistoryTable = () => {
           <div className="flex items-center space-x-2 justify-center">
             <FontAwesomeIcon
               icon={faCircle}
-              className={`${
-                params?.data?.status === "raised"
+              className={`${params?.data?.status === "raised"
                   ? " text-orange-600"
                   : " text-green-600"
-              }`}
+                }`}
             />
             {params?.data?.status === "raised" ? (
               <p className="text-stone-800">Raised</p>
@@ -172,6 +190,7 @@ const HistoryTable = () => {
       headerClass: "custom-header",
       cellClass: "centered-cell",
       pinned: "right",
+      resizable: true,
       lockPinned: true,
       cellRenderer: (params: any) => (
         <div className="md:p-2 sm:pr-0 sm:pl-0 text-center cursor-pointer space-x-8 flex">
@@ -199,6 +218,15 @@ const HistoryTable = () => {
               onClick={() => {
                 setId(params?.data?._id);
                 setAlertOpen(true);
+              }}
+            />
+          </span>
+          <span title="Edit">
+            <TbEditCircle
+              className="text-xl text-slate-500 cursor-pointer"
+              onClick={() => {
+                setId(params?.data?._id);
+                onAmountReceivedOpen(true);
               }}
             />
           </span>
@@ -328,7 +356,7 @@ const HistoryTable = () => {
     lastInvoiceNumber,
     invoiceData,
   ]);
-  
+
   const generatePDF = async (e: FormEvent) => {
     e.preventDefault();
 
@@ -471,10 +499,9 @@ const HistoryTable = () => {
                       placeholder="Invoice Number"
                       className="border-2 mt-2 px-4 py-2 rounded-sm outline-none"
                       maxLength={8}
-                      value={`${
-                        getLocalStorage("year") ||
+                      value={`${getLocalStorage("year") ||
                         invoice[invoice.length - 1].invoiceNumber.slice(0, 4)
-                      }${lastInvoiceNumber.toString().slice(4)}`}
+                        }${lastInvoiceNumber.toString().slice(4)}`}
                       onChange={(e) => setLastInvoiceNumber(e.target.value)}
                     />
                     {error && (
@@ -627,7 +654,67 @@ const HistoryTable = () => {
           isOpen={isAlertOpen}
           onClose={setAlertOpen}
           filter="invoiceDelete"
+
         />
+      )}
+      {isAmountReceivedOpen && (
+        <Modal isOpen={isAmountReceivedOpen} onClose={() => onAmountReceivedOpen(false)}>
+          <ModalOverlay />
+          <ModalContent>
+            <ModalBody>
+              <form action="" onSubmit={updateHandler} className="my-4">
+                <div className="flex flex-col my-2">
+                  <label htmlFor="" className="font-semibold text-lg">
+                    Enter Recieved Amount
+                  </label>
+                  <input
+                    type="number"
+                    placeholder="Amount Recieved"
+                    className="border-2 mt-2 px-4 py-2 rounded-sm outline-none"
+                    value={amountReceived}
+                    onChange={(e) => setAmountReceived(e.target.value)}
+                    required
+                  />
+                </div>
+                <div className="flex flex-col my-2">
+                  <label htmlFor="" className="font-semibold text-lg">
+                    Due Date
+                  </label>
+                  <input
+                    type="date"
+                    className="border-2 mt-2 px-4 py-2 rounded-sm outline-none"
+                    value={amountDate ? amountDate.toISOString().split("T")[0] : ""}
+                    onChange={(e) => {
+                      const dateValue = e.target.value;
+                      if (dateValue) {
+                        setAmountDate(new window.Date(dateValue));
+                      } else {
+                        setAmountDate(null);
+                      }
+                    }}
+                    required
+                  />
+                </div>
+                <ModalFooter>
+                  <Button
+                    className="bg-stone-200"
+                    mr={3}
+                    onClick={() => onAmountReceivedOpen(false)}
+                  >
+                    Close
+                  </Button>
+                  <Button
+                    type="submit"
+                    className="bg-[#5a51be] text-stone-100 px-4 py-2 hover:bg-[#6960cc]"
+                    colorScheme="purple"
+                  >
+                    Save
+                  </Button>
+                </ModalFooter>
+              </form>
+            </ModalBody>
+          </ModalContent>
+        </Modal>
       )}
     </>
   );

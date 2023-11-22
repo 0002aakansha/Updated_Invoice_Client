@@ -82,6 +82,7 @@ export default function AlertDialogExample({
             <Button onClick={() => onClose(false)}>Cancel</Button>
             <Button
               className="bg-red-700 text-stone-100 hover:bg-red-600"
+              colorScheme={filter === "logout" ? "blue" : "red"}
               onClick={
                 filter === "logout"
                   ? logoutHandler
