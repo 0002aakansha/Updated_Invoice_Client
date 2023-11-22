@@ -4,8 +4,10 @@ import { AppState } from "../store/store";
 import {
   clientStateType,
   invoiceHistoryType,
+  invoiceStateType,
   projectStateType,
 } from "@/types/types";
+import invoice from "../store/invoice";
 
 const useRowData = () => {
   const { clients } = useSelector<AppState>(
@@ -24,6 +26,7 @@ const useRowData = () => {
             sno: indx + 1,
             client: client?.name,
             gstin: client?.gstin,
+            tds: (client?.tds || 0) + "%",
             address: `${client?.address?.street}, ${client?.address?.city} ${client?.address?.pin}, ${client?.address?.state}, ${client?.address?.country}`,
             projects: client?.projects?.length,
           };
@@ -100,6 +103,46 @@ export const useInvoiceRowData = () => {
     );
   }, [invoice]);
   return { historyRow };
+};
+
+export const useCheckedProjectRowData = () => {
+  const { detailedProject, invoiceType } = useSelector<AppState>(
+    (state) => state.invoice
+  ) as invoiceStateType;
+  const { projects, clients } = useSelector<AppState>(
+    (state) => state.client
+  ) as clientStateType;
+
+  const [projectRow, setProjectRow] = useState<any>();
+
+  useEffect(() => {
+    setProjectRow(
+      detailedProject
+        ?.filter((project) => project.projectType === invoiceType)
+        ?.map((project, indx) => ({
+          _id: project?._id,
+          sno: indx + 1,
+          description: project.description,
+          period: project?.period || 'Miscellaneous',
+          workingDays: project?.workingDays,
+          totalWorkingDays: project?.totalWorkingDays,
+          hours: project?.hours,  
+          rate: `${
+            project?.rate?.rate
+              ? `${project?.rate?.rate} ${project?.rate?.currency}`
+              : "N/A"
+          }`,
+          conversionRate: project?.conversionRate
+            ? +project?.conversionRate
+            : "N/A",
+          projectAmount: project?.projectAmount
+            ? +project?.projectAmount
+            : "N/A",
+          amount: project?.amount,
+        }))
+    );
+  }, [detailedProject, invoiceType]);
+  return { projectRow };
 };
 
 export default useRowData;

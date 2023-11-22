@@ -2,6 +2,7 @@ export interface dataProps {
   _id: string;
   id: number;
   indx?: number;
+  projectType?: string;
   description: string;
   period?: string;
   workingDays?: string;
@@ -65,6 +66,7 @@ export interface clientType {
   address: addressType;
   projects?: string[];
   active: boolean;
+  tds: number;
 }
 
 export interface projectType {
@@ -130,6 +132,7 @@ export interface invoiceStateType {
   isChecked: boolean;
   detailedProject: dataProps[];
   subtotal: number;
+  discount?: number;
   GST: { CGST: number; SGST: number } | number;
   GrandTotal: number;
   resetYear: number;

@@ -1,4 +1,4 @@
-import { calculateGST, calculateSubtotal } from "@/components/store/invoice";
+import { calculateGST, calculateSubtotal, setDiscount } from "@/components/store/invoice";
 import { AppDispatch, AppState } from "@/components/store/store";
 import { invoiceStateType } from "@/types/types";
 import { useEffect, useState } from "react";
@@ -10,15 +10,14 @@ const Total = () => {
   ) as invoiceStateType;
   const dispatch = useDispatch<AppDispatch>();
 
-  const [discount, setDiscount] = useState<string | number>("");
+  const [discount, setdiscount] = useState<string | number>("");
   const [discountedSubtotal, setDiscountedSubtotal] = useState(subtotal);
 
   useEffect(() => {
     if (discount) {
       dispatch(calculateSubtotal({ flag: true, discount: discountedSubtotal }));
       dispatch(calculateGST({ userState: "", clientState: "" }));
-    }
-    else{
+    } else {
       dispatch(calculateSubtotal({ flag: false }));
       dispatch(calculateGST({ userState: "", clientState: "" }));
     }
@@ -35,7 +34,8 @@ const Total = () => {
           className="border  rounded-md focus:border-gray-400 outline-none p-1"
           value={discount}
           onChange={(e: any) => {
-            setDiscount(e.target.value);
+            setdiscount(e.target.value);
+            dispatch(setDiscount(+e.target.value));
             const discountValue = (+e.target.value / 100) * subtotal;
             const updatedDiscountedSubtotal = subtotal - discountValue;
             setDiscountedSubtotal(updatedDiscountedSubtotal);

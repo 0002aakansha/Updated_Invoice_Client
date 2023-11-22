@@ -11,6 +11,7 @@ const initialState: clientStateType = {
     _id: "",
     name: "",
     gstin: "",
+    tds: 0,
     address: {
       street: "",
       city: "",
@@ -18,7 +19,7 @@ const initialState: clientStateType = {
       state: "",
       country: "",
     },
-    active: true
+    active: true,
   },
   clientState: "",
   projects: [],
@@ -171,10 +172,10 @@ const clientslice = createSlice({
       state.isHidden = action.payload;
     },
     setCreate(state) {
-      state.created = false
+      state.created = false;
     },
     setUpdate(state) {
-      state.updated = false
+      state.updated = false;
     },
     getClientState(state, { payload }) {
       state.clientState = current(state.clients).filter(
@@ -297,5 +298,11 @@ const clientslice = createSlice({
   },
 });
 
-export const { setHidden, getClientState, getClientById, setCreate, setUpdate } = clientslice.actions;
+export const {
+  setHidden,
+  getClientState,
+  getClientById,
+  setCreate,
+  setUpdate,
+} = clientslice.actions;
 export default clientslice.reducer;

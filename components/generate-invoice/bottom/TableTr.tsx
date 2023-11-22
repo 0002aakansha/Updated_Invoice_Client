@@ -61,7 +61,6 @@ const TableTr = ({ project, indx }: Props) => {
           <td className="border-2 border-[#9d96e4] px-4 py-1 text-center">
             {filteredProject?.hours}
           </td>
-
           <td className="border-2 border-[#9d96e4] px-4 py-1 text-center">
             {project?.rate?.currency === "USD" ? (
               `1$ = ${filteredProject?.conversionRate} INR`
@@ -74,16 +73,19 @@ const TableTr = ({ project, indx }: Props) => {
             )}
           </td>
         </>
-      ): invoiceType === "fixedbudget" ? (
+      ) : invoiceType === "fixedbudget" ? (
         <>
           <td className="border-2 border-[#9d96e4] px-4 py-1 text-center">
-             {filteredProject?.projectAmount} INR
+            {filteredProject?.projectAmount} INR
           </td>
         </>
-      ): null }
+      ) : null}
       <td className="border-2 border-[#9d96e4] px-4 py-1 text-center font-semibold">
         {/* INR {filteredProject?.amount} */}
-        INR {invoiceType === "fixedbudget" && filteredProject?.projectAmount}
+        INR{" "}
+        {invoiceType === "fixedbudget"
+          ? filteredProject?.projectAmount
+          : filteredProject?.amount}
       </td>
     </>
   );

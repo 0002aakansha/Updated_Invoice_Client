@@ -9,6 +9,7 @@ const initialState: invoiceStateType = {
   isChecked: false,
   detailedProject: [],
   subtotal: 0.0,
+  discount: 0,
   GST: 0,
   GrandTotal: 0.0,
   resetYear: new Date().getFullYear(),
@@ -35,9 +36,10 @@ const invoiceslice = createSlice({
       state.DueDate = payload;
     },
     setResetYear(state, { payload }) {
-      console.log(payload);
-
       state.resetYear = payload;
+    },
+    setDiscount(state, { payload }) {
+      state.discount = payload;
     },
     updatedChecked(
       state,
@@ -81,6 +83,7 @@ const invoiceslice = createSlice({
           amount: Number(amount).toFixed(2),
         };
       } else if (state.invoiceType === "hourly" && payload.hours) {
+        console.log(payload);
         const rate = Number(project?.rate?.rate);
         const currency = project?.rate?.currency;
         const hours = Number(payload?.hours);
@@ -89,10 +92,14 @@ const invoiceslice = createSlice({
         // formula
         const amount =
           currency === "INR" ? rate * hours : rate * conversionRate * hours;
+        console.log({
+          ...payload,
+          amount: amount.toFixed(2),
+        });
 
         state.detailedProject[projectIndx] = {
           ...payload,
-          amount: amount.toFixed(2),
+          amount: amount?.toFixed(2),
         };
       } else {
         state.detailedProject[projectIndx] = {
@@ -108,14 +115,17 @@ const invoiceslice = createSlice({
       if (payload?.flag) {
         state.subtotal = +payload.discount.toFixed(2);
       } else {
-        const istrue = state.detailedProject.filter(
+        const istrue = current(state.detailedProject).filter(
           (project) => project.checked === true
         );
 
         const data = istrue.reduce(
-          (value, project) => (value += Number(project.projectAmount)),
+          (value, project) => (value += Number(project.amount)),
           0
         );
+        console.log(istrue);
+        console.log(data);
+
         state.subtotal = +data.toFixed(2);
       }
     },
@@ -198,5 +208,6 @@ export const {
   setTotalToZero,
   setResetYear,
   updateSpecificField,
+  setDiscount,
 } = invoiceslice.actions;
 export default invoiceslice.reducer;

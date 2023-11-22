@@ -166,10 +166,10 @@ select:hover option:hover {
 }
 
 .card:nth-child(2) {
-  background: linear-gradient(45deg,#b14b4b,#f87fe0);
+  background: linear-gradient(45deg, #b14b4b, #f87fe0);
 }
 .card:nth-child(3) {
-  background: linear-gradient(45deg,#bf4d4d,#f87f7f);
+  background: linear-gradient(45deg, #bf4d4d, #f87f7f);
 }
 
 .card:last-child {
@@ -187,19 +187,21 @@ select:hover option:hover {
 .font {
   font-family: "Poppins", sans-serif;
 }
-.ag-header{
-  background-color: rgb(
-    90 81 190 / var(--tw-bg-opacity)
-  ) !important;
+.ag-header-cell-text{
+  color: rgb(90 81 190 / var(--tw-bg-opacity)) !important;
 }
-.ag-header-viewport {
+/* .ag-header-viewport {
   background-color: rgb(
     90 81 190 / var(--tw-bg-opacity)
-  ); /* Specify your desired background color */
-  color: white; /* Optional: Text color */
+  ); 
+  color: white; 
   &:hover {
     background-color: rgb(90 81 190 / var(--tw-bg-opacity));
   }
+} */
+.ag-theme-alpine {
+  border-radius: 2px;
+  overflow: hidden;
 }
 .custom-header {
   display: flex;
@@ -219,8 +221,9 @@ select:hover option:hover {
   color: white;
 }
 
-#myAgGrid .ag-header-group-cell-label, .ag-header-cell-label {
-  font-size: .9rem;
+#myAgGrid .ag-header-group-cell-label,
+.ag-header-cell-label {
+  font-size: 0.9rem;
   display: flex;
   align-items: center;
   justify-content: center; /* Center horizontally */
@@ -230,6 +233,6 @@ select:hover option:hover {
   text-align: center; /* Center the text within the header cell */
 }
 
-.ag-cell{
+.ag-cell {
   font-size: 10pt;
 }

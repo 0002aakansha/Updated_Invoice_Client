@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import TableTr from "./TableTr";
 import CheckedModal from "@/components/modals/checkedModal";
 import { useDispatch, useSelector } from "react-redux";
@@ -9,13 +9,19 @@ import {
   invoiceStateType,
   userStateType,
 } from "@/types/types";
-import {
+import invoice, {
   calculateGST,
   calculateSubtotal,
   setisChecked,
   updatedChecked,
 } from "@/components/store/invoice";
 import { setDetailedProject } from "../../store/invoice";
+import { AgGridReact } from "ag-grid-react";
+import { useCheckedProjectRowData } from "@/components/hooks/useRowData";
+import "ag-grid-community/styles/ag-grid.css";
+import "ag-grid-community/styles/ag-theme-alpine.css";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faUserPen } from "@fortawesome/free-solid-svg-icons";
 
 const Table = () => {
   const { projects, clients } = useSelector<AppState>(
@@ -27,6 +33,7 @@ const Table = () => {
   const { user, isLoading } = useSelector<AppState>(
     (state) => state.user
   ) as userStateType;
+  const { projectRow } = useCheckedProjectRowData();
   const dispatch = useDispatch<AppDispatch>();
 
   const [uniqueKey, setUniqueKey] = useState<string>("");
@@ -39,6 +46,7 @@ const Table = () => {
           _id: project._id,
           period: "",
           description: project.description,
+          projectType: project.projectType,
           workingDays: "0",
           totalWorkingDays: "0",
           hours: "0.0",
@@ -54,11 +62,148 @@ const Table = () => {
     if (Projects !== undefined) dispatch(setDetailedProject(Projects));
   }, [projects]);
 
+  const tableColumn: any = [
+    {
+      headerName: "S. No.",
+      field: "sno",
+      resizable: true,
+      headerClass: "custom-header",
+      cellClass: "centered-cell",
+      cellRenderer: (params: any) => (
+        <>
+          <label htmlFor="sno" className="flex items-center space-x-2">
+            <input
+              type="checkbox"
+              id="sno"
+              className="outline-none accent-[#5a51be]"
+              checked={
+                detailedProject.filter((val) => val._id === params.data._id)[0]
+                  ?.checked
+              }
+              onChange={(e) => {
+                if (e.target.checked) {
+                  setUniqueKey(params.data?._id || "");
+                  dispatch(setisChecked(true));
+                  dispatch(
+                    updatedChecked({
+                      indx: params.data?._id || "",
+                      checked: true,
+                    })
+                  );
+                } else {
+                  setisChecked(false);
+                  dispatch(
+                    updatedChecked({
+                      indx: params.data?._id || "",
+                      checked: false,
+                    })
+                  );
+                  dispatch(calculateSubtotal({ flag: undefined }));
+                }
+
+                const clientState = clients.filter(
+                  (client) => client._id === params.data?.projectBelongsTo
+                )[0] as clientType;
+
+                !isLoading &&
+                  dispatch(
+                    calculateGST({
+                      userState: user.address.state,
+                      clientState: clientState?.address?.state,
+                    })
+                  );
+              }}
+            />
+            <span>{params.data.sno}</span>
+          </label>
+        </>
+      ),
+      width: 80,
+    },
+    {
+      headerName: "Description",
+      field: "description",
+      resizable: true,
+      headerClass: "custom-header",
+    },
+    {
+      headerName: "Period",
+      field: "period",
+      resizable: true,
+      headerClass: "custom-header",
+      cellClass: "centered-cell",
+      hide: invoiceType === "monthly" ? false : true,
+    },
+    {
+      headerName: "Working Days",
+      field: "workingDays",
+      resizable: true,
+      headerClass: "custom-header",
+      cellClass: "centered-cell",
+      hide: invoiceType === "monthly" ? false : true,
+    },
+    {
+      headerName: "Total Working Days",
+      field: "totalWorkingDays",
+      resizable: true,
+      headerClass: "custom-header",
+      cellClass: "centered-cell",
+      hide: invoiceType === "monthly" ? false : true,
+    },
+    {
+      headerName: "Rate",
+      field: "rate",
+      resizable: true,
+      headerClass: "custom-header",
+      cellClass: "centered-cell",
+      hide: invoiceType === "hourly" ? false : true,
+    },
+    {
+      headerName: "Hours",
+      field: "hours",
+      resizable: true,
+      headerClass: "custom-header",
+      cellClass: "centered-cell",
+      hide: invoiceType === "hourly" ? false : true,
+    },
+    {
+      headerName: "Conversion rate",
+      field: "conversionRate",
+      resizable: true,
+      headerClass: "custom-header",
+      cellClass: "centered-cell",
+      hide: invoiceType === "hourly" ? false : true,
+    },
+    {
+      headerName: "Project Amount",
+      field: "projectAmount",
+      resizable: true,
+      headerClass: "custom-header",
+      cellClass: "centered-cell",
+      hide: invoiceType === "fixedbudget" ? false : true,
+    },
+    {
+      headerName: "Amount",
+      field: "amount",
+      resizable: true,
+      headerClass: "custom-header",
+      cellClass: "centered-cell",
+    },
+  ];
+
   return (
     <>
       {projects?.length !== 0 && (
-        <div>
-          <table className="table-auto w-full rounded-md overflow-hidden">
+        <div className="ag-theme-alpine">
+          <AgGridReact
+            columnDefs={tableColumn} // header
+            rowData={projectRow} // cells
+            pagination={true}
+            paginationPageSize={8}
+            animateRows={true}
+            domLayout="autoHeight"
+          />
+          {/* <table className="table-auto w-full rounded-md overflow-hidden">
             <thead>
               <tr className="border-2 border-[#9d96e4] bg-[#5a51be] text-stone-100">
                 <th className="p-2"></th>
@@ -146,17 +291,12 @@ const Table = () => {
                             project={project}
                           />
                         </tr>
-                        {isChecked && (
-                          <CheckedModal
-                            key={project._id}
-                            uniqueKey={uniqueKey}
-                          />
-                        )}
                       </>
                     );
                   })}
             </tbody>
-          </table>
+          </table> */}
+          {isChecked && <CheckedModal key={uniqueKey} uniqueKey={uniqueKey} />}
         </div>
       )}
     </>
