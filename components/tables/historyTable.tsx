@@ -90,7 +90,6 @@ const HistoryTable = () => {
       headerClass: "custom-header",
       filter: true,
       cellClass: "centered-cell",
-      width: 300,
     },
     {
       headerName: "Projects",
@@ -99,7 +98,6 @@ const HistoryTable = () => {
       headerClass: "custom-header",
       filter: true,
       cellClass: "centered-cell",
-      width: 300,
     },
     {
       headerName: "Created On",
@@ -132,7 +130,6 @@ const HistoryTable = () => {
       headerClass: "custom-header",
       filter: true,
       cellClass: "centered-cell",
-      width: 300,
     },
     {
       headerName: "Total Amount",
@@ -237,7 +234,7 @@ const HistoryTable = () => {
   const defaultColDef = useMemo(
     () => ({
       sortable: true,
-      flex: 1,
+      // flex: 1,
     }),
     []
   );
