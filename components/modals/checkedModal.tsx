@@ -27,7 +27,6 @@ import {
   updateDetailedProjectOnChecked,
   updatedChecked,
 } from "../store/invoice";
-import project from "../store/project";
 
 const CheckedModal = ({ uniqueKey }: { uniqueKey: string }) => {
   const { invoiceType, isChecked, detailedProject } = useSelector<AppState>(
@@ -70,34 +69,16 @@ const CheckedModal = ({ uniqueKey }: { uniqueKey: string }) => {
     setRate(project?.rate);
     sethours(project?.hours || 0.0);
     setConversionRate(project?.conversionRate);
-    setProjectAmount(project?.projectAmount  || 0.0)
+    setProjectAmount(project?.projectAmount || 0.0);
   }, [detailedProject, uniqueKey]);
 
   const submitHandler = (e: FormEvent) => {
     e.preventDefault();
-    console.log(conversionRate);
-
     const project = detailedProject.filter(
       (project) => project._id === uniqueKey
     )[0] as dataProps;
 
-    // if (invoiceType === "fixedbudget") {
-    //   dispatch(
-    //     updateDetailedProjectOnChecked({
-    //       ...project,
-    //       indx: projects.findIndex((project) => project._id === uniqueKey),
-    //       description,
-    //       // projectAmount,
-    //       // amount: projectAmount.toFixed(2),
-    //       projectAmount: Number(projectAmount), 
-    //       amount: Number(projectAmount).toFixed(2),
-    //       rate: project.rate,
-    //       conversionRate,
-    //       projectBelongsTo: project.projectBelongsTo,
-    //     })
-    //   );
-    // } 
-   if (workingDays && totalWorkingDays) {
+    if (workingDays && totalWorkingDays) {
       if (
         +workingDays > 0 &&
         +totalWorkingDays > 0 &&
@@ -148,8 +129,30 @@ const CheckedModal = ({ uniqueKey }: { uniqueKey: string }) => {
             indx: projects.findIndex((project) => project._id === uniqueKey),
             description,
             hours: hours.toString(),
-            rate: project.rate,
+            rate: rate,
             conversionRate,
+          })
+        );
+        dispatch(calculateSubtotal({ flag: undefined }));
+
+        const clientState = client.clients.filter(
+          (client) => client._id === project?.projectBelongsTo
+        )[0] as clientType;
+
+        !isLoading &&
+          dispatch(
+            calculateGST({
+              userState: user.address.state,
+              clientState: clientState?.address?.state,
+            })
+          );
+      } else if (invoiceType === "fixedbudget") {
+        dispatch(
+          updateDetailedProjectOnChecked({
+            ...project,
+            indx: projects.findIndex((project) => project._id === uniqueKey),
+            description,
+            projectAmount,
           })
         );
         dispatch(calculateSubtotal({ flag: undefined }));
@@ -259,7 +262,13 @@ const CheckedModal = ({ uniqueKey }: { uniqueKey: string }) => {
                   </div>
                   <div className="flex flex-col my-2">
                     <label htmlFor="" className="font-semibold text-lg">
-                      Rate {rate?.currency === 'USD' ? '$' : rate?.currency === 'POUND'? '£' : 'INR'} / Hour <span className="text-red-500">*</span>
+                      Rate{" "}
+                      {rate?.currency === "USD"
+                        ? "$"
+                        : rate?.currency === "POUND"
+                        ? "£"
+                        : "INR"}{" "}
+                      / Hour <span className="text-red-500">*</span>
                     </label>
                     <input
                       type="text"
@@ -309,7 +318,7 @@ const CheckedModal = ({ uniqueKey }: { uniqueKey: string }) => {
                   </div>
                 </>
               )}
-               {invoiceType === "fixedbudget" && (
+              {invoiceType === "fixedbudget" && (
                 <>
                   {/* Fixed Budget fields */}
                   <div className="flex flex-col my-2">
@@ -328,7 +337,8 @@ const CheckedModal = ({ uniqueKey }: { uniqueKey: string }) => {
                   </div>
                   <div className="flex flex-col my-2">
                     <label htmlFor="" className="font-semibold text-lg">
-                      Project Amount (INR) <span className="text-red-500">*</span>
+                      Project Amount (INR){" "}
+                      <span className="text-red-500">*</span>
                     </label>
                     <input
                       type="number"
@@ -336,7 +346,6 @@ const CheckedModal = ({ uniqueKey }: { uniqueKey: string }) => {
                       value={projectAmount !== 0.0 ? projectAmount : ""}
                       // value={projectAmount}
                       onChange={(e) => setProjectAmount(+e.target.value)}
-                     
                       required
                       placeholder="0.0"
                       className="border-2 mt-2 px-4 py-2 rounded-sm outline-none"

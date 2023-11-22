@@ -36,60 +36,36 @@ const Dashboard = () => {
         {isLoading ? (
           <FullPageLoader />
         ) : (
-          <>
-            {/* <nav className="flex justify-end space-x-2 p-4 mr-4">
-              <button
-                className="flex items-center space-x-2 bg-[#5a51be] text-white py-2 px-3 rounded-md text-sm hover:bg-[#6860c7] transition-all delay-[.1s] ease-in"
-                // onClick={() => setIsResetYearOpen(true)}
-              >
-                <FontAwesomeIcon icon={faSync} />
-                <span className="font-bold ">Reset Year</span>
-              </button>
-
-              <Link href="/addClient">
-                <button className="flex items-center space-x-2 bg-[#5a51be] text-white py-2 px-3 rounded-md text-sm hover:bg-[#6860c7] transition-all delay-[.1s] ease-in">
-                  <FontAwesomeIcon icon={faUserPlus} />
-                  <span className="font-bold ">Add Client</span>
-                </button>
-              </Link>
-              <Link href="/addProject">
-                <button className="flex items-center space-x-2 bg-[#5a51be] text-white py-2 px-3 rounded-md text-sm hover:bg-[#6860c7] transition-all delay-[.1s] ease-in">
-                  <FontAwesomeIcon icon={faPlus} />
-                  <span className="font-bold">New Project</span>
-                </button>
-              </Link>
-            </nav> */}
+          <div>
             <Cards />
-            <div className="flex justify-end my-8 space-x-4 mr-4">
-              <button className="flex items-center" onClick={() => setIsResetYearOpen(true)}>
-                <FontAwesomeIcon
-                  icon={faSync}
-                  className="bg-[#5a51be] text-white text-[1.4rem] p-3 shadow-lg rounded-[50%] font-bold mx-1 transition-all delay-100 hover:bg-[#665dc7]"
-                />
-                <span className="font-bold text-slate-800">Reset Year</span>
-              </button>
+            <div className="p-4">
+              <div className="flex justify-end space-x-2 mr-4 mb-4 px-4">
+                <div className="flex justify-end space-x-2 p-4 bg-white rounded-sm">
+                  <button
+                    className="flex items-center space-x-2 py-2 px-3 rounded-md text-sm hover:text-[#6860c7] transition-all delay-[.1s] ease-in border-r-2"
+                    onClick={() => setIsResetYearOpen(true)}
+                  >
+                    <FontAwesomeIcon icon={faSync} />
+                    <span className="font-bold ">Reset Series</span>
+                  </button>
 
-              <Link href="/addClient">
-                <button className="flex items-center">
-                  <FontAwesomeIcon
-                    icon={faPlus}
-                    className="bg-[#5a51be] text-white text-[1.4rem] p-3 shadow-lg rounded-[50%] font-bold mx-1 transition-all delay-100 hover:bg-[#665dc7]"
-                  />
-                  <span className="font-bold text-slate-800">Add Client</span>
-                </button>
-              </Link>
-              <Link href='/addProject'>
-                <button className="flex items-center">
-                  <FontAwesomeIcon
-                    icon={faPlus}
-                    className="bg-[#5a51be] text-white text-[1.4rem] p-3 shadow-lg rounded-[50%] font-bold mx-1 transition-all delay-100 hover:bg-[#665dc7]"
-                  />
-                  <span className="font-bold text-slate-800">Add Project</span>
-                </button>
-              </Link>
+                  <Link href="/addClient">
+                    <button className="flex items-center space-x-2 py-2 px-3 rounded-md text-sm hover:text-[#6860c7] transition-all delay-[.1s] ease-in border-r-2">
+                      <FontAwesomeIcon icon={faUserPlus} />
+                      <span className="font-bold ">Add Client</span>
+                    </button>
+                  </Link>
+                  <Link href="/addProject">
+                    <button className="flex items-center space-x-2 py-2 px-3 rounded-md text-sm hover:text-[#6860c7] transition-all delay-[.1s] ease-in">
+                      <FontAwesomeIcon icon={faPlus} />
+                      <span className="font-bold">New Project</span>
+                    </button>
+                  </Link>
+                </div>
+              </div>
+              <MainTable />
             </div>
-            <MainTable />
-          </>
+          </div>
         )}
         <ResetYearModal
           isOpen={isResetYearOpen}

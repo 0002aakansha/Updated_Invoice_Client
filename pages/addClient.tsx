@@ -4,7 +4,9 @@ import Layout from "@/components/layout/Layout";
 const AddClient = () => {
   return (
     <Layout>
-      <AddClientForm />
+      <div className="p-4">
+        <AddClientForm />
+      </div>
     </Layout>
   );
 };

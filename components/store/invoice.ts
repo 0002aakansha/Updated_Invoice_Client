@@ -11,6 +11,7 @@ const initialState: invoiceStateType = {
   subtotal: 0.0,
   GST: 0,
   GrandTotal: 0.0,
+  resetYear: new Date().getFullYear(),
   active: true,
 };
 
@@ -33,6 +34,11 @@ const invoiceslice = createSlice({
     setDueDate(state, { payload }) {
       state.DueDate = payload;
     },
+    setResetYear(state, { payload }) {
+      console.log(payload);
+
+      state.resetYear = payload;
+    },
     updatedChecked(
       state,
       { payload }: { payload: { indx: string; checked: boolean } }
@@ -54,19 +60,7 @@ const invoiceslice = createSlice({
         (project) => project._id === payload._id
       );
 
-      // if (
-      //   state.invoiceType === "fixedbudget" &&
-      //   payload.projectAmount !== undefined
-      // ) {
-      //   // Update the project amount for fixed budget type
-      //   state.detailedProject[projectIndx] = {
-      //     ...payload,
-      //     amount: payload.projectAmount.toFixed(2),
-      //   };
-        
-      // } 
-
-     if (
+      if (
         state.invoiceType === "monthly" &&
         payload.period &&
         payload.workingDays &&
@@ -82,8 +76,11 @@ const invoiceslice = createSlice({
           workingDays
         ).toFixed(3);
 
-        state.detailedProject[projectIndx] = { ...payload, amount };
-      } else if (payload.hours) {
+        state.detailedProject[projectIndx] = {
+          ...payload,
+          amount: Number(amount).toFixed(2),
+        };
+      } else if (state.invoiceType === "hourly" && payload.hours) {
         const rate = Number(project?.rate?.rate);
         const currency = project?.rate?.currency;
         const hours = Number(payload?.hours);
@@ -96,6 +93,11 @@ const invoiceslice = createSlice({
         state.detailedProject[projectIndx] = {
           ...payload,
           amount: amount.toFixed(2),
+        };
+      } else {
+        state.detailedProject[projectIndx] = {
+          ...payload,
+          amount: Number(payload?.projectAmount)?.toFixed(2),
         };
       }
     },
@@ -111,7 +113,7 @@ const invoiceslice = createSlice({
         );
 
         const data = istrue.reduce(
-          (value, project) => (value += Number(project.amount)),
+          (value, project) => (value += Number(project.projectAmount)),
           0
         );
         state.subtotal = +data.toFixed(2);
@@ -194,6 +196,7 @@ export const {
   setDate,
   setDueDate,
   setTotalToZero,
+  setResetYear,
   updateSpecificField,
 } = invoiceslice.actions;
 export default invoiceslice.reducer;

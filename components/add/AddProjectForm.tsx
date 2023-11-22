@@ -210,12 +210,12 @@ const AddProjectForm = () => {
                 htmlFor="name"
                 className="font-semibold tracking-wide mb-2 xs:text-xs sm:text-sm md:text-md"
               >
-                Project Cycle
+                Payment Cycle
               </label>
               <input
                 type="text"
                 step="0.01"
-                placeholder="Project Cycle"
+                placeholder="Payment Cycle"
                 className="outline-none border-2 px-4 py-2 rounded-md xs:text-xs sm:text-sm md:text-md"
                 value={projectCycle}
                 onChange={(e) => setProjectCycle(e.target.value)}

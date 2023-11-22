@@ -27,6 +27,7 @@ const ClientTable = () => {
   const defaultColDef = useMemo(
     () => ({
       sortable: true,
+      flex: 1
     }),
     []
   );
@@ -38,6 +39,7 @@ const ClientTable = () => {
       resizable: true,
       headerClass: "custom-header",
       cellClass: "centered-cell",
+      width: 100
     },
     {
       headerName: "Client",
@@ -59,6 +61,7 @@ const ClientTable = () => {
       resizable: true,
       width: 500,
       headerClass: "custom-header",
+      cellClass: "centered-cell",
     },
     {
       headerName: "Projects",

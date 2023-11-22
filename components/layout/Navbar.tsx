@@ -1,15 +1,10 @@
-import { useDispatch, useSelector } from "react-redux";
-import { AppDispatch, AppState } from "../store/store";
+import { useSelector } from "react-redux";
+import { AppState } from "../store/store";
 import Image from "next/image";
 import { useEffect, useState } from "react";
 import AlertDialogExample from "../alerts/AlertDialog";
 import { getCookie } from "@/utils/cookies";
 import { useRouter } from "next/router";
-import Link from "next/link";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faGreaterThan, faUserPlus } from "@fortawesome/free-solid-svg-icons";
-
-import { faPlus, faSync } from "@fortawesome/free-solid-svg-icons";
 
 const Navbar = () => {
   const uEmail = useSelector<AppState>(
@@ -23,103 +18,58 @@ const Navbar = () => {
     getCookie() ? setAuth(true) : setAuth(false);
   }, []);
 
-  const getDynamicText = () => {
-    const currentRoute = router.asPath as keyof typeof textMap;
-    const textMap = {
-      "/dashboard": {
-        text: (
-          <div className="flex items-center uppercase">
-            <h1>Home</h1>
-            <span className="mx-2 text-sm text-stone-600">
-              <FontAwesomeIcon icon={faGreaterThan} />
-            </span>
-            <p
-              className="text-stone-500 font-light text-sm tracking-wide hover:text-stone-400 transition-colors delay-[.1s] ease-in"
-            >
-              Dashboard
-            </p>
-          </div>
-        ),
-        marginRight: "39.5rem",
-      },
-      "/addClient": {
-        text: (
-          <div className="flex items-center uppercase">
-            <h1>Home</h1>
-            <span className="mx-2 text-sm text-stone-600">
-              <FontAwesomeIcon icon={faGreaterThan} />
-            </span>
-            <p
-              className="text-stone-500 font-light text-sm tracking-wide hover:text-stone-400 transition-colors delay-[.1s] ease-in"
-            >
-              Add Client
-            </p>
-          </div>
-        ),
-        marginRight: "39.5rem",
-      },
-      "/addProject": {
-        text: (
-          <div className="flex items-center uppercase">
-            <h1>Home</h1>
-            <span className="mx-2 text-sm text-stone-600">
-              <FontAwesomeIcon icon={faGreaterThan} />
-            </span>
-            <p
-              className="text-stone-500 font-light text-sm tracking-wide hover:text-stone-400 transition-colors delay-[.1s] ease-in"
-            >
-              Add Project
-            </p>
-          </div>
-        ),
-        marginRight: "39.5rem",
-      },
-      "/generateInvoice": {
-        text: (
-          <div className="flex items-center uppercase">
-            <h1>Home</h1>
-            <span className="mx-2 text-sm text-stone-600">
-              <FontAwesomeIcon icon={faGreaterThan} />
-            </span>
-            <p
-              className="text-stone-500 font-light text-sm tracking-wide hover:text-stone-400 transition-colors delay-[.1s] ease-in"
-            >
-              Generate Invoice
-            </p>
-          </div>
-        ),
-        marginRight: "39.5rem",
-      },
-      "/history": {
-        text: (
-          <div className="flex items-center uppercase">
-            <h1>Home</h1>
-            <span className="mx-2 text-sm text-stone-600">
-              <FontAwesomeIcon icon={faGreaterThan} />
-            </span>
-            <p
-              className="text-stone-500 font-light text-sm tracking-wide hover:text-stone-400 transition-colors delay-[.1s] ease-in"
-            >
-              History
-            </p>
-          </div>
-        ),
-        marginRight: "39.5rem",
-      },
-    };
-
-    return textMap[currentRoute] || { text: "", marginRight: "" };
-  };
-
   return (
     <>
-      <header className="w-full bg-white">
-        <nav className="p-4">
+      <header className="w-full bg-white border-b-2 border-[#f3f3f3] flex justify-between p-4">
+        <nav className="flex" aria-label="Breadcrumb">
+          <ol className="inline-flex items-center space-x-1 md:space-x-2 rtl:space-x-reverse">
+            <li className="inline-flex items-center">
+              <a
+                href="#"
+                className="inline-flex items-center text-sm font-medium text-stone-600 hover:text-[#6860c7]"
+              >
+                <svg
+                  className="w-3 h-3 me-2.5"
+                  aria-hidden="true"
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="currentColor"
+                  viewBox="0 0 20 20"
+                >
+                  <path d="m19.707 9.293-2-2-7-7a1 1 0 0 0-1.414 0l-7 7-2 2a1 1 0 0 0 1.414 1.414L2 10.414V18a2 2 0 0 0 2 2h3a1 1 0 0 0 1-1v-4a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v4a1 1 0 0 0 1 1h3a2 2 0 0 0 2-2v-7.586l.293.293a1 1 0 0 0 1.414-1.414Z" />
+                </svg>
+                Home
+              </a>
+            </li>
+            <li>
+              <div className="flex items-center">
+                <svg
+                  className="rtl:rotate-180 w-3 h-3 text-gray-400 mx-1"
+                  aria-hidden="true"
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 6 10"
+                >
+                  <path
+                    stroke="currentColor"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="m1 9 4-4-4-4"
+                  />
+                </svg>
+                <a
+                  href="#"
+                  className="ms-1 text-sm capitalize font-medium text-stone-600 hover:text-[#6860c7] md:ms-2"
+                >
+                  {router.asPath === '/generateInvoice' ? 'Generate Invoice' : router.asPath === '/history' ? "Invoice History" : router.asPath.slice(1)}
+                </a>
+              </div>
+            </li>
+          </ol>
+        </nav>
+        <nav>
           {auth ? (
-            <ul className="flex justify-between items-center">
-              <li className="font-semibold text-md text-[#5a51be]">
-                {getDynamicText().text}
-              </li>
+            <ul className="flex items-center">
               <div className="flex">
                 <li className="font-semibold mx-3 text-md underline text-slate-700">
                   {uEmail}

@@ -32,6 +32,10 @@ import { useInvoiceRowData } from "../hooks/useRowData";
 
 import "ag-grid-community/styles/ag-grid.css";
 import "ag-grid-community/styles/ag-theme-alpine.css";
+import getFilteredInvoiceNumber, {
+  generateInvoiceNumber,
+  getLocalStorage,
+} from "@/utils/invoiceNumber";
 
 const HistoryTable = () => {
   const [pdfBlob, setPdfBlob] = useState<Blob | MediaSource>();
@@ -84,7 +88,6 @@ const HistoryTable = () => {
       filter: true,
       cellClass: "centered-cell",
       width: 300,
-      // floatingFilter: true
     },
     {
       headerName: "Projects",
@@ -206,9 +209,15 @@ const HistoryTable = () => {
   const defaultColDef = useMemo(
     () => ({
       sortable: true,
+      flex: 1,
     }),
     []
   );
+  const autoGroupColumnDef = useMemo(() => {
+    return {
+      minWidth: 200,
+    };
+  }, []);
   const pagination = true;
   const paginationPageSize = 15;
 
@@ -219,28 +228,34 @@ const HistoryTable = () => {
 
   const today = new Date().toISOString().split("T")[0];
 
+  const [year] = useState<string | null>(
+    typeof window !== "undefined" && window.localStorage
+      ? getLocalStorage("year")
+      : null
+  );
+
   useEffect(() => {
     setInvoiceData(invoice.filter((invoice) => invoice?._id === _id)[0]);
   }, [_id, invoice]);
 
   useEffect(() => {
-    invoice.length !== 0
-      ? setLastInvoiceNumber(
-          `${invoice[invoice.length - 1]?.invoiceNumber
-            .toString()
-            .slice(0, 4)}` +
-            (
-              +invoice[invoice.length - 1]?.invoiceNumber.toString().slice(4) +
-              1
-            )
-              .toString()
-              .padStart(2, "0")
-        )
-      : setLastInvoiceNumber("");
-  }, [invoice]);
+    if (invoice.length !== 0) {
+      if (year) {
+        const filteredYear = getFilteredInvoiceNumber(invoice, year);
+        if (filteredYear.length !== 0) {
+          setLastInvoiceNumber(generateInvoiceNumber(filteredYear));
+        } else setLastInvoiceNumber(`${localStorage.getItem("year")}001`);
+      } else
+        !getLocalStorage("year") &&
+          localStorage.setItem(
+            "year",
+            invoice[invoice.length - 1]?.invoiceNumber.toString().slice(0, 4)
+          );
+      setLastInvoiceNumber(generateInvoiceNumber(invoice));
+    } else setLastInvoiceNumber("");
+  }, [invoice, year]);
 
   useEffect(() => {
-
     if (isEditOpen) {
       setDate(new Date());
       const initialDueDate = new Date();
@@ -262,7 +277,6 @@ const HistoryTable = () => {
   }, [invoice, lastInvoiceNumber, isEditOpen]);
 
   useEffect(() => {
-
     if (
       typeof invoiceData?.createdFor !== "string" &&
       invoiceData?.invoiceCreatedBy &&
@@ -304,17 +318,17 @@ const HistoryTable = () => {
     invoiceData?.GST,
     invoiceData?.GrandTotal,
     invoiceData?.createdFor,
-    invoiceData.createdOn,
-    invoiceData.dueDate,
+    invoiceData?.createdOn,
+    invoiceData?.dueDate,
     invoiceData?.invoiceCreatedBy,
-    invoiceData.invoiceNumber,
+    invoiceData?.invoiceNumber,
     invoiceData?.invoiceType,
     invoiceData?.projects,
     invoiceData?.subtotal,
     lastInvoiceNumber,
     invoiceData,
   ]);
-
+  
   const generatePDF = async (e: FormEvent) => {
     e.preventDefault();
 
@@ -328,8 +342,6 @@ const HistoryTable = () => {
   };
 
   const downloadPDF = () => {
-    // console.log(invoiceData);
-
     if (pdfBlob) {
       const pdfUrl = URL.createObjectURL(pdfBlob);
       const a = document.createElement("a");
@@ -397,12 +409,12 @@ const HistoryTable = () => {
   const onGridReady = (params: any) => {
     gridApiRef.current = params.api;
   };
-  
+
   const onExportClick = () => {
     if (gridApiRef.current) {
       gridApiRef.current.exportDataAsCsv();
     } else {
-      console.error('Grid API is not initialized');
+      console.error("Grid API is not initialized");
     }
   };
 
@@ -416,25 +428,31 @@ const HistoryTable = () => {
         />
       ) : (
         <>
-        <div className="ag-theme-alpine" style={{ width: "100%" }}>
-          <AgGridReact
-            defaultColDef={defaultColDef}
-            pagination={pagination}
-            paginationPageSize={paginationPageSize}
-            columnDefs={tableColumn} // header
-            rowData={historyRow} // cells
-            animateRows={true}
-            domLayout="autoHeight"
-            onGridReady={onGridReady}
-          />
-        </div>
-        
-        <div className="mt-[2rem]">
-          <button className="bg-[#5a51be] cursor-pointer text-stone-100 px-4 py-2 rounded-sm tracking-wider"  onClick={onExportClick}>
-            Export
-          </button>
-        </div>
-
+          <div className="flex justify-between items-center px-4">
+            <h1 className="font-semibold tracking-wider text-[#5a51be] text-xl">
+              History
+            </h1>
+            <div className="flex justify-end my-8">
+              <button
+                className="cursor-pointer text-stone-600 bg-white border-[#e8e8ea] font-semibold hover:bg-slate-100 transition-all duration-75 ease-in-out border-2 px-4 py-1 rounded-sm tracking-wider"
+                onClick={onExportClick}
+              >
+                Export
+              </button>
+            </div>
+          </div>
+          <div className="ag-theme-alpine" style={{ width: "100%" }}>
+            <AgGridReact
+              defaultColDef={defaultColDef}
+              pagination={pagination}
+              paginationPageSize={paginationPageSize}
+              columnDefs={tableColumn} // header
+              rowData={historyRow} // cells
+              animateRows={true}
+              domLayout="autoHeight"
+              onGridReady={onGridReady}
+            />
+          </div>
         </>
       )}
       {isEditOpen && (
@@ -453,7 +471,10 @@ const HistoryTable = () => {
                       placeholder="Invoice Number"
                       className="border-2 mt-2 px-4 py-2 rounded-sm outline-none"
                       maxLength={8}
-                      value={lastInvoiceNumber}
+                      value={`${
+                        getLocalStorage("year") ||
+                        invoice[invoice.length - 1].invoiceNumber.slice(0, 4)
+                      }${lastInvoiceNumber.toString().slice(4)}`}
                       onChange={(e) => setLastInvoiceNumber(e.target.value)}
                     />
                     {error && (
@@ -471,21 +492,13 @@ const HistoryTable = () => {
                     type="date"
                     placeholder="Date"
                     className="border-2 mt-2 px-4 py-2 rounded-sm outline-none"
-                    value={date ? date.toISOString().split('T')[0] : ''}
-                    // onChange={(e) => {
-                    //   const dateValue = e.target.value;
-                    //   if (dateValue) {
-                    //     setDate(new window.Date(dateValue));
-                    //   } else {
-                    //     setDate(null);
-                    //   }
-                    // }}
+                    value={date ? date.toISOString().split("T")[0] : ""}
                     onChange={(e) => {
                       const selectedDate = new Date(e.target.value);
                       const dueDate = new Date(selectedDate);
-                      dueDate.setDate(selectedDate.getDate() + 5); 
-                      setDate(selectedDate); 
-                      setDueDate(dueDate); 
+                      dueDate.setDate(selectedDate.getDate() + 5);
+                      setDate(selectedDate);
+                      setDueDate(dueDate);
                     }}
                     required
                   />
@@ -498,7 +511,7 @@ const HistoryTable = () => {
                     type="date"
                     placeholder="Due Date"
                     className="border-2 mt-2 px-4 py-2 rounded-sm outline-none"
-                    value={dueDate ? dueDate.toISOString().split('T')[0] : ''}
+                    value={dueDate ? dueDate.toISOString().split("T")[0] : ""}
                     min={date ? date.toISOString().split("T")[0] : ""}
                     onChange={(e) => {
                       const dateValue = e.target.value;
@@ -515,7 +528,7 @@ const HistoryTable = () => {
                   <Button
                     className="bg-stone-200"
                     mr={3}
-                    size={'sm'}
+                    size={"sm"}
                     onClick={() => onEditClose(false)}
                   >
                     Close
@@ -523,7 +536,7 @@ const HistoryTable = () => {
                   <Button
                     type="submit"
                     className="bg-[#5a51be] text-stone-100 px-4 py-2 hover:bg-[#6960cc]"
-                    size={'sm'}
+                    size={"sm"}
                     colorScheme="purple"
                   >
                     Download PDF
