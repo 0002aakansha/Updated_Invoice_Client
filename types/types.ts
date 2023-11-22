@@ -150,6 +150,7 @@ export interface PdfPreviewProps {
     GST: { CGST: number; SGST: number } | number;
     GrandTotal: number;
   };
+
 }
 
 export interface invoiceProjectType {

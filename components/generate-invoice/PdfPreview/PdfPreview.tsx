@@ -7,7 +7,11 @@ import {
   StyleSheet,
   Image,
 } from "@react-pdf/renderer";
+import React from "react";
 import { useEffect, useState } from "react";
+
+
+
 const styles = StyleSheet.create({
   page: {
     flexDirection: "row",
@@ -43,14 +47,27 @@ const styles = StyleSheet.create({
     backgroundColor: "#5A51BE",
     color: "white",
   },
+
+  //landscape
+  // rightColumn: {
+  //   // flex: 1,
+  //   display: "flex",
+  //   flexDirection: "column",
+  //   // textAlign: 'right',
+  //   fontSize: 12,
+  //   marginTop: 50,
+  //   marginRight: "30%",
+  // },
+
+  //A4
   rightColumn: {
     // flex: 1,
     display: "flex",
     flexDirection: "column",
     // textAlign: 'right',
-    fontSize: 12,
-    marginTop: 50,
-    marginRight: "30%",
+    fontSize: 10,
+    marginTop: 10,
+    marginRight: "35%",
   },
   tableCell: {
     border: "1 solid #B0B0B0",
@@ -60,19 +77,19 @@ const styles = StyleSheet.create({
     width: "100%",
   },
   txt: {
-    fontSize: 13,
-    marginTop: 10,
+    fontSize: 7,
+    marginTop: 3,
     backgroundColor: "#5A51BE",
     color: "white",
-    padding: 5,
+    padding: 2,
     width: "33%",
   },
   txt1: {
-    fontSize: 13,
-    marginTop: 50,
+    fontSize: 7,
+    marginTop: 1,
     backgroundColor: "#5A51BE",
     color: "white",
-    padding: 5,
+    padding: 3,
     width: "33%",
   },
   account: {
@@ -82,7 +99,10 @@ const styles = StyleSheet.create({
   },
   subtotal: {
     fontSize: 12,
-    marginTop: 30,
+    marginTop: 15,
+  },
+  discount: {
+    marginTop: 45,
   },
   cgst: {
     marginTop: 15,
@@ -96,37 +116,47 @@ const styles = StyleSheet.create({
   digit: {
     marginLeft: 50,
   },
+
+  //landscape
   logo: {
-    width: "80%",
+    width: "150%",
+    height : "100%",
     marginRight: "38%",
   },
+
   email: {
-    marginTop: 7,
-    fontSize: 13,
+    // marginTop: 7,
+    // fontSize: 13,
+    fontSize: 8,
     color: "blue",
     textDecoration: "underline",
   },
   top: {
+    marginBottom : 10,
     display: "flex",
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-around",
   },
   title: {
-    fontSize: 16,
+    //landscape
+    // fontSize: 16,
+    fontSize:10,
     marginBottom: 2,
     marginTop: 2,
   },
   txt2: {
-    marginTop: 7,
-    fontSize: 13,
+    //landscape
+    // marginTop: 7,
+    // fontSize: 13,
+    fontSize: 8,
   },
   billTo: {
     display: "flex",
     flexDirection: "column",
     fontSize: 12,
-    marginTop: 50,
-    marginRight: '12%',
+    marginTop: 2,
+    marginRight: '13%',
     marginLeft: '5%',
 
   },
@@ -134,7 +164,7 @@ const styles = StyleSheet.create({
     display: "flex",
     flexDirection: "column",
     fontSize: 12,
-    marginTop: 50,
+    marginTop: 2,
     marginRight: '20%',
     marginLeft: '5%',
 
@@ -144,9 +174,12 @@ const styles = StyleSheet.create({
     fontSize: 13,
     width: "30%",
   },
+ 
 });
 
-const PdfPreview = ({ data }: { data: PdfPreviewProps | any }) => {
+
+
+const PdfPreview = ({ data  }: { data: PdfPreviewProps | any  }) => {
   // console.log(data);
   
   const [formattedInvoiceDate, setformattedInvoiceDate] = useState("");
@@ -163,7 +196,7 @@ const PdfPreview = ({ data }: { data: PdfPreviewProps | any }) => {
   return (
     <Document>
       
-      <Page size={[800, 1000]} orientation="landscape" style={styles.page}>
+      <Page size="A4" style={styles.page}>
         <View style={styles.section}>
           {/* top */}
           <View style={styles.top}>
@@ -180,16 +213,16 @@ const PdfPreview = ({ data }: { data: PdfPreviewProps | any }) => {
               <Text style={styles.txt2}>PAN : {data?.user?.pan}</Text>
               <Text style={styles.txt2}>{data?.user?.address?.street},</Text>
               <Text style={styles.txt2}>
-                {" "}
                 {data?.user?.address?.city} {data?.user?.address?.pin},{" "}
                 {data?.user?.address?.state} {data?.user?.address?.country}
               </Text>
               <Text style={styles.email}>{data?.user?.email}</Text>{" "}
             </View>
           </View>
+
           {/* middle */}
           <View style={{ display: "flex", flexDirection: "row" }}>
-            <View style={{ flex: 1 }}>
+            <View style={{ flex: 1, marginTop: 2 }}>
               <Text style={styles.txt1}>
                 Invoice Number : {data?.invoice?.invoiceNumber}
               </Text>
@@ -210,6 +243,7 @@ const PdfPreview = ({ data }: { data: PdfPreviewProps | any }) => {
                 </Text>
               </View>
             ) : (
+              //bill cubexo styling
               <View style={styles.billToCubexo}>
                 <Text style={styles.title}>Bill To:</Text>
                 <Text style={styles.title}>{data?.client?.name}</Text>
@@ -261,7 +295,8 @@ const PdfPreview = ({ data }: { data: PdfPreviewProps | any }) => {
                 Amount
               </Text>
             </View>
-            {data?.invoice?.invoice?.map((invoice: any) => (
+            
+            {data?.invoice?.invoice?.map((invoice: any, index: number) => (
               <View key={invoice?.id} style={styles.tableRow}>
 
                 <Text style={styles.tableCell}>
@@ -298,7 +333,57 @@ const PdfPreview = ({ data }: { data: PdfPreviewProps | any }) => {
                 )}
                 <Text style={styles.tableCell}>{invoice?.amount}</Text>
               </View>
-            ))}
+
+             
+                // <React.Fragment key={invoice?.id}>
+                //   <View style={styles.tableRow}>
+                //     <Text style={styles.tableCell}>
+                //       {invoice?.description || invoice?.projectDetails?.description}
+                //     </Text>
+                //     {data?.invoice?.invoiceType !== "hourly" && (
+                //       <Text style={styles.tableCell}>{invoice?.period}</Text>
+                //     )}
+                //     {data.invoice.invoiceType !== "hourly" && (
+                //       <Text style={styles.tableCell}>{invoice.workingDays}</Text>
+                //     )}
+                //     {data?.invoice?.invoiceType !== "hourly" && (
+                //       <Text style={styles.tableCell}>{invoice.totalWorkingDays}</Text>
+                //     )}
+                //     {data?.invoice?.invoiceType === "hourly" && (
+                //       <Text style={styles.tableCell}>
+                //         {invoice?.rate?.rate || invoice?.projectDetails?.rate?.rate}
+                //         {invoice?.rate?.currency === 'USD' ? '$' :
+                //           invoice?.rate?.currency === 'POUND' ? '£' :
+                //           invoice?.rate?.currency === 'INR' ? 'INR' : ''} / Hour
+                //       </Text>
+                //     )}
+                //     {data?.invoice?.invoiceType === "hourly" && (
+                //       <Text style={styles.tableCell}>{invoice?.hours}</Text>
+                //     )}
+                //     {data?.invoice?.invoiceType === "hourly" && (
+                //       <Text style={styles.tableCell}>
+                //         {invoice?.conversionRate ||
+                //           invoice?.projectDetails?.conversionRate ||
+                //           "N/A"}
+                //       </Text>
+                //     )}
+                //     <Text style={styles.tableCell}>{invoice?.amount}</Text>
+                //   </View>
+                //   {(index === 10) && (
+                //     <View>
+                //       <Text>{/* Empty cell */}</Text>
+                //       <Text>{/* Empty cell */}</Text>
+                //       <Text>{/* Empty cell */}</Text>
+                //       <Text>{/* Empty cell */}</Text>
+                //       <Text>{/* Empty cell */}</Text>
+                //       <Text>{/* Empty cell */}</Text>
+                //       <Text>{/* Empty cell */}</Text>
+                //       <Text>{/* Empty cell */}</Text>
+                //     </View>
+                //   )}
+                // </React.Fragment>
+              ))}
+              
           </View>
           <View style={{ display: "flex", flexDirection: "row" }}>
             <View style={styles.account}>
@@ -310,6 +395,10 @@ const PdfPreview = ({ data }: { data: PdfPreviewProps | any }) => {
               <Text style={styles.txt2}>IFSC: {data?.user?.account?.ifsc}</Text>
             </View>
             <View style={styles.subtotal}>
+             <Text style={styles.discount}>
+                DISCOUNT {"          "}
+                <Text style={styles.digit}> </Text>
+              </Text>
               <Text style={styles.subtotal}>
                 SUBTOTAL {"          "}
                 <Text style={styles.digit}>{data?.total?.subtotal}</Text>
@@ -350,6 +439,7 @@ const PdfPreview = ({ data }: { data: PdfPreviewProps | any }) => {
             relationship with you.
           </Text>
         </View>
+       
       </Page>
     </Document>
   );

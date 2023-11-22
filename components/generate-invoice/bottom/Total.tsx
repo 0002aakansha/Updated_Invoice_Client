@@ -1,8 +1,9 @@
-import { calculateGST, calculateSubtotal } from "@/components/store/invoice";
+ import { calculateGST, calculateSubtotal } from "@/components/store/invoice";
 import { AppDispatch, AppState } from "@/components/store/store";
 import { invoiceStateType } from "@/types/types";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import PdfPreview from "../PdfPreview/PdfPreview";
 
 const Total = () => {
   const { subtotal, GST, GrandTotal } = useSelector<AppState>(
