@@ -62,6 +62,13 @@ const Table = () => {
     if (Projects !== undefined) dispatch(setDetailedProject(Projects));
   }, [projects]);
 
+  const defaultColDef = useMemo(
+    () => ({
+      flex: 1,
+    }),
+    []
+  );
+
   const tableColumn: any = [
     {
       headerName: "S. No.",
@@ -71,7 +78,7 @@ const Table = () => {
       cellClass: "centered-cell",
       cellRenderer: (params: any) => (
         <>
-          <label htmlFor="sno" className="flex items-center space-x-2">
+          <label htmlFor="sno" className="flex items-center justify-center space-x-2">
             <input
               type="checkbox"
               id="sno"
@@ -123,6 +130,7 @@ const Table = () => {
     {
       headerName: "Description",
       field: "description",
+      cellClass: "centered-cell",
       resizable: true,
       headerClass: "custom-header",
     },
@@ -196,6 +204,7 @@ const Table = () => {
       {projects?.length !== 0 && (
         <div className="ag-theme-alpine">
           <AgGridReact
+            defaultColDef={defaultColDef}
             columnDefs={tableColumn} // header
             rowData={projectRow} // cells
             pagination={true}
