@@ -12,6 +12,8 @@ const MainTable = () => {
 
   const changeHandler = async (e: { target: { value: string } }) => {
     setSelect(e.target.value);
+    console.log(e.target.value);
+
     e.target.value === "clients"
       ? await dispatch(fetchClient())
       : await dispatch(fetchProjects());
@@ -20,24 +22,34 @@ const MainTable = () => {
   return (
     <div className=" bg-white p-4 rounded-md">
       <div className="flex justify-between">
-        <h1 className="container text-xl text-[#5a51be] uppercase font-bold mt-4 mb-8 p-1">{`${
+        <h1 className="text-xl text-[#5a51be] uppercase font-bold mt-4 mb-8 p-1">{`${
           select === "clients" ? "All Clients" : "All Projects"
         }`}</h1>
 
         <div className="flex">
           <form action="" className="flex flex-row items-center space-x-4">
-            <select
-              data-te-select-init
-              className="bg-[#5a51be] text-stone-50 rounded-sm cursor-pointer outline-none shadow-lg px-2 py-3 font-semibold tracking-wider"
-              onChange={changeHandler}
-            >
-              <option value="clients" className="bg-[#fff] text-stone-500">
-                View Clients
-              </option>
-              <option value="projects" className="bg-[#fff] text-stone-500">
-                View Projects
-              </option>
-            </select>
+            <label className="space-x-2 flex items-center">
+              <input
+                type="radio"
+                value="clients"
+                checked={select === "clients"}
+                onChange={changeHandler}
+                id="purple-radio"
+                className="accent-[#5a51be] cursor-pointer"
+              />
+              <span className="text-sm tracking-wider text-stone-700">View Clients</span>
+            </label>
+
+            <label className="space-x-2 flex items-center">
+              <input
+                type="radio"
+                value="projects"
+                checked={select === "projects"}
+                onChange={changeHandler}
+                className="accent-[#5a51be] cursor-pointer"
+              />
+              <span className="text-sm tracking-wider text-stone-700">View Projects</span>
+            </label>
           </form>
         </div>
       </div>

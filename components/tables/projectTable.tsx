@@ -4,7 +4,7 @@ import { projectStateType } from "@/types/types";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTrash, faUserPen } from "@fortawesome/free-solid-svg-icons";
 import NotFound from "../alerts/notFound";
-import { useMemo, useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 import UpdateProjectModal from "../modals/updateProjectModal";
 import AlertDialogExample from "../alerts/AlertDialog";
 import FullPageLoader from "../spinners/fullPageLoader";
@@ -40,16 +40,20 @@ const ProjectTable = () => {
       field: "description",
       resizable: true,
       headerClass: "custom-header",
-      filter: true,
       pinned: 'left',
       lockPinned: true,
+      filter: 'agTextColumnFilter',
+      suppressMenu: true,
+      floatingFilter: true
     },
     {
       headerName: "Client",
       field: "client",
       resizable: true,
       headerClass: "custom-header",
-      filter: true,
+      filter: 'agTextColumnFilter',
+      suppressMenu: true,
+      floatingFilter: true,
       cellClass: "centered-cell",
     },
     {
@@ -57,15 +61,19 @@ const ProjectTable = () => {
       field: "projectType",
       resizable: true,
       headerClass: "custom-header",
-      filter: true,
       cellClass: "centered-cell",
+      filter: 'agTextColumnFilter',
+      suppressMenu: true,
+      floatingFilter: true,
     },
     {
       headerName: "Project amount",
       field: "projectAmount",
       resizable: true,
       headerClass: "custom-header",
-      filter: true,
+      suppressMenu: true,
+      filter: 'agNumberColumnFilter',
+      floatingFilter: true,
       cellClass: "centered-cell",
     },
     {
@@ -73,7 +81,9 @@ const ProjectTable = () => {
       field: "projectCycle",
       resizable: true,
       headerClass: "custom-header",
-      filter: true,
+      suppressMenu: true,
+      filter: 'agNumberColumnFilter',
+      floatingFilter: true,
       cellClass: "centered-cell",
     },
     {
@@ -81,7 +91,9 @@ const ProjectTable = () => {
       field: "rate",
       resizable: true,
       headerClass: "custom-header",
-      filter: true,
+      suppressMenu: true,
+      filter: 'agTextColumnFilter',
+      floatingFilter: true,
       cellClass: "centered-cell",
     },
     {
@@ -89,7 +101,9 @@ const ProjectTable = () => {
       field: "conversionRate",
       resizable: true,
       headerClass: "custom-header",
-      filter: true,
+      suppressMenu: true,
+      filter: 'agNumberColumnFilter',
+      floatingFilter: true,
       cellClass: "centered-cell",
     },
     {
@@ -99,6 +113,7 @@ const ProjectTable = () => {
       cellClass: "centered-cell",
       pinned: 'right',
       lockPinned: true,
+      width: 150,
       cellRenderer: (params: any) => (
         <div className="md:p-2 sm:pr-0 sm:pl-0 text-center cursor-pointer space-x-10">
           <FontAwesomeIcon

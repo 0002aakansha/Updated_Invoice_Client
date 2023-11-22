@@ -50,19 +50,19 @@ export const useProjectRowData = () => {
           sno: indx + 1,
           description: project.description,
           client: project?.projectBelongsTo?.name,
-          projectCycle: project?.projectCycle,
+          projectCycle: +project?.projectCycle,
           projectType: project?.projectType,
-          projectAmount: `${
-            project?.projectAmount ? `${project?.projectAmount}` : "N/A"
-          }`,
+          projectAmount: project?.projectAmount
+            ? +project?.projectAmount
+            : "N/A",
           rate: `${
             project?.rate?.rate
               ? `${project?.rate?.rate} ${project?.rate?.currency}`
               : "N/A"
           }`,
-          conversionRate: `${
-            project?.conversionRate ? project?.conversionRate : "N/A"
-          }`,
+          conversionRate: project?.conversionRate
+            ? +project?.conversionRate
+            : "N/A",
         }))
     );
   }, [projects]);
@@ -90,7 +90,10 @@ export const useInvoiceRowData = () => {
           createdOn: invoice?.createdOn,
           dueDate: invoice?.dueDate,
           subtotal: invoice?.subtotal,
-          gst: typeof invoice?.GST === 'object' ? `CGST: ${invoice?.GST?.CGST}, SGST: ${invoice?.GST?.CGST}`: invoice?.GST,
+          gst:
+            typeof invoice?.GST === "object"
+              ? `CGST: ${invoice?.GST?.CGST}, SGST: ${invoice?.GST?.CGST}`
+              : invoice?.GST,
           total: invoice?.GrandTotal,
           status: invoice?.status,
         }))

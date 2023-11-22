@@ -27,53 +27,83 @@ const ClientTable = () => {
   const defaultColDef = useMemo(
     () => ({
       sortable: true,
-      flex: 1
+      // flex: 1
     }),
     []
   );
 
-  const tableColumn = [
+  const tableColumn: any = [
     {
       headerName: "S. No.",
       field: "sno",
       resizable: true,
-      headerClass: "custom-header",
+      // headerClass: "custom-header",
       cellClass: "centered-cell",
-      width: 100
+      width: 100,
+      pinned: 'left',
+      lockPinned: true,
     },
     {
       headerName: "Client",
       field: "client",
       resizable: true,
-      headerClass: "custom-header",
-      filter: true
+      // headerClass: "custom-header",
+      filter: 'agTextColumnFilter',
+      suppressMenu: true,
+      floatingFilter: true,
+      pinned: 'left',
+      lockPinned: true,
+      width: 260,
     },
     {
       headerName: "GSTIN",
       field: "gstin",
       resizable: true,
-      headerClass: "custom-header",
+      // headerClass: "custom-header",
       cellClass: "centered-cell",
+      filter: 'agTextColumnFilter',
+      suppressMenu: true,
+      floatingFilter: true
+    },
+    // work pending of tds...
+    {
+      headerName: "TDS",
+      field: "gstin",
+      resizable: true,
+      // headerClass: "custom-header",
+      cellClass: "centered-cell",
+      filter: 'agTextColumnFilter',
+      suppressMenu: true,
+      floatingFilter: true
     },
     {
       headerName: "Address",
       field: "address",
       resizable: true,
-      width: 500,
-      headerClass: "custom-header",
+      width: 350,
+      filter: 'agTextColumnFilter',
+      suppressMenu: true,
+      floatingFilter: true,
+      // headerClass: "custom-header",
       cellClass: "centered-cell",
     },
     {
       headerName: "Projects",
       field: "projects",
       resizable: true,
-      headerClass: "custom-header",
+      // headerClass: "custom-header",
       cellClass: "centered-cell",
+      filter: 'agNumberColumnFilter',
+      suppressMenu: true,
+      floatingFilter: true,
     },
     {
       headerName: "Actions",
       field: "actions",
-      headerClass: "custom-header",
+      // headerClass: "custom-header",
+      pinned: 'right',
+      lockPinned: true,
+      width: 150,
       cellRenderer: (params: any) => (
         <div className="md:p-2 sm:pr-0 sm:pl-0 text-center cursor-pointer space-x-10">
           <FontAwesomeIcon
