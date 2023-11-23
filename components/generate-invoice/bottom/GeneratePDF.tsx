@@ -100,6 +100,7 @@ const GeneratePDF = () => {
         GST,
         GrandTotal,
       },
+    
     });
   }, [
     Date,

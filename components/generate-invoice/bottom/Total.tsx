@@ -9,6 +9,7 @@ import { faRupeeSign } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import PdfPreview from "../PdfPreview/PdfPreview";
 
 const Total = () => {
   const { subtotal, GST, GrandTotal } = useSelector<AppState>(
