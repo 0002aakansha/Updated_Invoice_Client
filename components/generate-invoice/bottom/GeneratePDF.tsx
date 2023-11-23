@@ -30,6 +30,8 @@ import toast from "react-hot-toast";
 import { getClientById } from "@/components/store/client";
 import { postInvoiceHistory } from "@/components/store/invoiceHistory";
 import { useRouter } from "next/router";
+import { faFilePdf } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 const GeneratePDF = () => {
   const router = useRouter();
@@ -89,6 +91,7 @@ const GeneratePDF = () => {
       client: {
         name: clientById?.name,
         gstin: clientById?.gstin,
+        tds: clientById?.tds,
         address: clientById?.address,
         active: true,
       },
@@ -103,19 +106,9 @@ const GeneratePDF = () => {
     DueDate,
     GST,
     GrandTotal,
-    account,
-    address,
     checkedInvoice,
-    clientById?.address,
-    clientById?.gstin,
-    clientById?.name,
-    contact,
-    email,
-    gstin,
+    clientById?.tds,
     invoiceNumber,
-    invoiceType,
-    name,
-    pan,
     subtotal,
   ]);
 
@@ -136,7 +129,7 @@ const GeneratePDF = () => {
 
   const downloadPDF = () => {
     console.log(subtotal, GrandTotal);
-    
+
     if (pdfBlob) {
       const pdfUrl = URL.createObjectURL(pdfBlob);
       const a = document.createElement("a");
@@ -207,16 +200,17 @@ const GeneratePDF = () => {
       dispatch(setInvoiceNumber(""));
       dispatch(setDate(new window.Date()));
       dispatch(setDueDate(new window.Date()));
-      dispatch(setInvoiceType(''))
+      dispatch(setInvoiceType(""));
       router.push("/history");
     }
     onClose(false);
   };
 
   return (
-    <div className="flex justify-center mt-[5rem]" onClick={generatePDF}>
-      <button className="bg-[#5a51be] cursor-pointer text-stone-100 px-4 py-2 rounded-sm tracking-wider font-bold">
-        Generate PDF
+    <div className="w-full flex justify-end" onClick={generatePDF}>
+      <button className="bg-[#5a51be] cursor-pointer text-stone-100 text-sm px-3 py-2 rounded-md tracking-wider font-bold">
+        Save as PDF {" "}
+        <FontAwesomeIcon icon={faFilePdf} />
       </button>
 
       {isOpen && (

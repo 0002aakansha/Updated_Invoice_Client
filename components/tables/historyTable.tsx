@@ -209,7 +209,7 @@ const HistoryTable = () => {
   const defaultColDef = useMemo(
     () => ({
       sortable: true,
-      flex: 1,
+      // flex: 1,
     }),
     []
   );

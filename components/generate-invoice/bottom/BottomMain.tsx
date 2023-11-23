@@ -5,7 +5,6 @@ import { useSelector } from "react-redux";
 import { AppState } from "@/components/store/store";
 import { clientStateType, invoiceStateType } from "@/types/types";
 import NotFound from "@/components/alerts/notFound";
-import GeneratePDF from "./GeneratePDF";
 import Loader from "@/components/spinners/Loader";
 
 const BottomMain = () => {
@@ -27,11 +26,10 @@ const BottomMain = () => {
         ).length !== 0 ? (
           <>
             <Table />
-            <div className="flex justify-between my-[2rem]">
+            <div className="flex justify-between my-[2rem] px-8">
               <Account />
               <Total />
             </div>
-            <GeneratePDF />
           </>
         ) : (
           <NotFound title="0 Project" description="Please add project first!" />

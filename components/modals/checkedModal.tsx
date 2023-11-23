@@ -178,10 +178,9 @@ const CheckedModal = ({ uniqueKey }: { uniqueKey: string }) => {
       <Modal isOpen={isChecked} onClose={() => dispatch(setisChecked(false))}>
         <ModalOverlay />
         <ModalContent>
-          <ModalHeader className="text-[#5a51be] uppercase font-bold text-center">
+          <ModalHeader className="text-[#5a51be] text-start uppercase font-bold">
             Update Project
           </ModalHeader>
-          <ModalCloseButton />
           <ModalBody pb={6}>
             <form action="" className="p-4" onSubmit={submitHandler}>
               {invoiceType === "monthly" && (
