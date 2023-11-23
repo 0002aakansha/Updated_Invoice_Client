@@ -52,6 +52,8 @@ const HistoryTable = () => {
   const [isUpdateOpen, onUpdateOpen] = useState<boolean>(false);
   const [isAmountReceivedOpen, onAmountReceivedOpen] = useState<boolean>(false);
 
+  // console.log(pdfPreviewData)
+
   // invoice number
   const { invoice, isLoading } = useSelector<AppState>(
     (state) => state.history
@@ -620,6 +622,7 @@ const HistoryTable = () => {
           onClose={() => onPreviewClose(false)}
           size="4xl"
         >
+        
           <ModalOverlay />
           <ModalContent>
             <ModalBody>

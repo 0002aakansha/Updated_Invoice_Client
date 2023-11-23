@@ -175,13 +175,17 @@ const styles = StyleSheet.create({
     fontSize: 8.5,
     width: "60%",
   },
+  gst: {
+    fontSize: 8.5,
+    marginTop: 5,
+  },
 
 });
 
 
 
 const PdfPreview = ({ data }: { data: PdfPreviewProps | any }) => {
-  // console.log(data);
+  console.log(data);
 
   const [formattedInvoiceDate, setformattedInvoiceDate] = useState("");
   const [formattedDueDate, setformattedDueDate] = useState("");
@@ -210,7 +214,7 @@ const PdfPreview = ({ data }: { data: PdfPreviewProps | any }) => {
             </View>
             <View style={styles.rightColumn}>
               <Text style={styles.title}>{data?.user?.name}</Text>
-              <Text style={styles.txt2}>GSTIN: {data?.user?.gstin}</Text>
+              <Text style={styles.gst}>GSTIN: {data?.user?.gstin}</Text>
               <Text style={styles.txt2}>PAN : {data?.user?.pan}</Text>
               <Text style={styles.txt2}>{data?.user?.address?.street},</Text>
               <Text style={styles.txt2}>
@@ -298,6 +302,7 @@ const PdfPreview = ({ data }: { data: PdfPreviewProps | any }) => {
             </View>
 
             {data?.invoice?.invoice?.map((invoice: any, index: number) => (
+              
               <View key={invoice?.id} style={styles.tableRow}>
 
                 <Text style={styles.tableCell}>
@@ -332,11 +337,14 @@ const PdfPreview = ({ data }: { data: PdfPreviewProps | any }) => {
                       "N/A"}
                   </Text>
                 )} */}
-
                 {data?.invoice?.invoiceType === "hourly" && (
                   <Text style={styles.tableCell}>
-                    {invoice?.rate?.currency === 'USD' ? `1$ = ${invoice?.conversionRate || 'N/A'} INR` :
-                      invoice?.rate?.currency === 'POUND' ? `1£ = ${invoice?.conversionRate || 'N/A'} INR` :
+                    {invoice?.rate?.currency === 'USD' 
+                    ? `1$ = ${invoice?.conversionRate || 
+                      invoice?.projectDetails?.conversionRate} INR`: 
+                      invoice?.rate?.currency === 'POUND'
+                    ? `1£ = ${invoice?.conversionRate || 
+                      invoice?.projectDetails?.conversionRate} INR` :
                         'N/A'}
                   </Text>
                 )}
