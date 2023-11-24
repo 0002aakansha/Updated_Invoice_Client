@@ -10,6 +10,7 @@ const initialState: invoiceStateType = {
   detailedProject: [],
   subtotal: 0.0,
   discount: 0,
+  tds: 0,
   GST: 0,
   GrandTotal: 0.0,
   resetYear: new Date().getFullYear(),
@@ -83,7 +84,6 @@ const invoiceslice = createSlice({
           amount: Number(amount).toFixed(2),
         };
       } else if (state.invoiceType === "hourly" && payload.hours) {
-        console.log(payload);
         const rate = Number(project?.rate?.rate);
         const currency = project?.rate?.currency;
         const hours = Number(payload?.hours);
@@ -92,10 +92,6 @@ const invoiceslice = createSlice({
         // formula
         const amount =
           currency === "INR" ? rate * hours : rate * conversionRate * hours;
-        console.log({
-          ...payload,
-          amount: amount.toFixed(2),
-        });
 
         state.detailedProject[projectIndx] = {
           ...payload,
@@ -110,7 +106,7 @@ const invoiceslice = createSlice({
     },
     calculateSubtotal(
       state,
-      { payload }: { payload: { flag?: boolean; discount?: any } }
+      { payload }: { payload: { flag?: boolean; discount?: any; tds: number } }
     ) {
       if (payload?.flag) {
         state.subtotal = +payload.discount.toFixed(2);
@@ -118,21 +114,19 @@ const invoiceslice = createSlice({
         const istrue = current(state.detailedProject).filter(
           (project) => project.checked === true
         );
-
-        const data = istrue.reduce(
+        const total = istrue.reduce(
           (value, project) => (value += Number(project.amount)),
           0
         );
-        console.log(istrue);
-        console.log(data);
-
-        state.subtotal = +data.toFixed(2);
+        state.subtotal = +total.toFixed(2);
       }
+      state.tds = +((+state.subtotal * +payload?.tds) / 100).toFixed(2);
     },
     calculateGST(
       state,
       { payload }: { payload: { userState: string; clientState: string } }
     ) {
+      console.log(state.tds);
       if (payload.userState && payload.clientState) {
         if (
           payload?.userState?.toLowerCase() ===
@@ -167,6 +161,8 @@ const invoiceslice = createSlice({
           state.GrandTotal = +(state.subtotal + state.GST).toFixed(2);
         }
       }
+      if (state.tds)
+        state.GrandTotal = +(state.GrandTotal - state.tds).toFixed(2);
     },
     setTotalToZero(state) {
       (state.subtotal = 0), (state.GrandTotal = 0);

@@ -1,6 +1,7 @@
 import {
   fetchClient,
   fetchClientProjects,
+  getClientById,
   setHidden,
 } from "@/components/store/client";
 import {
@@ -44,7 +45,6 @@ const SelectClient = () => {
     const clientState = clients.filter(
       (client) => client._id === e.target.value
     )[0] as clientType;
-
     !isLoading &&
       dispatch(
         calculateGST({
@@ -52,6 +52,7 @@ const SelectClient = () => {
           clientState: clientState?.address?.state,
         })
       );
+    !isLoading && dispatch(getClientById(clientState._id));
   }
 
   function changeInvoiceTypeHandler(e: { target: { value: any } }) {
@@ -113,7 +114,10 @@ const SelectClient = () => {
       </div>
       <div className="mx-1">
         <form action="" className="flex flex-col">
-          <label htmlFor="select" className="font-semibold text-sm tracking-wider">
+          <label
+            htmlFor="select"
+            className="font-semibold text-sm tracking-wider"
+          >
             Project Type:
           </label>
           <select

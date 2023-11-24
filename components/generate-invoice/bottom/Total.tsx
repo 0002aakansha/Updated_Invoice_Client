@@ -4,7 +4,7 @@ import {
   setDiscount,
 } from "@/components/store/invoice";
 import { AppDispatch, AppState } from "@/components/store/store";
-import { invoiceStateType } from "@/types/types";
+import { clientStateType, invoiceStateType } from "@/types/types";
 import { faRupeeSign } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useEffect, useState } from "react";
@@ -15,6 +15,9 @@ const Total = () => {
   const { subtotal, GST, GrandTotal } = useSelector<AppState>(
     (state) => state.invoice
   ) as invoiceStateType;
+  const { clientById } = useSelector<AppState>(
+    (state) => state.client
+  ) as clientStateType;
   const dispatch = useDispatch<AppDispatch>();
 
   const [discount, setdiscount] = useState<string | number>("");
@@ -22,13 +25,19 @@ const Total = () => {
 
   useEffect(() => {
     if (discount) {
-      dispatch(calculateSubtotal({ flag: true, discount: discountedSubtotal }));
+      dispatch(
+        calculateSubtotal({
+          flag: true,
+          discount: discountedSubtotal,
+          tds: clientById?.tds,
+        })
+      );
       dispatch(calculateGST({ userState: "", clientState: "" }));
     } else {
-      dispatch(calculateSubtotal({ flag: false }));
+      dispatch(calculateSubtotal({ flag: false, tds: clientById?.tds }));
       dispatch(calculateGST({ userState: "", clientState: "" }));
     }
-  }, [discountedSubtotal, discount]);
+  }, [discountedSubtotal, discount, clientById?.tds]);
 
   return (
     <div className="w-[35%]">
@@ -50,7 +59,7 @@ const Total = () => {
           className="bg-stone-100 text-stone-800 rounded-md text-sm text-start focus:border-gray-400 outline-none py-2 px-8 w-1/2"
           value={discount}
           onChange={(e: any) => {
-            if(+e.target.value < 0 || +e.target.value > 100) return
+            if (+e.target.value < 0 || +e.target.value > 100) return;
             setdiscount(e.target.value);
             dispatch(setDiscount(+e.target.value));
             const discountValue = (+e.target.value / 100) * subtotal;
@@ -58,6 +67,13 @@ const Total = () => {
             setDiscountedSubtotal(updatedDiscountedSubtotal);
           }}
         />
+      </div>
+      <div className="flex justify-between space-x-12 font-semibold my-2">
+        <h1 className="text-sm">TDS :</h1>
+        <h5 className="bg-stone-100 text-stone-800 px-8 py-2 rounded-md text-sm text-start w-1/2">
+          {clientById?.tds !== 0 ? clientById?.tds : "0"}
+          {"%"}
+        </h5>
       </div>
       {typeof GST === "object" ? (
         <>
@@ -86,14 +102,10 @@ const Total = () => {
         </div>
       )}
       <div className="flex justify-between my-2">
-        <h1
-          className="text-stone-800 py-2 rounded-md text-sm font-semibold text-start"
-        >
+        <h1 className="text-stone-800 py-2 rounded-md text-sm font-semibold text-start">
           TOTAL :
         </h1>
-        <h5
-          className="bg-[#5a51be] text-stone-100 px-8 py-2 rounded-md text-md font-semibold text-start w-1/2"
-        >
+        <h5 className="bg-[#5a51be] text-stone-100 px-8 py-2 rounded-md text-md font-semibold text-start w-1/2">
           {GrandTotal !== 0 ? GrandTotal : "0,0.0"}{" "}
           <FontAwesomeIcon icon={faRupeeSign} />
         </h5>

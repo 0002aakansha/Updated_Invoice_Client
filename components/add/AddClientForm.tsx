@@ -113,6 +113,7 @@ const AddClientForm = () => {
               // value={tds}
               min={0}
               max={10}
+              step="0.01"
               pattern="[0-9]*"
               onChange={(e) => {
                 // const pattern = /^(10|\d(\.\d{1,2})?)$/;

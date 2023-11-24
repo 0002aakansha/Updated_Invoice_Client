@@ -61,6 +61,9 @@ const GeneratePDF = () => {
   const { invoice } = useSelector<AppState>(
     (state) => state.history
   ) as invoiceHistoryType;
+  const { tds, discount } = useSelector<AppState>(
+    (state) => state.invoice
+  ) as invoiceStateType;
 
   const dispatch = useDispatch<AppDispatch>();
 
@@ -97,11 +100,12 @@ const GeneratePDF = () => {
         active: true,
       },
       total: {
+        tds,
+        discount,
         subtotal,
         GST,
         GrandTotal,
       },
-    
     });
   }, [
     Date,
@@ -112,6 +116,8 @@ const GeneratePDF = () => {
     clientById?.tds,
     invoiceNumber,
     subtotal,
+    // tds,
+    // discount,
   ]);
 
   const generatePDF = async () => {
@@ -155,12 +161,15 @@ const GeneratePDF = () => {
                   return {
                     id: project.id,
                     projectDetails: project._id,
+                    description: project?.description,
                     period: project.period,
                     workingDays: project.workingDays,
                     totalWorkingDays: project.totalWorkingDays,
                     amount: (project.amount && +project.amount) || 0,
                   };
                 }),
+              discount,
+              tds,
               subtotal,
               GST,
               GrandTotal,
@@ -180,12 +189,16 @@ const GeneratePDF = () => {
                 .map((project) => {
                   return {
                     id: project.id,
+                    description: project?.description,
                     projectDetails: project._id,
-                    period: project.period,
+                    rate: project?.rate,
+                    conversionRate: project?.conversionRate,
                     hours: (project.hours && +project.hours?.toString()) || "",
                     amount: (project.amount && +project.amount) || 0,
                   };
                 }),
+              discount,
+              tds,
               subtotal,
               GST,
               GrandTotal,
@@ -211,8 +224,7 @@ const GeneratePDF = () => {
   return (
     <div className="w-full flex justify-end" onClick={generatePDF}>
       <button className="bg-[#5a51be] cursor-pointer text-stone-100 text-sm px-3 py-2 rounded-md tracking-wider font-bold">
-        Save as PDF {" "}
-        <FontAwesomeIcon icon={faFilePdf} />
+        Save as PDF <FontAwesomeIcon icon={faFilePdf} />
       </button>
 
       {isOpen && (

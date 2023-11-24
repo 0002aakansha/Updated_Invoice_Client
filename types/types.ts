@@ -133,6 +133,7 @@ export interface invoiceStateType {
   detailedProject: dataProps[];
   subtotal: number;
   discount?: number;
+  tds?: number;
   GST: { CGST: number; SGST: number } | number;
   GrandTotal: number;
   resetYear: number;
@@ -150,11 +151,12 @@ export interface PdfPreviewProps {
   user: userType;
   client: clientType;
   total: {
+    tds: number | undefined;
+    discount: number | undefined;
     subtotal: number;
     GST: { CGST: number; SGST: number } | number;
     GrandTotal: number;
   };
-
 }
 
 export interface invoiceProjectType {
@@ -176,6 +178,8 @@ export interface invoiceType {
   createdOn: string | any;
   dueDate: string | any;
   projects: invoiceProjectType[] | any;
+  discount?: number;
+  tds?: number;
   subtotal: number;
   GST: { CGST: number; SGST: number } | number;
   GrandTotal: number;

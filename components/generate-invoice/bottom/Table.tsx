@@ -78,7 +78,10 @@ const Table = () => {
       cellClass: "centered-cell",
       cellRenderer: (params: any) => (
         <>
-          <label htmlFor="sno" className="flex items-center justify-center space-x-2">
+          <label
+            htmlFor="sno"
+            className="flex items-center justify-center space-x-2"
+          >
             <input
               type="checkbox"
               id="sno"
@@ -105,7 +108,24 @@ const Table = () => {
                       checked: false,
                     })
                   );
-                  dispatch(calculateSubtotal({ flag: undefined }));
+                  console.log(clients.filter(
+                    (client) => client._id === params.data?.projectBelongsTo
+                  )[0]);
+                  
+                  console.log(
+                    clients.filter(
+                      (client) => client._id === params.data?.projectBelongsTo
+                    )[0]
+                  );
+
+                  dispatch(
+                    calculateSubtotal({
+                      flag: undefined,
+                      tds: clients.filter(
+                        (client) => client._id === params.data?.projectBelongsTo
+                      )[0]?.tds,
+                    })
+                  );
                 }
 
                 const clientState = clients.filter(
