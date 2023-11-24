@@ -9,179 +9,10 @@ import {
 } from "@react-pdf/renderer";
 import React from "react";
 import { useEffect, useState } from "react";
-
-
-
-const styles = StyleSheet.create({
-  page: {
-    flexDirection: "row",
-    backgroundColor: "white",
-  },
-  section: {
-    margin: 10,
-    padding: 10,
-    flexGrow: 1,
-  },
-  heading: {
-    fontSize: 20,
-    marginBottom: 10,
-    marginTop: 40,
-    textAlign: "center",
-    textDecoration: "underline",
-  },
-  table: {
-    // display: 'table',
-    width: "100%",
-    marginTop: 30,
-    marginBottom: 10,
-  },
-  tableRow: {
-    flexDirection: "row",
-  },
-  tableHead: {
-    padding: 4,
-    fontSize: 8,
-    fontWeight: "bold",
-    textAlign: "center",
-    width: "100%",
-    backgroundColor: "#5A51BE",
-    color: "white",
-  },
-
-  //landscape
-  // rightColumn: {
-  //   // flex: 1,
-  //   display: "flex",
-  //   flexDirection: "column",
-  //   // textAlign: 'right',
-  //   fontSize: 12,
-  //   marginTop: 50,
-  //   marginRight: "30%",
-  // },
-
-  //A4
-  rightColumn: {
-    // flex: 1,
-    display: "flex",
-    flexDirection: "column",
-    // textAlign: 'right',
-    fontSize: 10,
-    marginTop: 10,
-    marginRight: "35%",
-  },
-  tableCell: {
-    border: "1 solid #B0B0B0",
-    padding: 4,
-    fontSize: 8,
-    textAlign: "center",
-    width: "100%",
-  },
-  txt: {
-    fontSize: 8,
-    marginTop: 3,
-    backgroundColor: "#5A51BE",
-    color: "white",
-    padding: 2,
-    width: "33%",
-  },
-  txt1: {
-    fontSize: 8,
-    marginTop: 1,
-    backgroundColor: "#5A51BE",
-    color: "white",
-    padding: 3,
-    width: "33%",
-  },
-  account: {
-    marginTop: 35,
-    fontSize: 12,
-    flex: 1,
-  },
-  subtotal: {
-    fontSize: 8.5,
-    marginTop: 12,
-  },
-  discount: {
-    marginTop: 25,
-  },
-  cgst: {
-    marginTop: 12,
-  },
-  total: {
-    marginTop: 12,
-    backgroundColor: "#5A51BE",
-    color: "white",
-    padding: 5,
-  },
-  digit: {
-    marginLeft: 50,
-  },
-
-  //landscape
-  logo: {
-    width: "150%",
-    height: "100%",
-    marginRight: "38%",
-    marginTop: 20,
-  },
-
-  email: {
-    // marginTop: 7,
-    // fontSize: 13,
-    fontSize: 8,
-    color: "blue",
-    textDecoration: "underline",
-  },
-  top: {
-    marginBottom: 10,
-    display: "flex",
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-around",
-  },
-  title: {
-    //landscape
-    // fontSize: 16,
-    fontSize: 10,
-    marginBottom: 2,
-    marginTop: 2,
-  },
-  txt2: {
-    //landscape
-    // marginTop: 7,
-    // fontSize: 13,
-    fontSize: 8.5,
-  },
-  billTo: {
-    display: "flex",
-    flexDirection: "column",
-    fontSize: 12,
-    marginTop: 2,
-    marginRight: '9.5%',
-    marginLeft: '5%',
-
-  },
-  billToCubexo: {
-    display: "flex",
-    flexDirection: "column",
-    fontSize: 12,
-    marginTop: 2,
-    marginRight: '19%',
-    marginLeft: '5%',
-
-  },
-  address: {
-    // marginTop: 7,
-    fontSize: 8.5,
-    width: "60%",
-  },
-
-});
-
-
+import { portraitStyles, landscapeStyles } from "../../../styles/pdfStyles";
 
 const PdfPreview = ({ data }: { data: PdfPreviewProps | any }) => {
-  // console.log(data);
+  console.log(data);
 
   const [formattedInvoiceDate, setformattedInvoiceDate] = useState("");
   const [formattedDueDate, setformattedDueDate] = useState("");
@@ -194,10 +25,25 @@ const PdfPreview = ({ data }: { data: PdfPreviewProps | any }) => {
     setformattedDueDate(formatDate(data?.invoice?.DueDate));
   }, [data?.invoice?.Date, data?.invoice?.DueDate]);
 
+  const isLandscape = data?.invoice?.invoice?.length <= 8;
+
+  const pageSize: any = isLandscape ? [800, 1000] : "A4";
+
+  // Use portrait styles by default
+  let styles = portraitStyles;
+
+  // Switch to landscape style if index > 10
+  if (isLandscape) {
+    styles = { ...portraitStyles, ...landscapeStyles } as any;
+  }
+
+  let discount = 10;
+  let tds = 2;
+
   return (
     <Document>
 
-      <Page size="A4" style={styles.page}>
+      <Page size={pageSize} style={styles.page}>
         <View style={styles.section}>
           {/* top */}
           <View style={styles.top}>
@@ -217,21 +63,25 @@ const PdfPreview = ({ data }: { data: PdfPreviewProps | any }) => {
                 {data?.user?.address?.city} {data?.user?.address?.pin},{" "}
                 {data?.user?.address?.state} {data?.user?.address?.country}
               </Text>
-              <Text style={styles.email}>{data?.user?.email}</Text>{" "}
+                <Text style={styles.email}>{data?.user?.email}</Text>{" "}
+                <Text style={styles.contact}>{data?.user?.contact}</Text>
+             
             </View>
           </View>
 
           {/* middle */}
-          <View style={{ display: "flex", flexDirection: "row" }}>
-            <View style={{ flex: 1, marginTop: 2 }}>
-              <Text style={styles.txt1}>
-                Invoice Number : {data?.invoice?.invoiceNumber}
-              </Text>
-              <Text style={styles.txt}>
-                Invoice Date : {formattedInvoiceDate}
-              </Text>
-              <Text style={styles.txt}>Due Date: {formattedDueDate}</Text>
-            </View>{" "}
+          <View style={{ display: "flex", flexDirection: "row", marginLeft: "2%" }}>
+            <View style={{ flex: 1, marginTop: 2, width: '100%' }}>
+              <View style={{ flex: 1, marginTop: 1, width: '50%' }}>
+                <Text style={styles.txt1}>
+                  Invoice Number : {data?.invoice?.invoiceNumber}
+                </Text>
+                <Text style={styles.txt}>
+                  Invoice Date : {formattedInvoiceDate}
+                </Text>
+                <Text style={styles.txt}>Due Date: {formattedDueDate}</Text>
+              </View>{" "}
+            </View>
             {data?.user?.name?.toLowerCase().startsWith("gammaedge") ? (
               <View style={styles.billTo}>
                 <Text style={styles.title}>Bill To:</Text>
@@ -298,6 +148,7 @@ const PdfPreview = ({ data }: { data: PdfPreviewProps | any }) => {
             </View>
 
             {data?.invoice?.invoice?.map((invoice: any, index: number) => (
+
               <View key={invoice?.id} style={styles.tableRow}>
 
                 <Text style={styles.tableCell}>
@@ -332,11 +183,14 @@ const PdfPreview = ({ data }: { data: PdfPreviewProps | any }) => {
                       "N/A"}
                   </Text>
                 )} */}
-
                 {data?.invoice?.invoiceType === "hourly" && (
                   <Text style={styles.tableCell}>
-                    {invoice?.rate?.currency === 'USD' ? `1$ = ${invoice?.conversionRate || 'N/A'} INR` :
-                      invoice?.rate?.currency === 'POUND' ? `1£ = ${invoice?.conversionRate || 'N/A'} INR` :
+                    {invoice?.rate?.currency === 'USD'
+                      ? `1$ = ${invoice?.conversionRate ||
+                      invoice?.projectDetails?.conversionRate} INR` :
+                      invoice?.rate?.currency === 'POUND'
+                        ? `1£ = ${invoice?.conversionRate ||
+                        invoice?.projectDetails?.conversionRate} INR` :
                         'N/A'}
                   </Text>
                 )}
@@ -407,46 +261,27 @@ const PdfPreview = ({ data }: { data: PdfPreviewProps | any }) => {
               <Text style={styles.txt2}>BANK: {data?.user?.account?.bank}</Text>
               <Text style={styles.txt2}>IFSC: {data?.user?.account?.ifsc}</Text>
             </View>
+
             <View style={styles.subtotal}>
-              {/* <Text style={styles.discount}>
-                DISCOUNT {"          "}
-                <Text style={styles.digit}> </Text>
-              </Text>
-              <Text style={styles.subtotal}>
-                TDS {"          "}
-              </Text>
-              <Text style={styles.subtotal}>
-                SUBTOTAL {"          "}
-                <Text style={styles.digit}>{data?.total?.subtotal}</Text>
-              </Text>
-              {typeof data?.total?.GST === "number" ? (
-                <Text style={styles.cgst}>
-                  CGST @18% {"          "}
-                  <Text style={styles.digit}>{data?.total?.GST}</Text>
-                </Text>
-                
-              ) : (
-                <View>
-                  <Text style={styles.cgst}>
-                    CGST @9% {"          "}
-                    <Text style={styles.digit}>{data?.total?.GST?.CGST}</Text>
-                  </Text>
-                  <Text style={styles.cgst}>
-                    SGST @9% {"          "}
-                    <Text style={styles.digit}>{data?.total?.GST?.SGST}</Text>
-                  </Text>
-                </View>
-              )} */}
-              {data?.total?.discount !== undefined && data?.total?.discount !== null && data?.total?.discount !== 0 && (
+
+              {/* conditionally rendering discount and tds */}
+
+              {discount !== undefined && discount !== null && discount !== 0 && (
                 <Text style={styles.discount}>
                   DISCOUNT {"          "}
-                  <Text style={styles.digit}>{data?.total?.discount}</Text>
+                  <Text style={styles.digit}>{discount}%</Text>
                 </Text>
-              )}
+              )}             
               <Text style={styles.subtotal}>
                 SUBTOTAL {"          "}
                 <Text style={styles.digit}>{data?.total?.subtotal}</Text>
               </Text>
+              {(tds !== undefined && tds !== null && tds !== 0) && (
+                <Text style={styles.subtotal}>
+                  TDS {"                       "}
+                  <Text style={styles.digit}>{tds}%</Text>
+                </Text>
+              )}
               {typeof data?.total?.GST === "number" ? (
                 <Text style={styles.cgst}>
                   CGST @18% {"          "}
@@ -470,18 +305,12 @@ const PdfPreview = ({ data }: { data: PdfPreviewProps | any }) => {
               </Text>
             </View>
           </View>
-          <Text
-            style={{
-              fontSize: 9,
-              padding: 2,
-              marginTop: 45,
-              textAlign: "center",
-              fontStyle: "italic",
-            }}
-          >
+
+          <Text style={styles.footer}>
             We appreciate your collaboration and look forword to a long
             relationship with you.
           </Text>
+
         </View>
 
       </Page>

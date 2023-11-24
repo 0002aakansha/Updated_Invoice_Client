@@ -16,6 +16,7 @@ import {
   ModalBody,
   ModalContent,
   ModalFooter,
+  ModalHeader,
   ModalOverlay,
 } from "@chakra-ui/react";
 import PdfPreview from "../PdfPreview/PdfPreview";
@@ -218,6 +219,7 @@ const GeneratePDF = () => {
         <Modal isOpen={isOpen} onClose={() => onClose(false)} size="4xl">
           <ModalOverlay />
           <ModalContent>
+            <ModalHeader></ModalHeader>
             <ModalBody>
               <PDFViewer width="100%" height="550em">
                 <PdfPreview data={pdfPreviewData} />
