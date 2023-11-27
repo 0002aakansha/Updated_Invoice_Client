@@ -7,9 +7,9 @@ import {
   invoiceStateType,
   projectStateType,
 } from "@/types/types";
-import invoice from "../store/invoice";
-import getFromatDate from "@/utils/getFormatDate";
+import getFromatDate, { getStandardDate } from "@/utils/getFormatDate";
 import getCurrentDate from "@/utils/getCurrentDate";
+import getTotalDays from "@/utils/getDays";
 
 const useRowData = () => {
   const { clients } = useSelector<AppState>(
@@ -94,28 +94,44 @@ export const useInvoiceRowData = () => {
               (project: any) =>
                 project?.description || project?.projectDetails?.description
             ),
-            createdOn: invoice?.createdOn,
-            dueDate: invoice?.dueDate,
+            createdOn: getStandardDate(invoice?.createdOn),
+            dueDate: getStandardDate(invoice?.dueDate),
             daysLeft:
-              +(
-                (+getFromatDate(invoice?.createdOn) - +getCurrentDate()) /
-                (1000 * 60 * 60 * 24)
-              ).toFixed() <= 0
-                ? (
-                    (+getFromatDate(invoice?.dueDate) - +getCurrentDate()) /
-                    (1000 * 60 * 60 * 24)
-                  ).toFixed() + " Days Left"
-                : (
-                    (+getFromatDate(invoice?.dueDate) -
-                      +getFromatDate(invoice?.createdOn)) /
-                    (1000 * 60 * 60 * 24)
-                  ).toFixed() + " Days Left",
+              getTotalDays(
+                +getFromatDate(invoice?.createdOn),
+                +getCurrentDate()
+              ) <= 0
+                ? getTotalDays(
+                    +getFromatDate(invoice?.dueDate),
+                    +getCurrentDate()
+                  )
+                : getTotalDays(
+                    +getFromatDate(invoice?.dueDate),
+                    +getFromatDate(invoice?.createdOn)
+                  ) + "",
             subtotal: invoice?.subtotal,
             gst:
               typeof invoice?.GST === "object"
                 ? `CGST: ${invoice?.GST?.CGST}, SGST: ${invoice?.GST?.CGST}`
                 : invoice?.GST,
             total: invoice?.GrandTotal,
+            amountReceived: invoice?.receivedStatus && invoice?.receivedStatus,
+            totalAmountReceived:
+              invoice?.receivedStatus &&
+              invoice?.receivedStatus.reduce(
+                (acc: number, amount: any) => (acc += amount?.amountReceived),
+                0
+              ),
+            pendingAmount: invoice?.receivedStatus
+              ? (
+                  invoice?.GrandTotal -
+                  invoice?.receivedStatus.reduce(
+                    (acc: number, amount: any) =>
+                      (acc += amount?.amountReceived),
+                    0
+                  )
+                ).toFixed(2)
+              : invoice?.GrandTotal,
             status: invoice?.status,
           };
         })

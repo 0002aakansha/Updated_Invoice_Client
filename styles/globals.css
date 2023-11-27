@@ -213,11 +213,13 @@ select:hover option:hover {
 .centered-cell {
   text-align: center;
 }
-/* .ag-cell{
-  animation: animate .9s linear infinite alternate;
+.ag-cell{
+  /* animation: animate .9s linear infinite alternate; */
+  font-size: 9.5pt !important;
+  color: rgb(34, 34, 34);
 }
 
-@keyframes animate {
+/* @keyframes animate {
   0%{background-color: #f56464;}
   100%{background-color: transparent;}
 } */

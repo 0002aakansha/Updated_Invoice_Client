@@ -20,7 +20,7 @@ const History = () => {
   }, []);
 
   useEffect(() => {
-    if (error?.message !== "") toast.error(error?.message || error?.response?.data?.message || "Something went wrong!");
+     if (error?.message !== "") toast.error(error?.message || error?.response?.data?.message || "Something went wrong!");
   }, [error?.message]);
 
   return (

@@ -23,7 +23,7 @@ import {
 import { postInvoiceHistory, updateInvoice } from "../store/invoiceHistory";
 import AlertDialogExample from "../alerts/AlertDialog";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faCircle } from "@fortawesome/free-solid-svg-icons";
+import { faCircle, faIndianRupeeSign } from "@fortawesome/free-solid-svg-icons";
 import { setInvoiceNumber } from "../store/invoice";
 import FullPageLoader from "../spinners/fullPageLoader";
 import NotFound from "../alerts/notFound";
@@ -66,8 +66,6 @@ const HistoryTable = () => {
   const filterParams = {
     comparator: (filterLocalDateAtMidnight: any, cellValue: any) => {
       const dateAsString = cellValue;
-      console.log(cellValue);
-
       if (dateAsString == null) return -1;
       const dateParts = dateAsString.split("/");
       const cellDate = new Date(
@@ -111,16 +109,22 @@ const HistoryTable = () => {
       width: 80,
       pinned: "left",
       lockPinned: true,
-    },
-    {
-      headerName: "Invoice Number",
-      field: "invoiceNumber",
-      resizable: true,
-      headerClass: "custom-header",
-      filter: true,
-      pinned: "left",
-      lockPinned: true,
-      cellClass: "centered-cell",
+      cellRenderer: (params: any) => {
+        return (
+          <>
+            {+params.data.total - +params.data.totalAmountReceived !== 0 &&
+              +params.data?.pendingAmount > 0 &&
+              +params.data.daysLeft < 0 && (
+                <FontAwesomeIcon
+                  icon={faCircle}
+                  beatFade
+                  className="text-red-600"
+                />
+              )}
+            <p>{params.data.sno}</p>
+          </>
+        );
+      },
     },
     {
       headerName: "Client",
@@ -131,17 +135,28 @@ const HistoryTable = () => {
       filter: "agTextColumnFilter",
       suppressMenu: true,
       floatingFilter: true,
+      pinned: "left",
+      lockPinned: true,
     },
     {
-      headerName: "Projects",
-      field: "projects",
+      headerName: "Invoice ID",
+      field: "invoiceNumber",
       resizable: true,
       headerClass: "custom-header",
+      filter: true,
       cellClass: "centered-cell",
-      filter: "agTextColumnFilter",
-      suppressMenu: true,
-      floatingFilter: true,
+      width: 140,
     },
+    // {
+    //   headerName: "Projects",
+    //   field: "projects",
+    //   resizable: true,
+    //   headerClass: "custom-header",
+    //   cellClass: "centered-cell",
+    //   filter: "agTextColumnFilter",
+    //   suppressMenu: true,
+    //   floatingFilter: true,
+    // },
     {
       headerName: "Created On",
       field: "createdOn",
@@ -171,6 +186,25 @@ const HistoryTable = () => {
       headerClass: "custom-header",
       filter: true,
       cellClass: "centered-cell",
+      cellRenderer: (params: any) => {
+        return +params.data.total - +params.data.totalAmountReceived === 0 ||
+          -params?.data?.pendingAmount >
+            params?.data?.total - params?.data?.totalAmountReceived ? (
+          <p className="text-green-700 bg-green-100 rounded-lg inline px-4 py-1 text-[8pt] tracking-wide">
+            Paid
+          </p>
+        ) : +params.data.daysLeft > 0 ? (
+          <p className="text-purple-600 bg-purple-100 rounded-lg inline px-4 py-1 text-[8pt] tracking-wide">{`Due By ${params.data.daysLeft} Days`}</p>
+        ) : +params.data.daysLeft === 0 ? (
+          <p className="text-yellow-700 bg-yellow-100 rounded-lg inline px-4 py-1 text-[8pt] tracking-wide">
+            Due By Today
+          </p>
+        ) : (
+          <p className="text-red-600 bg-red-100 rounded-lg inline px-4 py-1 text-[9pt] tracking-wider">
+            Overdue
+          </p>
+        );
+      },
     },
     {
       headerName: "Subtotal",
@@ -179,15 +213,23 @@ const HistoryTable = () => {
       headerClass: "custom-header",
       filter: true,
       cellClass: "centered-cell",
+      cellRenderer: (params: any) => {
+        return (
+          <p className="">
+            <FontAwesomeIcon icon={faIndianRupeeSign} />
+            {params.data.subtotal.toLocaleString()}
+          </p>
+        );
+      },
     },
-    {
-      headerName: "GST",
-      field: "gst",
-      resizable: true,
-      headerClass: "custom-header",
-      filter: true,
-      cellClass: "centered-cell",
-    },
+    // {
+    //   headerName: "GST",
+    //   field: "gst",
+    //   resizable: true,
+    //   headerClass: "custom-header",
+    //   filter: true,
+    //   cellClass: "centered-cell",
+    // },
     {
       headerName: "Total Amount",
       field: "total",
@@ -195,22 +237,59 @@ const HistoryTable = () => {
       headerClass: "custom-header",
       filter: true,
       cellClass: "centered-cell",
+      cellRenderer: (params: any) => {
+        return (
+          <p className="">
+            <FontAwesomeIcon icon={faIndianRupeeSign} />
+            {params.data.total.toLocaleString()}
+          </p>
+        );
+      },
     },
     {
       headerName: "Amount Received",
-      field: "total",
+      field: "amountReceived",
       resizable: true,
       headerClass: "custom-header",
       filter: true,
       cellClass: "centered-cell",
+      cellRenderer: (params: any) => {
+        return (
+          <div className="flex space-x-2 justify-center">
+            {params.data?.amountReceived ? (
+              <p>
+                <FontAwesomeIcon icon={faIndianRupeeSign} />
+                {params.data?.amountReceived
+                  .reduce((acc: number, amount: any) => {
+                    return (acc += amount.amountReceived);
+                  }, 0)
+                  .toLocaleString()}
+              </p>
+            ) : (
+              <p>
+                <FontAwesomeIcon icon={faIndianRupeeSign} />
+                <span>0</span>
+              </p>
+            )}
+          </div>
+        );
+      },
     },
     {
       headerName: "Pending Amount",
-      field: "total",
+      field: "pendingAmount",
       resizable: true,
       headerClass: "custom-header",
       filter: true,
       cellClass: "centered-cell",
+      cellRenderer: (params: any) => {
+        return (
+          <p className="">
+            <FontAwesomeIcon icon={faIndianRupeeSign} />
+            {params?.data?.pendingAmount.toLocaleString()}
+          </p>
+        );
+      },
     },
     {
       headerName: "Status",
@@ -220,22 +299,31 @@ const HistoryTable = () => {
       filter: true,
       cellClass: "centered-cell",
       cellRenderer: (params: any) => {
+        console.log(params?.data);
         return (
-          <div className="flex items-center space-x-2 justify-center">
-            <FontAwesomeIcon
-              icon={faCircle}
-              className={`${
-                params?.data?.status === "raised"
-                  ? " text-orange-600"
-                  : " text-green-600"
-              }`}
-            />
-            {params?.data?.status === "raised" ? (
-              <p className="text-stone-800">Raised</p>
+          <>
+            {+params?.data?.pendingAmount === 0 ? (
+              <p className="text-green-700 bg-green-100 rounded-lg inline px-4 py-1 text-[8pt] tracking-wider">
+                Cleared
+              </p>
+            ) : params?.data?.pendingAmount === params?.data?.total ? (
+              <p className="text-orange-700 bg-orange-100 rounded-lg inline px-4 py-1 text-[8pt] tracking-wider">
+                Raised
+              </p>
+            ) : params?.data?.pendingAmount > 0 &&
+              params?.data?.pendingAmount < params?.data?.total ? (
+              <p className="text-pink-700 bg-pink-100 rounded-lg inline px-4 py-1 text-[8pt] tracking-wider">
+                Partially Paid
+              </p>
             ) : (
-              <p className="text-stone-800">Cleared</p>
+              -params?.data?.pendingAmount >
+                params?.data?.total - params?.data?.totalAmountReceived && (
+                <p className="text-blue-700 bg-blue-100 rounded-lg inline px-4 py-1 text-[8pt] tracking-wider">
+                  Overpaid
+                </p>
+              )
             )}
-          </div>
+          </>
         );
       },
     },
@@ -247,11 +335,12 @@ const HistoryTable = () => {
       pinned: "right",
       resizable: true,
       lockPinned: true,
+      width: 170,
       cellRenderer: (params: any) => (
         <div className="md:p-2 sm:pr-0 sm:pl-0 text-center cursor-pointer space-x-8 flex">
           <span className="block" title="Repeat">
             <GrRotateRight
-              className="text-xl text-slate-700 cursor-pointer"
+              className="text-lg text-blue-700 bg-blue-100 rounded-full cursor-pointer"
               onClick={() => {
                 setId(params?.data?._id);
                 onEditClose(true);
@@ -269,7 +358,7 @@ const HistoryTable = () => {
           </span> */}
           <span className="block" title="Remove">
             <AiOutlineDelete
-              className="text-xl text-red-500 cursor-pointer"
+              className="text-lg text-red-500 bg-red-100 rounded-full cursor-pointer"
               onClick={() => {
                 setId(params?.data?._id);
                 setAlertOpen(true);
@@ -278,7 +367,7 @@ const HistoryTable = () => {
           </span>
           <span title="Edit">
             <TbEditCircle
-              className="text-xl text-slate-500 cursor-pointer"
+              className="text-lg text-indigo-500 bg-indigo-100 rounded-full cursor-pointer"
               onClick={() => {
                 setId(params?.data?._id);
                 onAmountReceivedOpen(true);
@@ -482,7 +571,6 @@ const HistoryTable = () => {
 
   const updateHandler = (e: FormEvent) => {
     e.preventDefault();
-    console.log(amountReceived, amountDate);
     // 12000 Wed Nov 15 2023 05:30:00 GMT+0530 (India Standard Time)
     if (invoiceData?._id)
       dispatch(
@@ -739,12 +827,10 @@ const HistoryTable = () => {
                     placeholder="Amount Recieved"
                     className="border-2 mt-2 px-4 py-2 rounded-sm outline-none"
                     value={amountReceived}
+                    min={0}
+                    // max={invoiceData?.GrandTotal}
+                    step="0.01"
                     onChange={(e) => {
-                      if (
-                        +e.target.value < 0 ||
-                        +e.target.value > invoiceData?.GrandTotal
-                      )
-                        return;
                       setAmountReceived(e.target.value);
                     }}
                     required

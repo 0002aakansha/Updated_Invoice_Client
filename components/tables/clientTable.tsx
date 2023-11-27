@@ -11,6 +11,8 @@ import { AgGridReact } from "ag-grid-react";
 import "ag-grid-community/styles/ag-grid.css";
 import "ag-grid-community/styles/ag-theme-alpine.css";
 import useRowData from "../hooks/useRowData";
+import { TbEditCircle } from "react-icons/tb";
+import { AiOutlineDelete } from "react-icons/ai";
 
 const ClientTable = () => {
   const clients = useSelector<AppState>(
@@ -103,22 +105,22 @@ const ClientTable = () => {
       // headerClass: "custom-header",
       pinned: 'right',
       lockPinned: true,
-      width: 150,
+      width: 120,
       cellRenderer: (params: any) => (
-        <div className="md:p-2 sm:pr-0 sm:pl-0 text-center cursor-pointer space-x-10">
-          <FontAwesomeIcon
+        <div className="flex items-center cursor-pointer justify-between">
+          <TbEditCircle
             icon={faUserPen}
             style={{ color: "#5d6f99" }}
-            className=" sm:text-xs md:text-lg"
+            className="text-xl mt-2 text-indigo-500 bg-indigo-100 rounded-full cursor-pointer"
             onClick={() => {
               setUpdateOpen(true);
               setId(params?.data?._id);
             }}
           />
-          <FontAwesomeIcon
+          <AiOutlineDelete
             icon={faTrash}
             style={{ color: "rgb(247 43 43)" }}
-            className="sm:text-xs  md:text-lg"
+            className="text-xl mt-2 text-red-500 bg-red-100 rounded-full cursor-pointer"
             onClick={() => {
               setDeleteOpen(true);
               setId(params?.data?._id);
