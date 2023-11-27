@@ -68,7 +68,7 @@ const ClientTable = () => {
     // work pending of tds...
     {
       headerName: "TDS",
-      field: "gstin",
+      field: "tds",
       resizable: true,
       // headerClass: "custom-header",
       cellClass: "centered-cell",

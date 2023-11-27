@@ -13,8 +13,6 @@ import { portraitStyles, landscapeStyles } from "../../../styles/pdfStyles";
 import { getRateWithCurrencySymbol } from "@/utils/currencySymbol";
 
 const PdfPreview = ({ data }: { data: PdfPreviewProps | any }) => {
-  console.log(data);
-
   const [formattedInvoiceDate, setformattedInvoiceDate] = useState("");
   const [formattedDueDate, setformattedDueDate] = useState("");
 
@@ -38,8 +36,8 @@ const PdfPreview = ({ data }: { data: PdfPreviewProps | any }) => {
     styles = { ...portraitStyles, ...landscapeStyles } as any;
   }
 
-  let discount = 10;
-  let tds = 2;
+  let discount = data?.total?.discount;
+  let tds = data?.client?.tds;
 
   return (
     <Document>
@@ -72,9 +70,11 @@ const PdfPreview = ({ data }: { data: PdfPreviewProps | any }) => {
           </View>
 
           {/* middle */}
-          <View style={{ display: "flex", flexDirection: "row", marginLeft: "2%" }}>
-            <View style={{ flex: 1, marginTop: 2, width: '100%' }}>
-              <View style={{ flex: 1, marginTop: 1, width: '50%' }}>
+          <View
+            style={{ display: "flex", flexDirection: "row", marginLeft: "2%" }}
+          >
+            <View style={{ flex: 1, marginTop: 2, width: "100%" }}>
+              <View style={{ flex: 1, marginTop: 1, width: "50%" }}>
                 <Text style={styles.txt1}>
                   Invoice Number : {data?.invoice?.invoiceNumber}
                 </Text>
@@ -150,9 +150,7 @@ const PdfPreview = ({ data }: { data: PdfPreviewProps | any }) => {
             </View>
 
             {data?.invoice?.invoice?.map((invoice: any, index: number) => (
-
               <View key={invoice?.id} style={styles.tableRow}>
-
                 <Text style={styles.tableCell}>
                   {invoice?.description || invoice?.projectDetails?.description}
                 </Text>
@@ -171,9 +169,14 @@ const PdfPreview = ({ data }: { data: PdfPreviewProps | any }) => {
                 {/* {data?.invoice?.invoiceType === "hourly" && (
                   <Text style={styles.tableCell}>
                     {invoice?.rate?.rate || invoice?.projectDetails?.rate?.rate}
-                    {invoice?.rate?.currency === 'USD' ? '$' :
-                      invoice?.rate?.currency === 'POUND' ? '£' :
-                        invoice?.rate?.currency === 'INR' ? 'INR' : ''} / Hour
+                    {invoice?.rate?.currency === "USD"
+                      ? "$"
+                      : invoice?.rate?.currency === "POUND"
+                      ? "£"
+                      : invoice?.rate?.currency === "INR"
+                      ? "INR"
+                      : ""}{" "}
+                    / Hour
                   </Text>
                 )} */}
 
@@ -201,17 +204,19 @@ const PdfPreview = ({ data }: { data: PdfPreviewProps | any }) => {
                 )} */}
                 {data?.invoice?.invoiceType === "hourly" && (
                   <Text style={styles.tableCell}>
-                    {invoice?.rate?.currency === 'USD'
-                      ? `1$ = ${invoice?.conversionRate ||
-                      invoice?.projectDetails?.conversionRate} INR` :
-                      invoice?.rate?.currency === 'POUND'
-                        ? `1£ = ${invoice?.conversionRate ||
-                        invoice?.projectDetails?.conversionRate} INR` :
-                        'N/A'}
+                    {invoice?.rate?.currency === "USD"
+                      ? `1$ = ${
+                          invoice?.conversionRate ||
+                          invoice?.projectDetails?.conversionRate
+                        } INR`
+                      : invoice?.rate?.currency === "POUND"
+                      ? `1£ = ${
+                          invoice?.conversionRate ||
+                          invoice?.projectDetails?.conversionRate
+                        } INR`
+                      : "N/A"}
                   </Text>
                 )}
-
-
 
                 <Text style={styles.tableCell}>{invoice?.amount}</Text>
               </View>
@@ -266,7 +271,6 @@ const PdfPreview = ({ data }: { data: PdfPreviewProps | any }) => {
               //   )}
               // </React.Fragment>
             ))}
-
           </View>
           <View style={{ display: "flex", flexDirection: "row" }}>
             <View style={styles.account}>
@@ -279,7 +283,6 @@ const PdfPreview = ({ data }: { data: PdfPreviewProps | any }) => {
             </View>
 
             <View style={styles.subtotal}>
-
               {/* conditionally rendering discount and tds */}
 
               {discount !== undefined && discount !== null && discount !== 0 && (
@@ -292,7 +295,7 @@ const PdfPreview = ({ data }: { data: PdfPreviewProps | any }) => {
                 SUBTOTAL {"          "}
                 <Text style={styles.digit}>{data?.total?.subtotal}</Text>
               </Text>
-              {(tds !== undefined && tds !== null && tds !== 0) && (
+              {tds !== undefined && tds !== null && tds !== 0 && (
                 <Text style={styles.subtotal}>
                   TDS {"                       "}
                   <Text style={styles.digit}>{tds}%</Text>
@@ -326,9 +329,7 @@ const PdfPreview = ({ data }: { data: PdfPreviewProps | any }) => {
             We appreciate your collaboration and look forword to a long
             relationship with you.
           </Text>
-
         </View>
-
       </Page>
     </Document>
   );

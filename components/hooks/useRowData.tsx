@@ -4,8 +4,12 @@ import { AppState } from "../store/store";
 import {
   clientStateType,
   invoiceHistoryType,
+  invoiceStateType,
   projectStateType,
 } from "@/types/types";
+import invoice from "../store/invoice";
+import getFromatDate from "@/utils/getFormatDate";
+import getCurrentDate from "@/utils/getCurrentDate";
 
 const useRowData = () => {
   const { clients } = useSelector<AppState>(
@@ -24,6 +28,7 @@ const useRowData = () => {
             sno: indx + 1,
             client: client?.name,
             gstin: client?.gstin,
+            tds: (client?.tds || 0) + "%",
             address: `${client?.address?.street}, ${client?.address?.city} ${client?.address?.pin}, ${client?.address?.state}, ${client?.address?.country}`,
             projects: client?.projects?.length,
           };
@@ -79,27 +84,85 @@ export const useInvoiceRowData = () => {
     setHistoryRow(
       invoice
         ?.filter((invoice) => invoice.active === true)
-        ?.map((invoice, indx) => ({
-          _id: invoice?._id,
-          sno: indx + 1,
-          invoiceNumber: invoice?.invoiceNumber,
-          client: invoice?.createdFor?.name,
-          projects: invoice?.projects?.map(
-            (project: any) => project.projectDetails.description
-          ),
-          createdOn: invoice?.createdOn,
-          dueDate: invoice?.dueDate,
-          subtotal: invoice?.subtotal,
-          gst:
-            typeof invoice?.GST === "object"
-              ? `CGST: ${invoice?.GST?.CGST}, SGST: ${invoice?.GST?.CGST}`
-              : invoice?.GST,
-          total: invoice?.GrandTotal,
-          status: invoice?.status,
-        }))
+        ?.map((invoice, indx) => {
+          return {
+            _id: invoice?._id,
+            sno: indx + 1,
+            invoiceNumber: invoice?.invoiceNumber,
+            client: invoice?.createdFor?.name,
+            projects: invoice?.projects?.map(
+              (project: any) =>
+                project?.description || project?.projectDetails?.description
+            ),
+            createdOn: invoice?.createdOn,
+            dueDate: invoice?.dueDate,
+            daysLeft:
+              +(
+                (+getFromatDate(invoice?.createdOn) - +getCurrentDate()) /
+                (1000 * 60 * 60 * 24)
+              ).toFixed() <= 0
+                ? (
+                    (+getFromatDate(invoice?.dueDate) - +getCurrentDate()) /
+                    (1000 * 60 * 60 * 24)
+                  ).toFixed() + " Days Left"
+                : (
+                    (+getFromatDate(invoice?.dueDate) -
+                      +getFromatDate(invoice?.createdOn)) /
+                    (1000 * 60 * 60 * 24)
+                  ).toFixed() + " Days Left",
+            subtotal: invoice?.subtotal,
+            gst:
+              typeof invoice?.GST === "object"
+                ? `CGST: ${invoice?.GST?.CGST}, SGST: ${invoice?.GST?.CGST}`
+                : invoice?.GST,
+            total: invoice?.GrandTotal,
+            status: invoice?.status,
+          };
+        })
     );
   }, [invoice]);
   return { historyRow };
+};
+
+export const useCheckedProjectRowData = () => {
+  const { detailedProject, invoiceType } = useSelector<AppState>(
+    (state) => state.invoice
+  ) as invoiceStateType;
+  const { projects, clients } = useSelector<AppState>(
+    (state) => state.client
+  ) as clientStateType;
+
+  const [projectRow, setProjectRow] = useState<any>();
+
+  useEffect(() => {
+    setProjectRow(
+      detailedProject
+        ?.filter((project) => project.projectType === invoiceType)
+        ?.map((project, indx) => ({
+          _id: project?._id,
+          sno: indx + 1,
+          description: project.description,
+          period: project?.period || "Miscellaneous",
+          workingDays: project?.workingDays,
+          totalWorkingDays: project?.totalWorkingDays,
+          hours: project?.hours,
+          rate: `${
+            project?.rate?.rate
+              ? `${project?.rate?.rate} ${project?.rate?.currency}`
+              : "N/A"
+          }`,
+          conversionRate: project?.conversionRate
+            ? +project?.conversionRate
+            : "N/A",
+          projectAmount: project?.projectAmount
+            ? +project?.projectAmount
+            : "N/A",
+          amount: project?.amount,
+          projectBelongsTo: project?.projectBelongsTo,
+        }))
+    );
+  }, [detailedProject, invoiceType]);
+  return { projectRow };
 };
 
 export default useRowData;

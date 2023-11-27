@@ -99,7 +99,14 @@ const CheckedModal = ({ uniqueKey }: { uniqueKey: string }) => {
               projectBelongsTo: project.projectBelongsTo,
             })
           );
-          dispatch(calculateSubtotal({ flag: undefined }));
+          dispatch(
+            calculateSubtotal({
+              flag: undefined,
+              tds: client.clients.filter(
+                (client) => client._id === project?.projectBelongsTo
+              )[0].tds,
+            })
+          );
 
           const clientState = client.clients.filter(
             (client) => client._id === project?.projectBelongsTo
@@ -133,7 +140,14 @@ const CheckedModal = ({ uniqueKey }: { uniqueKey: string }) => {
             conversionRate,
           })
         );
-        dispatch(calculateSubtotal({ flag: undefined }));
+        dispatch(
+          calculateSubtotal({
+            flag: undefined,
+            tds: client.clients.filter(
+              (client) => client._id === project?.projectBelongsTo
+            )[0].tds,
+          })
+        );
 
         const clientState = client.clients.filter(
           (client) => client._id === project?.projectBelongsTo
@@ -155,7 +169,14 @@ const CheckedModal = ({ uniqueKey }: { uniqueKey: string }) => {
             projectAmount,
           })
         );
-        dispatch(calculateSubtotal({ flag: undefined }));
+        dispatch(
+          calculateSubtotal({
+            flag: undefined,
+            tds: client.clients.filter(
+              (client) => client._id === project?.projectBelongsTo
+            )[0].tds,
+          })
+        );
 
         const clientState = client.clients.filter(
           (client) => client._id === project?.projectBelongsTo
@@ -178,10 +199,9 @@ const CheckedModal = ({ uniqueKey }: { uniqueKey: string }) => {
       <Modal isOpen={isChecked} onClose={() => dispatch(setisChecked(false))}>
         <ModalOverlay />
         <ModalContent>
-          <ModalHeader className="text-[#5a51be] uppercase font-bold text-center">
+          <ModalHeader className="text-[#5a51be] text-start uppercase font-bold">
             Update Project
           </ModalHeader>
-          <ModalCloseButton />
           <ModalBody pb={6}>
             <form action="" className="p-4" onSubmit={submitHandler}>
               {invoiceType === "monthly" && (
@@ -238,6 +258,7 @@ const CheckedModal = ({ uniqueKey }: { uniqueKey: string }) => {
                       value={totalWorkingDays !== "0" ? totalWorkingDays : ""}
                       onChange={(e) => settotalworkingDays(e.target.value)}
                       required
+                      step="0.01"
                       placeholder="0"
                       className="border-2 mt-2 px-4 py-2 rounded-sm outline-none"
                     />
@@ -303,6 +324,7 @@ const CheckedModal = ({ uniqueKey }: { uniqueKey: string }) => {
                     </label>
                     <input
                       type="number"
+                      step="0.01"
                       value={conversionRate}
                       autoFocus
                       onChange={(e: any) => setConversionRate(e.target.value)}

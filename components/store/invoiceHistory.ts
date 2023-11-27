@@ -85,7 +85,13 @@ export const getAllInvoice = createAsyncThunk(
 export const updateInvoice = createAsyncThunk(
   "invoice/history/update",
   async (
-    { id, dataToUpdate }: { id: string; dataToUpdate: { status: string | undefined } },
+    {
+      id,
+      dataToUpdate,
+    }: {
+      id: string;
+      dataToUpdate: { amountReceived: number | undefined; amountDate: string };
+    },
     { rejectWithValue }
   ) => {
     try {
@@ -95,7 +101,10 @@ export const updateInvoice = createAsyncThunk(
         headers: {
           Authorization: getCookie(),
         },
-        data: JSON.stringify(dataToUpdate),
+        data: JSON.stringify({
+          amountReceived: dataToUpdate.amountReceived,
+          receivedOn: dataToUpdate.amountDate,
+        }),
       });
 
       if (data.status === "true") return data;

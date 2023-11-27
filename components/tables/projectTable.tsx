@@ -160,10 +160,10 @@ const ProjectTable = () => {
         <div className="ag-theme-alpine" style={{ width: "100%" }}>
         <AgGridReact
           defaultColDef={defaultColDef}
-          pagination={pagination}
-          paginationPageSize={paginationPageSize}
           columnDefs={tableColumn} // header
           rowData={projectRow} // cells
+          pagination={pagination}
+          paginationPageSize={paginationPageSize}
           animateRows={true}
           domLayout="autoHeight"
         />

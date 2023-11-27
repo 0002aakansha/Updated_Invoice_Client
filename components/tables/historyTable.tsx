@@ -36,6 +36,7 @@ import getFilteredInvoiceNumber, {
   generateInvoiceNumber,
   getLocalStorage,
 } from "@/utils/invoiceNumber";
+import { useRouter } from "next/router";
 
 const HistoryTable = () => {
   const [pdfBlob, setPdfBlob] = useState<Blob | MediaSource>();
@@ -46,13 +47,11 @@ const HistoryTable = () => {
   const [status, setStatus] = useState<string>();
   const [date, setDate] = useState<Date | null>(new Date());
   const [dueDate, setDueDate] = useState<Date | null>(new Date());
-  const [amountReceived, setAmountReceived] = useState<number | string>();
-  const [amountDate, setAmountDate] = useState<Date| null >(new Date());
+  const [amountReceived, setAmountReceived] = useState<number | string>(0);
+  const [amountDate, setAmountDate] = useState<Date | null | any>(new Date());
   const dispatch = useDispatch<AppDispatch>();
   const [isUpdateOpen, onUpdateOpen] = useState<boolean>(false);
   const [isAmountReceivedOpen, onAmountReceivedOpen] = useState<boolean>(false);
-
-  console.log(pdfPreviewData)
 
   // invoice number
   const { invoice, isLoading } = useSelector<AppState>(
@@ -63,6 +62,44 @@ const HistoryTable = () => {
   const [invoiceData, setInvoiceData] = useState<invoiceType>(
     invoice.filter((invoice) => invoice?._id === _id)[0]
   );
+
+  const filterParams = {
+    comparator: (filterLocalDateAtMidnight: any, cellValue: any) => {
+      const dateAsString = cellValue;
+      console.log(cellValue);
+
+      if (dateAsString == null) return -1;
+      const dateParts = dateAsString.split("/");
+      const cellDate = new Date(
+        Number(dateParts[2]),
+        Number(dateParts[1]) - 1,
+        Number(dateParts[0])
+      );
+      if (filterLocalDateAtMidnight.getTime() === cellDate.getTime()) {
+        return 0;
+      }
+      if (cellDate < filterLocalDateAtMidnight) {
+        return -1;
+      }
+      if (cellDate > filterLocalDateAtMidnight) {
+        return 1;
+      }
+      return 0;
+    },
+    minValidYear: 2000,
+    maxValidYear: new Date().getFullYear(),
+    inRangeFloatingFilterDateFormat: "Do MMM YYYY",
+  };
+
+  //Defining Route for Invoice History Detail Page
+  const router = useRouter();
+
+  const onRowClick = (params: any) => {
+    const id = params?.data?._id;
+    if(id){
+      router.push(`/history/${id}`);
+    }
+  };
 
   const tableColumn: any = [
     {
@@ -90,28 +127,46 @@ const HistoryTable = () => {
       field: "client",
       resizable: true,
       headerClass: "custom-header",
-      filter: true,
       cellClass: "centered-cell",
+      filter: "agTextColumnFilter",
+      suppressMenu: true,
+      floatingFilter: true,
     },
     {
       headerName: "Projects",
       field: "projects",
       resizable: true,
       headerClass: "custom-header",
-      filter: true,
       cellClass: "centered-cell",
+      filter: "agTextColumnFilter",
+      suppressMenu: true,
+      floatingFilter: true,
     },
     {
       headerName: "Created On",
       field: "createdOn",
       resizable: true,
       headerClass: "custom-header",
-      filter: true,
       cellClass: "centered-cell",
+      filter: "agDateColumnFilter",
+      filterParams: filterParams,
+      suppressMenu: true,
+      floatingFilter: true,
     },
     {
       headerName: "Due Date",
       field: "dueDate",
+      resizable: true,
+      headerClass: "custom-header",
+      filter: "agDateColumnFilter",
+      filterParams: filterParams,
+      suppressMenu: true,
+      floatingFilter: true,
+      cellClass: "centered-cell",
+    },
+    {
+      headerName: "Days Left",
+      field: "daysLeft",
       resizable: true,
       headerClass: "custom-header",
       filter: true,
@@ -169,10 +224,11 @@ const HistoryTable = () => {
           <div className="flex items-center space-x-2 justify-center">
             <FontAwesomeIcon
               icon={faCircle}
-              className={`${params?.data?.status === "raised"
+              className={`${
+                params?.data?.status === "raised"
                   ? " text-orange-600"
                   : " text-green-600"
-                }`}
+              }`}
             />
             {params?.data?.status === "raised" ? (
               <p className="text-stone-800">Raised</p>
@@ -202,7 +258,7 @@ const HistoryTable = () => {
               }}
             />
           </span>
-          <span title="Edit">
+          {/* <span title="Edit">
             <TbEditCircle
               className="text-xl text-slate-500 cursor-pointer"
               onClick={() => {
@@ -210,7 +266,7 @@ const HistoryTable = () => {
                 onUpdateOpen(true);
               }}
             />
-          </span>
+          </span> */}
           <span className="block" title="Remove">
             <AiOutlineDelete
               className="text-xl text-red-500 cursor-pointer"
@@ -399,6 +455,7 @@ const HistoryTable = () => {
             return {
               id: project?.id,
               projectDetails: project?.projectDetails?._id,
+              // description,
               period: project?.period,
               workingDays: project?.workingDays,
               totalWorkingDays: project?.totalWorkingDays,
@@ -408,6 +465,8 @@ const HistoryTable = () => {
           }
         ),
         subtotal: invoiceData?.subtotal,
+        discount: invoiceData?.discount,
+        tds: invoiceData?.tds,
         GST: invoiceData?.GST,
         GrandTotal: invoiceData?.GrandTotal,
         status: "raised",
@@ -423,10 +482,14 @@ const HistoryTable = () => {
 
   const updateHandler = (e: FormEvent) => {
     e.preventDefault();
-
+    console.log(amountReceived, amountDate);
+    // 12000 Wed Nov 15 2023 05:30:00 GMT+0530 (India Standard Time)
     if (invoiceData?._id)
       dispatch(
-        updateInvoice({ id: invoiceData?._id, dataToUpdate: { status } })
+        updateInvoice({
+          id: invoiceData?._id,
+          dataToUpdate: { amountReceived: +amountReceived, amountDate },
+        })
       );
   };
 
@@ -478,6 +541,8 @@ const HistoryTable = () => {
               animateRows={true}
               domLayout="autoHeight"
               onGridReady={onGridReady}
+              onCellClicked={onRowClick}
+            
             />
           </div>
         </>
@@ -498,9 +563,10 @@ const HistoryTable = () => {
                       placeholder="Invoice Number"
                       className="border-2 mt-2 px-4 py-2 rounded-sm outline-none"
                       maxLength={8}
-                      value={`${getLocalStorage("year") ||
+                      value={`${
+                        getLocalStorage("year") ||
                         invoice[invoice.length - 1].invoiceNumber.slice(0, 4)
-                        }${lastInvoiceNumber.toString().slice(4)}`}
+                      }${lastInvoiceNumber.toString().slice(4)}`}
                       onChange={(e) => setLastInvoiceNumber(e.target.value)}
                     />
                     {error && (
@@ -573,7 +639,7 @@ const HistoryTable = () => {
           </ModalContent>
         </Modal>
       )}
-      {isUpdateOpen && (
+      {/* {isUpdateOpen && (
         <Modal isOpen={isUpdateOpen} onClose={() => onUpdateOpen(false)}>
           <ModalOverlay />
           <ModalContent>
@@ -612,14 +678,13 @@ const HistoryTable = () => {
             </ModalBody>
           </ModalContent>
         </Modal>
-      )}
+      )} */}
       {isPreviewOpen && (
         <Modal
           isOpen={isPreviewOpen}
           onClose={() => onPreviewClose(false)}
           size="4xl"
         >
-        
           <ModalOverlay />
           <ModalContent>
             <ModalBody>
@@ -654,17 +719,19 @@ const HistoryTable = () => {
           isOpen={isAlertOpen}
           onClose={setAlertOpen}
           filter="invoiceDelete"
-
         />
       )}
       {isAmountReceivedOpen && (
-        <Modal isOpen={isAmountReceivedOpen} onClose={() => onAmountReceivedOpen(false)}>
+        <Modal
+          isOpen={isAmountReceivedOpen}
+          onClose={() => onAmountReceivedOpen(false)}
+        >
           <ModalOverlay />
           <ModalContent>
             <ModalBody>
               <form action="" onSubmit={updateHandler} className="my-4">
                 <div className="flex flex-col my-2">
-                  <label htmlFor="" className="font-semibold text-lg">
+                  <label htmlFor="" className="text-base text-stone-700">
                     Enter Recieved Amount
                   </label>
                   <input
@@ -672,18 +739,27 @@ const HistoryTable = () => {
                     placeholder="Amount Recieved"
                     className="border-2 mt-2 px-4 py-2 rounded-sm outline-none"
                     value={amountReceived}
-                    onChange={(e) => setAmountReceived(e.target.value)}
+                    onChange={(e) => {
+                      if (
+                        +e.target.value < 0 ||
+                        +e.target.value > invoiceData?.GrandTotal
+                      )
+                        return;
+                      setAmountReceived(e.target.value);
+                    }}
                     required
                   />
                 </div>
                 <div className="flex flex-col my-2">
-                  <label htmlFor="" className="font-semibold text-lg">
-                    Due Date
+                  <label htmlFor="" className="text-base text-stone-700">
+                    Received On:
                   </label>
                   <input
                     type="date"
                     className="border-2 mt-2 px-4 py-2 rounded-sm outline-none"
-                    value={amountDate ? amountDate.toISOString().split("T")[0] : ""}
+                    value={
+                      amountDate ? amountDate.toISOString().split("T")[0] : ""
+                    }
                     onChange={(e) => {
                       const dateValue = e.target.value;
                       if (dateValue) {

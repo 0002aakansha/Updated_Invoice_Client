@@ -1,6 +1,7 @@
 import {
   fetchClient,
   fetchClientProjects,
+  getClientById,
   setHidden,
 } from "@/components/store/client";
 import {
@@ -17,7 +18,7 @@ import {
   invoiceStateType,
   userStateType,
 } from "@/types/types";
-import { ChangeEvent, useEffect, useState } from "react";
+import { ChangeEvent, memo, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
 const SelectClient = () => {
@@ -44,7 +45,6 @@ const SelectClient = () => {
     const clientState = clients.filter(
       (client) => client._id === e.target.value
     )[0] as clientType;
-
     !isLoading &&
       dispatch(
         calculateGST({
@@ -52,6 +52,7 @@ const SelectClient = () => {
           clientState: clientState?.address?.state,
         })
       );
+    !isLoading && dispatch(getClientById(clientState._id));
   }
 
   function changeInvoiceTypeHandler(e: { target: { value: any } }) {
@@ -86,13 +87,13 @@ const SelectClient = () => {
         <form action="" className="flex flex-col">
           <label
             htmlFor="select"
-            className="font-semibold xs:text-xs sm:text-md md:text-base"
+            className="font-semibold xs:text-xs sm:text-md md:text-sm tracking-wider"
           >
             Bill To:
           </label>
           <select
             id="select"
-            className="outline-none bg-transparent border-2 px-4 py-2 rounded-sm my-2 xs:text-xs sm:text-sm md:text-md"
+            className="outline-none bg-transparent border-2 px-4 py-2 rounded-sm my-2 xs:text-xs sm:text-sm md:text-[10pt]"
             value={clientId}
             onChange={changeHandler}
           >
@@ -113,18 +114,21 @@ const SelectClient = () => {
       </div>
       <div className="mx-1">
         <form action="" className="flex flex-col">
-          <label htmlFor="select" className="font-semibold">
+          <label
+            htmlFor="select"
+            className="font-semibold text-sm tracking-wider"
+          >
             Project Type:
           </label>
           <select
             id="select"
             onChange={changeInvoiceTypeHandler}
-            className="outline-none bg-transparent border-2 px-4 py-2 rounded-sm my-2 xs:text-xs sm:text-sm md:text-md"
+            className="outline-none bg-transparent border-2 px-4 py-2 rounded-sm my-2 xs:text-xs sm:text-sm md:text-[10pt] tracking-wider"
           >
             <option value="">Select project type</option>
             <option value="monthly">Monthly</option>
             <option value="hourly">Hourly</option>
-            <option value='fixedbudget'>Fixed Budget</option>
+            <option value="fixedbudget">Fixed Budget</option>
           </select>
         </form>
       </div>
@@ -132,4 +136,4 @@ const SelectClient = () => {
   );
 };
 
-export default SelectClient;
+export default memo(SelectClient);

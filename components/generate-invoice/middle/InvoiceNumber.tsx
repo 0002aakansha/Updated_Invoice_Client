@@ -9,7 +9,7 @@ import getFilteredInvoiceNumber, {
   generateInvoiceNumber,
   getLocalStorage,
 } from "@/utils/invoiceNumber";
-import { useEffect, useState } from "react";
+import { memo, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
 const InvoiceNumber = () => {
@@ -88,11 +88,11 @@ const InvoiceNumber = () => {
 
   return (
     <div>
-      <div className="w-[80%]">
-        <div className="my-2 p-1 rounded-sm flex justify-between">
+      <div className="w-[55%] pl-8">
+        <div className="my-1 p-1 rounded-sm flex justify-between">
           <label
             htmlFor="invoice"
-            className="font-semibold xs:text-xs sm:text-md md:text-base"
+            className="font-semibold xs:text-xs sm:text-md md:text-sm"
           >
             Invoice Number:{" "}
           </label>
@@ -100,7 +100,7 @@ const InvoiceNumber = () => {
             <input
               type="text"
               id="invoice"
-              className="bg-transparent outline-none border px-2 border-stone-300 p-1 rounded-sm xs:text-xs w-full sm:text-sm md:text-md"
+              className="bg-transparent outline-none border px-2 border-stone-300 p-1 rounded-sm xs:text-xs w-full sm:text-sm md:text-sm"
               value={`${getLocalStorage("year")}${lastInvoiceNumber
                 .toString()
                 .slice(4)}`}
@@ -115,10 +115,10 @@ const InvoiceNumber = () => {
             )}
           </div>
         </div>
-        <div className="my-2 p-1 rounded-sm flex justify-between">
+        <div className="my-1 p-1 rounded-sm flex justify-between">
           <label
             htmlFor="date"
-            className="font-semibold xs:text-xs sm:text-md md:text-base"
+            className="font-semibold xs:text-xs sm:text-md md:text-sm cursor-pointer "
           >
             Date:{" "}
           </label>
@@ -133,17 +133,17 @@ const InvoiceNumber = () => {
             }}
           />
         </div>
-        <div className="my-2 p-1 rounded-sm flex justify-between">
+        <div className="my-1 p-1 rounded-sm flex justify-between">
           <label
             htmlFor="duedate"
-            className="font-semibold xs:text-xs sm:text-md md:text-base"
+            className="font-semibold xs:text-xs sm:text-md md:text-sm"
           >
             Due Date:{" "}
           </label>
           <input
             type="date"
             id="duedate"
-            className="bg-transparent outline-none border px-2 border-stone-300 p-1 rounded-sm w-1/2 xs:text-xs sm:text-sm md:text-md"
+            className=" cursor-pointer bg-transparent outline-none border px-2 border-stone-300 p-1 rounded-sm w-1/2 xs:text-xs sm:text-sm md:text-md"
             value={dueDate ? dueDate.toISOString().split("T")[0] : ""}
             min={date ? date.toISOString().split("T")[0] : ""}
             onChange={(e) => {
@@ -157,4 +157,4 @@ const InvoiceNumber = () => {
   );
 };
 
-export default InvoiceNumber;
+export default memo(InvoiceNumber);

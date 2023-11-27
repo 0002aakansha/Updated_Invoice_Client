@@ -31,6 +31,8 @@ import toast from "react-hot-toast";
 import { getClientById } from "@/components/store/client";
 import { postInvoiceHistory } from "@/components/store/invoiceHistory";
 import { useRouter } from "next/router";
+import { faFilePdf } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 const GeneratePDF = () => {
   const router = useRouter();
@@ -59,6 +61,9 @@ const GeneratePDF = () => {
   const { invoice } = useSelector<AppState>(
     (state) => state.history
   ) as invoiceHistoryType;
+  const { tds, discount } = useSelector<AppState>(
+    (state) => state.invoice
+  ) as invoiceStateType;
 
   const dispatch = useDispatch<AppDispatch>();
 
@@ -90,35 +95,29 @@ const GeneratePDF = () => {
       client: {
         name: clientById?.name,
         gstin: clientById?.gstin,
+        tds: clientById?.tds,
         address: clientById?.address,
         active: true,
       },
       total: {
+        tds,
+        discount,
         subtotal,
         GST,
         GrandTotal,
       },
-    
     });
   }, [
     Date,
     DueDate,
     GST,
     GrandTotal,
-    account,
-    address,
     checkedInvoice,
-    clientById?.address,
-    clientById?.gstin,
-    clientById?.name,
-    contact,
-    email,
-    gstin,
+    clientById?.tds,
     invoiceNumber,
-    invoiceType,
-    name,
-    pan,
     subtotal,
+    // tds,
+    // discount,
   ]);
 
   const generatePDF = async () => {
@@ -138,7 +137,7 @@ const GeneratePDF = () => {
 
   const downloadPDF = () => {
     console.log(subtotal, GrandTotal);
-    
+
     if (pdfBlob) {
       const pdfUrl = URL.createObjectURL(pdfBlob);
       const a = document.createElement("a");
@@ -162,12 +161,15 @@ const GeneratePDF = () => {
                   return {
                     id: project.id,
                     projectDetails: project._id,
+                    description: project?.description,
                     period: project.period,
                     workingDays: project.workingDays,
                     totalWorkingDays: project.totalWorkingDays,
                     amount: (project.amount && +project.amount) || 0,
                   };
                 }),
+              discount,
+              tds,
               subtotal,
               GST,
               GrandTotal,
@@ -187,12 +189,16 @@ const GeneratePDF = () => {
                 .map((project) => {
                   return {
                     id: project.id,
+                    description: project?.description,
                     projectDetails: project._id,
-                    period: project.period,
+                    rate: project?.rate,
+                    conversionRate: project?.conversionRate,
                     hours: (project.hours && +project.hours?.toString()) || "",
                     amount: (project.amount && +project.amount) || 0,
                   };
                 }),
+              discount,
+              tds,
               subtotal,
               GST,
               GrandTotal,
@@ -209,16 +215,16 @@ const GeneratePDF = () => {
       dispatch(setInvoiceNumber(""));
       dispatch(setDate(new window.Date()));
       dispatch(setDueDate(new window.Date()));
-      dispatch(setInvoiceType(''))
+      dispatch(setInvoiceType(""));
       router.push("/history");
     }
     onClose(false);
   };
 
   return (
-    <div className="flex justify-center mt-[5rem]" onClick={generatePDF}>
-      <button className="bg-[#5a51be] cursor-pointer text-stone-100 px-4 py-2 rounded-sm tracking-wider font-bold">
-        Generate PDF
+    <div className="w-full flex justify-end" onClick={generatePDF}>
+      <button className="bg-[#5a51be] cursor-pointer text-stone-100 text-sm px-3 py-2 rounded-md tracking-wider font-bold">
+        Save as PDF <FontAwesomeIcon icon={faFilePdf} />
       </button>
 
       {isOpen && (

@@ -16,6 +16,7 @@ const AddClientForm = () => {
 
   const [name, setName] = useState<string>("");
   const [gstin, setgstin] = useState<string>("");
+  const [tds, setTDS] = useState<number>(0);
   const [address, setAddress] = useState<addressType>({
     street: "",
     city: "",
@@ -27,7 +28,7 @@ const AddClientForm = () => {
 
   const submitHandler = async (e: FormEvent) => {
     e.preventDefault();
-    await dispatch(createClient({ name, gstin, address, active: true }));
+    await dispatch(createClient({ name, gstin, tds, address, active: true }));
   };
 
   useEffect(() => {
@@ -50,30 +51,30 @@ const AddClientForm = () => {
         <h1 className="mt-2 uppercase mb-6 border-b p-3 text-center font-bold text-[#5a51be] xs:text-xs sm:text-sm md:text-xl tracking-wide">
           Add Client
         </h1>
+        <div className="flex flex-col px-4 space-x-2 my-4">
+          <label
+            htmlFor="name"
+            className="font-semibold tracking-wide mb-2 xs:text-xs sm:text-sm md:text-md"
+          >
+            Client
+          </label>
+          <input
+            type="text"
+            placeholder="Name"
+            autoFocus
+            required
+            className="outline-none border-2 px-4 py-2  rounded-md  xs:text-xs sm:text-sm md:text-md xs:w-full "
+            value={name}
+            onChange={(e) => {
+              const inputValue = e.target.value;
+              const pattern = /^[A-Za-z\s]*$/;
+              if (pattern.test(inputValue) || inputValue === "") {
+                setName(inputValue);
+              }
+            }}
+          />
+        </div>
         <div className="xs:grid xs:grid-cols-1 md:grid md:grid-cols-2 px-4 space-x-2">
-          <div className="flex flex-col">
-            <label
-              htmlFor="name"
-              className="font-semibold tracking-wide mb-2 xs:text-xs sm:text-sm md:text-md"
-            >
-              Client
-            </label>
-            <input
-              type="text"
-              placeholder="Name"
-              autoFocus
-              required
-              className="outline-none border-2  px-4 py-2  rounded-md  xs:text-xs sm:text-sm md:text-md xs:w-full "
-              value={name}
-              onChange={(e) => {
-                const inputValue = e.target.value;
-                const pattern = /^[A-Za-z\s]*$/;
-                if (pattern.test(inputValue) || inputValue === "") {
-                  setName(inputValue);
-                }
-              }}
-            />
-          </div>
           <div className="flex flex-col">
             <label
               htmlFor="name"
@@ -94,6 +95,31 @@ const AddClientForm = () => {
                 if (pattern.test(input) || input === "") {
                   setgstin(input);
                 }
+              }}
+            />
+          </div>
+          <div className="flex flex-col">
+            <label
+              htmlFor="name"
+              className="font-semibold tracking-wide xs:mt-2 sm:mt-2 md:mt-0 mb-2 xs:text-xs sm:text-sm md:text-md"
+            >
+              TDS
+            </label>
+            <input
+              type="number"
+              placeholder={"0%"}
+              required
+              className="outline-none border-2 px-4 py-2 rounded-md xs:text-xs sm:text-sm md:text-md xs:w-full"
+              // value={tds}
+              min={0}
+              max={10}
+              step="0.01"
+              pattern="[0-9]*"
+              onChange={(e) => {
+                // const pattern = /^(10|\d(\.\d{1,2})?)$/;
+                // if (pattern.test(+input)) {
+                setTDS(+e.target.value);
+                // }
               }}
             />
           </div>
