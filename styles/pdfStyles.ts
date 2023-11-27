@@ -152,7 +152,7 @@ export const portraitStyles = StyleSheet.create({
     footer: {
         fontSize: 9,
         padding: 2,
-        marginTop: 45,
+        marginTop: 40,
         textAlign: "center",
         fontStyle: "italic",
     },

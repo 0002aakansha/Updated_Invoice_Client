@@ -10,6 +10,7 @@ import {
 import React from "react";
 import { useEffect, useState } from "react";
 import { portraitStyles, landscapeStyles } from "../../../styles/pdfStyles";
+import { getRateWithCurrencySymbol } from "@/utils/currencySymbol";
 
 const PdfPreview = ({ data }: { data: PdfPreviewProps | any }) => {
   console.log(data);
@@ -43,7 +44,8 @@ const PdfPreview = ({ data }: { data: PdfPreviewProps | any }) => {
   return (
     <Document>
 
-      <Page size={pageSize} style={styles.page}>
+      <Page size={pageSize} style={styles.page} wrap>
+
         <View style={styles.section}>
           {/* top */}
           <View style={styles.top}>
@@ -63,9 +65,9 @@ const PdfPreview = ({ data }: { data: PdfPreviewProps | any }) => {
                 {data?.user?.address?.city} {data?.user?.address?.pin},{" "}
                 {data?.user?.address?.state} {data?.user?.address?.country}
               </Text>
-                <Text style={styles.email}>{data?.user?.email}</Text>{" "}
-                <Text style={styles.contact}>{data?.user?.contact}</Text>
-             
+              <Text style={styles.email}>{data?.user?.email}</Text>{" "}
+              <Text style={styles.contact}>{data?.user?.contact}</Text>
+
             </View>
           </View>
 
@@ -165,17 +167,31 @@ const PdfPreview = ({ data }: { data: PdfPreviewProps | any }) => {
                     {invoice.totalWorkingDays}
                   </Text>
                 )}
-                {data?.invoice?.invoiceType === "hourly" && (
+
+                {/* {data?.invoice?.invoiceType === "hourly" && (
                   <Text style={styles.tableCell}>
                     {invoice?.rate?.rate || invoice?.projectDetails?.rate?.rate}
                     {invoice?.rate?.currency === 'USD' ? '$' :
                       invoice?.rate?.currency === 'POUND' ? '£' :
                         invoice?.rate?.currency === 'INR' ? 'INR' : ''} / Hour
                   </Text>
+                )} */}
+
+                {/* Rate in test */}
+                {data?.invoice?.invoiceType === "hourly" && (
+                  <Text style={styles.tableCell}>
+                    {getRateWithCurrencySymbol(
+                      invoice?.rate?.rate || invoice?.projectDetails?.rate?.rate,
+                      invoice?.rate?.currency
+                    )}
+                  </Text>
                 )}
+
+
                 {data?.invoice?.invoiceType === "hourly" && (
                   <Text style={styles.tableCell}>{invoice?.hours}</Text>
                 )}
+
                 {/* {data?.invoice?.invoiceType === "hourly" && (
                   <Text style={styles.tableCell}>
                     {invoice?.conversionRate ||
@@ -271,7 +287,7 @@ const PdfPreview = ({ data }: { data: PdfPreviewProps | any }) => {
                   DISCOUNT {"          "}
                   <Text style={styles.digit}>{discount}%</Text>
                 </Text>
-              )}             
+              )}
               <Text style={styles.subtotal}>
                 SUBTOTAL {"          "}
                 <Text style={styles.digit}>{data?.total?.subtotal}</Text>
@@ -318,3 +334,4 @@ const PdfPreview = ({ data }: { data: PdfPreviewProps | any }) => {
   );
 };
 export default PdfPreview;
+

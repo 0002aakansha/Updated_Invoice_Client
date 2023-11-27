@@ -52,7 +52,7 @@ const HistoryTable = () => {
   const [isUpdateOpen, onUpdateOpen] = useState<boolean>(false);
   const [isAmountReceivedOpen, onAmountReceivedOpen] = useState<boolean>(false);
 
-  // console.log(pdfPreviewData)
+  console.log(pdfPreviewData)
 
   // invoice number
   const { invoice, isLoading } = useSelector<AppState>(
@@ -624,7 +624,7 @@ const HistoryTable = () => {
           <ModalContent>
             <ModalBody>
               <PDFViewer width="100%" height="550em">
-                <PdfPreview data={pdfPreviewData} />
+                <PdfPreview data={pdfPreviewData}/>
               </PDFViewer>
             </ModalBody>
             <ModalFooter>
