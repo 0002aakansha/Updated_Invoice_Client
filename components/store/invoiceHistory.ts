@@ -15,6 +15,7 @@ const initialState: invoiceHistoryType = {
       subtotal: 0.0,
       GST: 0,
       GrandTotal: 0.0,
+      receivedStatus: [{ amountReceived: 0, receivedOn: "" }],
       status: "",
       invoiceType: "",
       active: true,
