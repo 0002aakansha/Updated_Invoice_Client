@@ -2,7 +2,11 @@ import { useSelector } from "react-redux";
 import { AppState } from "../store/store";
 import { invoiceStateType, projectStateType } from "@/types/types";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faTrash, faUserPen } from "@fortawesome/free-solid-svg-icons";
+import {
+  faIndianRupeeSign,
+  faTrash,
+  faUserPen,
+} from "@fortawesome/free-solid-svg-icons";
 import NotFound from "../alerts/notFound";
 import { useCallback, useMemo, useState } from "react";
 import UpdateProjectModal from "../modals/updateProjectModal";
@@ -29,7 +33,7 @@ const ProjectTable = () => {
   const [updateOpen, setUpdateOpen] = useState<boolean>(false);
   const [deleteOpen, setDeleteOpen] = useState<boolean>(false);
 
-  const tableColumn:any = [
+  const tableColumn: any = [
     {
       headerName: "S. No.",
       field: "sno",
@@ -37,7 +41,7 @@ const ProjectTable = () => {
       headerClass: "custom-header",
       cellClass: "centered-cell",
       width: 80,
-      pinned: 'left',
+      pinned: "left",
       lockPinned: true,
     },
     {
@@ -45,18 +49,18 @@ const ProjectTable = () => {
       field: "description",
       resizable: true,
       headerClass: "custom-header",
-      pinned: 'left',
+      pinned: "left",
       lockPinned: true,
-      filter: 'agTextColumnFilter',
+      filter: "agTextColumnFilter",
       suppressMenu: true,
-      floatingFilter: true
+      floatingFilter: true,
     },
     {
       headerName: "Client",
       field: "client",
       resizable: true,
       headerClass: "custom-header",
-      filter: 'agTextColumnFilter',
+      filter: "agTextColumnFilter",
       suppressMenu: true,
       floatingFilter: true,
       cellClass: "centered-cell",
@@ -67,7 +71,7 @@ const ProjectTable = () => {
       resizable: true,
       headerClass: "custom-header",
       cellClass: "centered-cell",
-      filter: 'agTextColumnFilter',
+      filter: "agTextColumnFilter",
       suppressMenu: true,
       floatingFilter: true,
     },
@@ -77,10 +81,21 @@ const ProjectTable = () => {
       resizable: true,
       headerClass: "custom-header",
       suppressMenu: true,
-      filter: 'agNumberColumnFilter',
+      filter: "agNumberColumnFilter",
       floatingFilter: true,
       cellClass: "centered-cell",
-      hide: invoiceType === "fixedbudget" || invoiceType == ''? false : true,
+      cellRenderer: (params: any) => (
+        <>
+          {params.data?.projectAmount !== "N/A" ? (
+            <div className="flex items-center justify-center space-x-1">
+              <FontAwesomeIcon icon={faIndianRupeeSign} />
+              <p>{params.data?.projectAmount}</p>
+            </div>
+          ) : (
+            "N/A"
+          )}
+        </>
+      ),
     },
     {
       headerName: "Project Cycle",
@@ -88,7 +103,7 @@ const ProjectTable = () => {
       resizable: true,
       headerClass: "custom-header",
       suppressMenu: true,
-      filter: 'agNumberColumnFilter',
+      filter: "agNumberColumnFilter",
       floatingFilter: true,
       cellClass: "centered-cell",
     },
@@ -98,7 +113,7 @@ const ProjectTable = () => {
       resizable: true,
       headerClass: "custom-header",
       suppressMenu: true,
-      filter: 'agTextColumnFilter',
+      filter: "agTextColumnFilter",
       floatingFilter: true,
       cellClass: "centered-cell",
       hide: invoiceType === "hourly" || invoiceType == "monthly" || invoiceType == '' ? false: true,
@@ -109,7 +124,7 @@ const ProjectTable = () => {
       resizable: true,
       headerClass: "custom-header",
       suppressMenu: true,
-      filter: 'agNumberColumnFilter',
+      filter: "agNumberColumnFilter",
       floatingFilter: true,
       cellClass: "centered-cell",
     },
@@ -118,7 +133,7 @@ const ProjectTable = () => {
       field: "actions",
       headerClass: "custom-header",
       cellClass: "centered-cell",
-      pinned: 'right',
+      pinned: "right",
       lockPinned: true,
       width: 120,
       cellRenderer: (params: any) => (
@@ -165,16 +180,16 @@ const ProjectTable = () => {
         />
       ) : (
         <div className="ag-theme-alpine" style={{ width: "100%" }}>
-        <AgGridReact
-          defaultColDef={defaultColDef}
-          columnDefs={tableColumn} // header
-          rowData={projectRow} // cells
-          pagination={pagination}
-          paginationPageSize={paginationPageSize}
-          animateRows={true}
-          domLayout="autoHeight"
-        />
-      </div>
+          <AgGridReact
+            defaultColDef={defaultColDef}
+            columnDefs={tableColumn} // header
+            rowData={projectRow} // cells
+            pagination={pagination}
+            paginationPageSize={paginationPageSize}
+            animateRows={true}
+            domLayout="autoHeight"
+          />
+        </div>
       )}
       <UpdateProjectModal
         isOpen={updateOpen}
