@@ -219,14 +219,14 @@ function InvoiceHistoryDetail() {
                       : "0,0.0"}{" "}
                   </h5>
                 </div>
-                {invoiceById?.discount ? (
+                {invoiceById?.discount && (
                   <div className="flex justify-between space-x-12 font-semibold my-2">
                     <h1 className="text-sm">Discount :</h1>
                     <h5 className="bg-stone-100 text-stone-800 rounded-md text-sm text-start focus:border-gray-400 outline-none py-2 px-8 w-1/2">
                       {invoiceById?.discount}
                     </h5>
                   </div>
-                ) : ''}
+                )}
                 <div className="flex justify-between space-x-12 font-semibold my-2">
                   <h1 className="text-sm">TDS :</h1>
                   <h5 className="bg-stone-100 text-stone-800 px-8 py-2 rounded-md text-sm text-start w-1/2">
