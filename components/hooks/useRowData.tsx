@@ -44,12 +44,16 @@ export const useProjectRowData = () => {
     (state) => state.project
   ) as projectStateType;
 
+  const { invoiceType } = useSelector<AppState>(
+    (state) => state.invoice
+  ) as invoiceStateType;
+
   const [projectRow, setProjectRow] = useState<any>();
 
   useEffect(() => {
     setProjectRow(
       projects
-        ?.filter((project) => project.active === true)
+        ?.filter((project) => project.active === true && project.projectType === invoiceType)
         ?.map((project, indx) => ({
           _id: project?._id,
           sno: indx + 1,
@@ -70,7 +74,7 @@ export const useProjectRowData = () => {
             : "N/A",
         }))
     );
-  }, [projects]);
+  }, [invoiceType, projects]);
   return { projectRow };
 };
 
@@ -148,7 +152,7 @@ export const useCheckedProjectRowData = () => {
     (state) => state.client
   ) as clientStateType;
 
-  const [projectRow, setProjectRow] = useState<any>();
+  const [projectRow, setProjectRow] = useState<any[]>([]);
 
   useEffect(() => {
     setProjectRow(

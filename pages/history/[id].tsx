@@ -2,6 +2,7 @@ import Layout from '@/components/layout/Layout';
 import ButtonLoading from '@/components/spinners/buttonLoading';
 import { getClientById } from '@/components/store/client';
 import { AppDispatch, AppState } from '@/components/store/store';
+import HistoryDetailTable from '@/components/tables/historyDetailTable';
 import { clientStateType, userStateType } from '@/types/types';
 import { useRouter } from 'next/router';
 import React, { useEffect } from 'react'
@@ -11,22 +12,30 @@ function InvoiceHistoryDetail() {
 
     const router = useRouter();
     const rowID = router.query.id;
-    console.log(router);
     
 
     const { user, isLoading } = useSelector<AppState>(
         (state) => state.user
     ) as userStateType;
 
-    const { clients, isLoading: clientLoading } = useSelector<AppState>(
+    // const { clients, isLoading: clientLoading } = useSelector<AppState>(
+    //     (state) => state.client
+    // ) as clientStateType;
+
+    const { clientById, isLoading: clientLoading } = useSelector<AppState>(
         (state) => state.client
-    ) as clientStateType;
+      ) as clientStateType;
+
+      console.log("client by id : ",clientById)
 
     const dispatch = useDispatch<AppDispatch>()
 
     useEffect(()=>{
+    console.log(rowID);
+
      dispatch(getClientById(rowID))
-    },[])
+    },[rowID])
+
 
 
     return (
@@ -46,7 +55,7 @@ function InvoiceHistoryDetail() {
                         <h1 className="font-semibold tracking-wider text-[#0c0c0f] text-lg mt-2">
                             INVOICE NUMBER: {" "}
                             <span className='font-semibold tracking-wider text-[#5a51be] text-lg mt-2'>
-                                3546464
+                               {rowID}
                             </span>
                         </h1>
                     </div>
@@ -80,7 +89,8 @@ function InvoiceHistoryDetail() {
                                     Billing To:
                                 </h2>
                                 <h2 className="font-semibold tracking-wider text-[#101011] text-md mt-2">
-                                    Techracers Pvt Lmt
+                                    {/* Techracers Pvt Lmt */}
+                                    {clientById?.name}
                                 </h2>
                                 <p className='text-[#898991] text-sm mt-2'>GSTIN: 23AAJCG9212C1ZZ</p>
                                 <p className='text-[#898991] text-sm mt-2'>
@@ -114,6 +124,10 @@ function InvoiceHistoryDetail() {
                             </h2>
                             <p className='text-lg mt-1'>23457 INR</p>
                         </div>
+                    </div>
+
+                    <div>
+                        <HistoryDetailTable />
                     </div>
 
                     <div className="grid grid-cols-2 gap-5 mt-8">

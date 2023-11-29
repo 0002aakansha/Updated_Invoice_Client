@@ -94,6 +94,7 @@ const HistoryTable = () => {
 
   const onRowClick = (params: any) => {
     const id = params?.data?._id;
+    // const invoiceId = params?.data?.invoiceNumber;
     if(id){
       router.push(`/history/${id}`);
     }

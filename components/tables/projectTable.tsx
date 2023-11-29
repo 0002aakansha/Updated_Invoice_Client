@@ -1,6 +1,6 @@
 import { useSelector } from "react-redux";
 import { AppState } from "../store/store";
-import { projectStateType } from "@/types/types";
+import { invoiceStateType, projectStateType } from "@/types/types";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTrash, faUserPen } from "@fortawesome/free-solid-svg-icons";
 import NotFound from "../alerts/notFound";
@@ -9,7 +9,7 @@ import UpdateProjectModal from "../modals/updateProjectModal";
 import AlertDialogExample from "../alerts/AlertDialog";
 import FullPageLoader from "../spinners/fullPageLoader";
 import { AgGridReact } from "ag-grid-react";
-import { useProjectRowData } from "../hooks/useRowData";
+import { useCheckedProjectRowData, useProjectRowData } from "../hooks/useRowData";
 import "ag-grid-community/styles/ag-grid.css";
 import "ag-grid-community/styles/ag-theme-alpine.css";
 import { TbEditCircle } from "react-icons/tb";
@@ -22,6 +22,9 @@ const ProjectTable = () => {
   const projects = useSelector<AppState>(
     (state) => state.project
   ) as projectStateType;
+  const { invoiceType, isChecked, detailedProject } = useSelector<AppState>(
+    (state) => state.invoice
+  ) as invoiceStateType;
   const { projectRow } = useProjectRowData();
   const [updateOpen, setUpdateOpen] = useState<boolean>(false);
   const [deleteOpen, setDeleteOpen] = useState<boolean>(false);
@@ -77,6 +80,7 @@ const ProjectTable = () => {
       filter: 'agNumberColumnFilter',
       floatingFilter: true,
       cellClass: "centered-cell",
+      hide: invoiceType === "fixedbudget" || invoiceType == ''? false : true,
     },
     {
       headerName: "Project Cycle",
@@ -97,6 +101,7 @@ const ProjectTable = () => {
       filter: 'agTextColumnFilter',
       floatingFilter: true,
       cellClass: "centered-cell",
+      hide: invoiceType === "hourly" || invoiceType == "monthly" || invoiceType == '' ? false: true,
     },
     {
       headerName: "Conversion rate",

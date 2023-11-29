@@ -18,6 +18,8 @@ const Navbar = () => {
     getCookie() ? setAuth(true) : setAuth(false);
   }, []);
 
+  
+
   return (
     <>
       <header className="w-full bg-white border-b-2 border-[#f3f3f3] flex justify-between p-4">
