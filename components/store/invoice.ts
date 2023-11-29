@@ -187,7 +187,6 @@ const invoiceslice = createSlice({
       state.detailedProject[pindex].amount = 0.0;
     },
   },
-  extraReducers: {},
 });
 
 export const {

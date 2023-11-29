@@ -183,7 +183,8 @@ export interface invoiceType {
   subtotal: number;
   GST: { CGST: number; SGST: number } | number;
   GrandTotal: number;
-  receivedStatus?: { amountReceived: number, receivedOn: string }[]
+  receivedStatus?: { amountReceived: number; receivedOn: string }[];
+  invoiceStatus?: string;
   status: string;
   invoiceType: string;
   invoiceCreatedBy?: userType;
@@ -192,6 +193,7 @@ export interface invoiceType {
 
 export interface invoiceHistoryType {
   invoice: invoiceType[];
+  invoiceById: invoiceType;
   isLoading: boolean;
   created: boolean;
   updated: boolean;

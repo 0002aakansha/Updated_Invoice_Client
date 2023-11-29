@@ -1,5 +1,4 @@
 import { useEffect, useMemo, useState } from "react";
-import TableTr from "./TableTr";
 import CheckedModal from "@/components/modals/checkedModal";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, AppState } from "@/components/store/store";
@@ -9,7 +8,7 @@ import {
   invoiceStateType,
   userStateType,
 } from "@/types/types";
-import invoice, {
+import {
   calculateGST,
   calculateSubtotal,
   setisChecked,
@@ -20,8 +19,6 @@ import { AgGridReact } from "ag-grid-react";
 import { useCheckedProjectRowData } from "@/components/hooks/useRowData";
 import "ag-grid-community/styles/ag-grid.css";
 import "ag-grid-community/styles/ag-theme-alpine.css";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faUserPen } from "@fortawesome/free-solid-svg-icons";
 
 const Table = () => {
   const { projects, clients } = useSelector<AppState>(
@@ -107,15 +104,6 @@ const Table = () => {
                       indx: params.data?._id || "",
                       checked: false,
                     })
-                  );
-                  console.log(clients.filter(
-                    (client) => client._id === params.data?.projectBelongsTo
-                  )[0]);
-                  
-                  console.log(
-                    clients.filter(
-                      (client) => client._id === params.data?.projectBelongsTo
-                    )[0]
                   );
 
                   dispatch(

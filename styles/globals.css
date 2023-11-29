@@ -187,7 +187,7 @@ select:hover option:hover {
 .font {
   font-family: "Poppins", sans-serif;
 }
-.ag-header-cell-text{
+.ag-header-cell-text {
   color: rgb(90 81 190 / var(--tw-bg-opacity)) !important;
 }
 /* .ag-header-viewport {
@@ -213,7 +213,7 @@ select:hover option:hover {
 .centered-cell {
   text-align: center;
 }
-.ag-cell{
+.ag-cell {
   /* animation: animate .9s linear infinite alternate; */
   font-size: 9.5pt !important;
   color: rgb(34, 34, 34);
@@ -242,4 +242,66 @@ select:hover option:hover {
 
 .ag-cell {
   font-size: 10pt;
+}
+
+.badge {
+  width: 150px;
+  height: 150px;
+  overflow: hidden;
+  position: absolute;
+}
+
+.badge::before,
+.badge::after {
+  position: absolute;
+  /* z-index: -1; */
+  content: "";
+  display: block;
+  border: 5px solid #e9e9e9;
+}
+
+.badge span {
+  width: 225px;
+  padding: 15px 0;
+  box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
+  text-shadow: 0 1px 1px rgba(0, 0, 0, 0.2);
+  font: 700 18px/1 "Lato", sans-serif;
+}
+
+/* in alto a destra */
+.badge-top-right {
+  top: -10px;
+  right: -10px;
+}
+
+.badge-top-right::before,
+.badge-top-right::after {
+  border-top-color: transparent;
+  border-right-color: transparent;
+}
+
+.badge-top-right::before {
+  top: 0;
+  left: 0;
+}
+
+.badge-top-right::after {
+  bottom: 0;
+  right: 0;
+}
+
+.badge-top-right span {
+  left: -25px;
+  top: 30px;
+  transform: rotate(45deg);
+}
+.scroller::-webkit-scrollbar {
+  width: 2px;
+  height: 10px;
+}
+.scroller::-webkit-scrollbar-track {
+  background-color: rgb(243, 243, 243);
+}
+.section::-webkit-scrollbar-thumb {
+  box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
 }

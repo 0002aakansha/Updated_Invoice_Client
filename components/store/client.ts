@@ -177,7 +177,7 @@ const clientslice = createSlice({
     setUpdate(state) {
       state.updated = false;
     },
-    getClientState(state, { payload }) {
+    getClientState(state, { payload }) {  
       state.clientState = current(state.clients).filter(
         (client) => client._id === payload
       )[0].address.state;

@@ -1,4 +1,9 @@
-import { PayloadAction, createAsyncThunk, createSlice, current } from "@reduxjs/toolkit";
+import {
+  PayloadAction,
+  createAsyncThunk,
+  createSlice,
+  current,
+} from "@reduxjs/toolkit";
 import { getCookie } from "@/utils/cookies";
 import { client } from "@/axios/instance/client";
 import { invoiceHistoryType, invoiceType } from "@/types/types";
@@ -15,19 +20,34 @@ const initialState: invoiceHistoryType = {
       subtotal: 0.0,
       GST: 0,
       GrandTotal: 0.0,
-      receivedStatus: [{ amountReceived: 0, receivedOn: "" }],
+      receivedStatus: [],
+      invoiceStatus: "",
       status: "",
       invoiceType: "",
       active: true,
     },
   ],
+  invoiceById: {
+    _id: "",
+    createdFor: "",
+    invoiceNumber: "",
+    createdOn: "",
+    dueDate: "",
+    projects: [],
+    subtotal: 0.0,
+    GST: 0,
+    GrandTotal: 0.0,
+    receivedStatus: [],
+    invoiceStatus: "",
+    status: "",
+    invoiceType: "",
+    active: true,
+  },
   isLoading: false,
   created: false,
   updated: false,
   error: { status: "", message: "" },
 };
-
-
 
 export const postInvoiceHistory = createAsyncThunk(
   "invoice/history/create",
@@ -57,6 +77,31 @@ export const postInvoiceHistory = createAsyncThunk(
   }
 );
 
+export const getInvoiceById = createAsyncThunk(
+  "invoice/history/getById",
+  async (id: string, { rejectWithValue }) => {
+    try {
+      const { data } = await client({
+        url: `/invoice/${id}`,
+        method: "GET",
+        headers: {
+          Authorization: getCookie(),
+        },
+      });
+
+      if (data.status === "true") return data;
+      else throw new Error(data.message);
+    } catch (error: any) {
+      return rejectWithValue({
+        status: error.response.status,
+        message:
+          error.response.data.message ||
+          error.message ||
+          "An unknown error has been occured, Please try again later!",
+      });
+    }
+  }
+);
 export const getAllInvoice = createAsyncThunk(
   "invoice/history/getAll",
   async (_, { rejectWithValue }) => {
@@ -151,7 +196,26 @@ export const deleteInvoice = createAsyncThunk(
 const historyslice = createSlice({
   name: "invoice",
   initialState,
-  reducers: {},
+  reducers: {
+    setInvoiceStatus(state, { payload }) {
+      // console.log(payload);
+      
+      const invoice = current(state.invoice).filter(
+        (invoice) => invoice._id === payload._id
+      )[0];
+
+      const indx = current(state.invoice).findIndex(
+        (invoice) => invoice._id === payload._id
+      );
+      // console.log(invoice, indx);
+      
+
+      state.invoice[indx] = { ...invoice, invoiceStatus: payload.status };
+      // console.log(current(state.invoiceById));
+      
+      state.invoiceById = {...invoice, invoiceStatus: payload.status}
+    },
+  },
   extraReducers: (builder) => {
     builder.addCase(postInvoiceHistory.pending, (state) => {
       state.isLoading = true;
@@ -179,6 +243,21 @@ const historyslice = createSlice({
     });
     builder.addCase(getAllInvoice.rejected, (state, { payload }) => {
       state.invoice = initialState.invoice;
+      state.isLoading = initialState.isLoading;
+      state.error = payload;
+    });
+    // get by id
+    builder.addCase(getInvoiceById.pending, (state) => {
+      state.isLoading = true;
+      state.error = initialState.error;
+    });
+    builder.addCase(getInvoiceById.fulfilled, (state, { payload }) => {
+      state.invoiceById = {...payload.invoice};
+      state.isLoading = initialState.isLoading;
+      state.error = initialState.error;
+    });
+    builder.addCase(getInvoiceById.rejected, (state, { payload }) => {
+      state.invoiceById = initialState.invoiceById;
       state.isLoading = initialState.isLoading;
       state.error = payload;
     });
@@ -231,5 +310,5 @@ const historyslice = createSlice({
   },
 });
 
-export const {} = historyslice.actions;
+export const { setInvoiceStatus } = historyslice.actions;
 export default historyslice.reducer;

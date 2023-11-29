@@ -185,4 +185,37 @@ export const useCheckedProjectRowData = () => {
   return { projectRow };
 };
 
+export const useDetailedInvoice = () => {
+  const { invoiceById } = useSelector<AppState>(
+    (state) => state.history
+  ) as invoiceHistoryType;
+
+  const [projectRow, setProjectRow] = useState<any>();
+
+  useEffect(() => {
+    setProjectRow(
+      invoiceById?.projects?.map((project: any, indx: number) => ({
+        _id: project?._id,
+        sno: indx + 1,
+        description:
+          project.description || project?.projectDetails?.description,
+        client: project?.projectBelongsTo?.name,
+        projectCycle: +project?.projectCycle,
+        projectType: project?.projectType,
+        projectAmount: project?.projectAmount ? +project?.projectAmount : "N/A",
+        period: project?.period || "Miscellaneous",
+        workingDays: project?.workingDays,
+        totalWorkingDays: project?.totalWorkingDays,
+        hours: project?.hours + ' hr',
+        rate: `${project?.rate?.rate || project?.projectDetails?.rate?.rate} ${
+          project?.rate?.currency || project?.projectDetails?.rate?.currency
+        }`,
+        conversionRate: `${project?.conversionRate || project?.projectDetails?.conversionRate} INR`,
+        amount: project?.amount,
+      }))
+    );
+  }, [invoiceById]);
+  return { projectRow };
+};
+
 export default useRowData;

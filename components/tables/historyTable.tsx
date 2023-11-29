@@ -20,7 +20,10 @@ import {
   ModalFooter,
   ModalOverlay,
 } from "@chakra-ui/react";
-import { postInvoiceHistory, updateInvoice } from "../store/invoiceHistory";
+import {
+  postInvoiceHistory,
+  updateInvoice,
+} from "../store/invoiceHistory";
 import AlertDialogExample from "../alerts/AlertDialog";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCircle, faIndianRupeeSign } from "@fortawesome/free-solid-svg-icons";
@@ -89,13 +92,20 @@ const HistoryTable = () => {
     inRangeFloatingFilterDateFormat: "Do MMM YYYY",
   };
 
-  //Defining Route for Invoice History Detail Page
   const router = useRouter();
 
   const onRowClick = (params: any) => {
     const id = params?.data?._id;
-    // const invoiceId = params?.data?.invoiceNumber;
-    if(id){
+    if (id) {
+      +params.data.total - +params.data.totalAmountReceived === 0 ||
+      -params?.data?.pendingAmount >
+        params?.data?.total - params?.data?.totalAmountReceived
+        ? localStorage.setItem("S", "Paid")
+        : +params.data.daysLeft > 0
+        ? localStorage.setItem("S", `Due By ${params.data.daysLeft} Days`)
+        : +params.data.daysLeft === 0
+        ? localStorage.setItem("S", "Due By Today")
+        : localStorage.setItem("S", "Overdue");
       router.push(`/history/${id}`);
     }
   };
@@ -138,6 +148,18 @@ const HistoryTable = () => {
       floatingFilter: true,
       pinned: "left",
       lockPinned: true,
+      cellRenderer: (params: any) => {
+        return (
+          <p
+            onClick={() => {
+              onRowClick(params);
+            }}
+            className="cursor-pointer"
+          >
+            {params.data?.client}
+          </p>
+        );
+      },
     },
     {
       headerName: "Invoice ID",
@@ -300,7 +322,6 @@ const HistoryTable = () => {
       filter: true,
       cellClass: "centered-cell",
       cellRenderer: (params: any) => {
-        console.log(params?.data);
         return (
           <>
             {+params?.data?.pendingAmount === 0 ? (
@@ -630,8 +651,7 @@ const HistoryTable = () => {
               animateRows={true}
               domLayout="autoHeight"
               onGridReady={onGridReady}
-              onCellClicked={onRowClick}
-            
+              // onCellClicked={onRowClick}
             />
           </div>
         </>
@@ -778,7 +798,7 @@ const HistoryTable = () => {
           <ModalContent>
             <ModalBody>
               <PDFViewer width="100%" height="550em">
-                <PdfPreview data={pdfPreviewData}/>
+                <PdfPreview data={pdfPreviewData} />
               </PDFViewer>
             </ModalBody>
             <ModalFooter>
