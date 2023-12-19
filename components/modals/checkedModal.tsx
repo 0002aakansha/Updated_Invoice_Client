@@ -45,6 +45,7 @@ const CheckedModal = ({ uniqueKey }: { uniqueKey: string }) => {
 
   const [description, setDescription] = useState("");
   const [period, setPeriod] = useState("");
+  const [projectType, setProjectType] = useState("");
   const [workingDays, setworkingDays] = useState("");
   const [totalWorkingDays, settotalworkingDays] = useState("");
   const [rate, setRate] = useState<rateType | any>({
@@ -63,6 +64,7 @@ const CheckedModal = ({ uniqueKey }: { uniqueKey: string }) => {
 
     setIndx(detailedProject.findIndex((project) => project._id === uniqueKey));
     setPeriod(project?.period || "");
+    setProjectType(project?.projectType || "");
     setDescription(project?.description || "");
     setworkingDays(project?.workingDays || "");
     settotalworkingDays(project?.totalWorkingDays || "");
@@ -74,70 +76,29 @@ const CheckedModal = ({ uniqueKey }: { uniqueKey: string }) => {
 
   const submitHandler = (e: FormEvent) => {
     e.preventDefault();
+
     const project = detailedProject.filter(
       (project) => project._id === uniqueKey
     )[0] as dataProps;
 
-    if (workingDays && totalWorkingDays) {
-      if (
-        +workingDays > 0 &&
-        +totalWorkingDays > 0 &&
-        invoiceType === "monthly"
-      ) {
-        if (+workingDays <= +totalWorkingDays) {
-          dispatch(
-            updateDetailedProjectOnChecked({
-              ...project,
-              indx: projects.findIndex((project) => project._id === uniqueKey),
-              description,
-              period,
-              workingDays,
-              totalWorkingDays,
-              amount: "0,0.0",
-              rate: project.rate,
-              conversionRate,
-              projectBelongsTo: project.projectBelongsTo,
-            })
-          );
-          dispatch(
-            calculateSubtotal({
-              flag: undefined,
-              tds: client.clients.filter(
-                (client) => client._id === project?.projectBelongsTo
-              )[0].tds,
-            })
-          );
-
-          const clientState = client.clients.filter(
-            (client) => client._id === project?.projectBelongsTo
-          )[0] as clientType;
-
-          !isLoading &&
-            dispatch(
-              calculateGST({
-                userState: user.address.state,
-                clientState: clientState?.address?.state,
-              })
-            );
-        } else
-          return toast.error(
-            `working days can'nt be greater than totalworking days`
-          );
-      } else if (
-        +workingDays < 0 ||
-        +totalWorkingDays < 0 ||
-        (hours && hours < 0)
-      )
-        return toast.error("values can't be less than to 0");
-      else if (invoiceType === "hourly" && hours && hours > 0) {
+    if (
+      +workingDays > 0 &&
+      +totalWorkingDays > 0 &&
+      (invoiceType || project.projectType) === "monthly"
+    ) {
+      if (+workingDays <= +totalWorkingDays) {
         dispatch(
           updateDetailedProjectOnChecked({
             ...project,
             indx: projects.findIndex((project) => project._id === uniqueKey),
             description,
-            hours: hours.toString(),
-            rate: rate,
+            period,
+            workingDays,
+            totalWorkingDays,
+            amount: "0,0.0",
+            rate: project.rate,
             conversionRate,
+            projectBelongsTo: project.projectBelongsTo,
           })
         );
         dispatch(
@@ -160,38 +121,84 @@ const CheckedModal = ({ uniqueKey }: { uniqueKey: string }) => {
               clientState: clientState?.address?.state,
             })
           );
-      } else if (invoiceType === "fixedbudget") {
+      } else
+        return toast.error(
+          `working days can'nt be greater than totalworking days`
+        );
+    } else if (
+      +workingDays < 0 ||
+      +totalWorkingDays < 0 ||
+      (hours && hours < 0)
+    )
+      return toast.error("values can't be less than to 0");
+    else if (
+      (invoiceType || project.projectType) === "hourly" &&
+      hours &&
+      hours > 0
+    ) {
+      dispatch(
+        updateDetailedProjectOnChecked({
+          ...project,
+          indx: projects.findIndex((project) => project._id === uniqueKey),
+          description,
+          hours: hours.toString(),
+          rate: rate,
+          conversionRate,
+        })
+      );
+      dispatch(
+        calculateSubtotal({
+          flag: undefined,
+          tds: client.clients.filter(
+            (client) => client._id === project?.projectBelongsTo
+          )[0]?.tds,
+        })
+      );
+
+      const clientState = client.clients.filter(
+        (client) => client._id === project?.projectBelongsTo
+      )[0] as clientType;
+
+      !isLoading &&
         dispatch(
-          updateDetailedProjectOnChecked({
-            ...project,
-            indx: projects.findIndex((project) => project._id === uniqueKey),
-            description,
-            projectAmount,
+          calculateGST({
+            userState: user.address.state,
+            clientState: clientState?.address?.state,
           })
         );
+    } else if ((invoiceType || project.projectType) === "fixedbudget") {
+      dispatch(
+        updateDetailedProjectOnChecked({
+          ...project,
+          indx: projects.findIndex((project) => project._id === uniqueKey),
+          description,
+          projectAmount,
+        })
+      );
+      dispatch(
+        calculateSubtotal({
+          flag: undefined,
+          tds: client.clients.filter(
+            (client) => client._id === project?.projectBelongsTo
+          )[0].tds,
+        })
+      );
+
+      const clientState = client.clients.filter(
+        (client) => client._id === project?.projectBelongsTo
+      )[0] as clientType;
+
+      !isLoading &&
         dispatch(
-          calculateSubtotal({
-            flag: undefined,
-            tds: client.clients.filter(
-              (client) => client._id === project?.projectBelongsTo
-            )[0].tds,
+          calculateGST({
+            userState: user.address.state,
+            clientState: clientState?.address?.state,
           })
         );
-
-        const clientState = client.clients.filter(
-          (client) => client._id === project?.projectBelongsTo
-        )[0] as clientType;
-
-        !isLoading &&
-          dispatch(
-            calculateGST({
-              userState: user.address.state,
-              clientState: clientState?.address?.state,
-            })
-          );
-      } else return toast.error("all fields are required!");
-      dispatch(setisChecked(false));
+    } else {
+      return toast.error("all fields are required!");
     }
+    dispatch(setisChecked(false));
   };
 
   return (
@@ -204,7 +211,7 @@ const CheckedModal = ({ uniqueKey }: { uniqueKey: string }) => {
           </ModalHeader>
           <ModalBody pb={6}>
             <form action="" className="p-4" onSubmit={submitHandler}>
-              {invoiceType === "monthly" && (
+              {(invoiceType || projectType) === "monthly" && (
                 <>
                   <div className="flex flex-col my-2">
                     <label htmlFor="" className="font-semibold text-lg">
@@ -265,7 +272,7 @@ const CheckedModal = ({ uniqueKey }: { uniqueKey: string }) => {
                   </div>
                 </>
               )}
-              {invoiceType === "hourly" && (
+              {(invoiceType || projectType) === "hourly" && (
                 <>
                   <div className="flex flex-col my-2">
                     <label htmlFor="" className="font-semibold text-lg">
@@ -340,7 +347,7 @@ const CheckedModal = ({ uniqueKey }: { uniqueKey: string }) => {
                   </div>
                 </>
               )}
-              {invoiceType === "fixedbudget" && (
+              {(invoiceType || projectType) === "fixedbudget" && (
                 <>
                   {/* Fixed Budget fields */}
                   <div className="flex flex-col my-2">

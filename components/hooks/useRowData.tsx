@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useSelector } from "react-redux";
 import { AppState } from "../store/store";
 import {
@@ -53,9 +53,13 @@ export const useProjectRowData = () => {
   useEffect(() => {
     setProjectRow(
       projects
-        ?.filter((project) => project.active === true && project.projectType === invoiceType)
+        ?.filter(
+          (project) =>
+            project.active === true && project.projectType === invoiceType
+        )
         ?.map((project, indx) => ({
           _id: project?._id,
+          cid: project?.projectBelongsTo?._id || project?.projectBelongsTo,
           sno: indx + 1,
           description: project.description,
           client: project?.projectBelongsTo?.name,
@@ -148,41 +152,41 @@ export const useCheckedProjectRowData = () => {
   const { detailedProject, invoiceType } = useSelector<AppState>(
     (state) => state.invoice
   ) as invoiceStateType;
-  const { projects, clients } = useSelector<AppState>(
-    (state) => state.client
-  ) as clientStateType;
-
   const [projectRow, setProjectRow] = useState<any[]>([]);
+  const prevDetailedProject = useRef(detailedProject);
 
   useEffect(() => {
-    setProjectRow(
-      detailedProject
-        ?.filter((project) => project.projectType === invoiceType)
-        ?.map((project, indx) => ({
-          _id: project?._id,
-          sno: indx + 1,
-          description: project.description,
-          period: project?.period || "Miscellaneous",
-          workingDays: project?.workingDays,
-          totalWorkingDays: project?.totalWorkingDays,
-          hours: project?.hours,
-          rate: `${
-            project?.rate?.rate
-              ? `${project?.rate?.rate} ${project?.rate?.currency}`
-              : "N/A"
-          }`,
-          conversionRate: project?.conversionRate
-            ? +project?.conversionRate
-            : "N/A",
-          projectAmount: project?.projectAmount
-            ? +project?.projectAmount
-            : "N/A",
-          amount: project?.amount,
-          projectBelongsTo: project?.projectBelongsTo,
-        }))
-    );
+    if (detailedProject !== prevDetailedProject.current) {
+      setProjectRow(
+        detailedProject
+          ?.filter((project) => project.projectType === invoiceType)
+          ?.map((project, indx) => ({
+            _id: project?._id,
+            sno: indx + 1,
+            description: project.description,
+            period: project?.period || "Miscellaneous",
+            workingDays: project?.workingDays,
+            totalWorkingDays: project?.totalWorkingDays,
+            hours: +project?.hours,
+            rate: `${
+              project?.rate?.rate
+                ? `${project?.rate?.rate} ${project?.rate?.currency}`
+                : "N/A"
+            }`,
+            conversionRate: project?.conversionRate
+              ? +project?.conversionRate
+              : "N/A",
+            projectAmount: project?.projectAmount
+              ? +project?.projectAmount
+              : "N/A",
+            amount: project?.amount,
+            projectBelongsTo: project?.projectBelongsTo,
+          }))
+      );
+      prevDetailedProject.current = detailedProject;
+    }
   }, [detailedProject, invoiceType]);
-  return { projectRow };
+  return { projectRow, setProjectRow };
 };
 
 export const useDetailedInvoice = () => {
@@ -206,11 +210,13 @@ export const useDetailedInvoice = () => {
         period: project?.period || "Miscellaneous",
         workingDays: project?.workingDays,
         totalWorkingDays: project?.totalWorkingDays,
-        hours: project?.hours + ' hr',
+        hours: project?.hours + " hr",
         rate: `${project?.rate?.rate || project?.projectDetails?.rate?.rate} ${
           project?.rate?.currency || project?.projectDetails?.rate?.currency
         }`,
-        conversionRate: `${project?.conversionRate || project?.projectDetails?.conversionRate} INR`,
+        conversionRate: `${
+          project?.conversionRate || project?.projectDetails?.conversionRate
+        } INR`,
         amount: project?.amount,
       }))
     );

@@ -1,5 +1,4 @@
 import {
-  PayloadAction,
   createAsyncThunk,
   createSlice,
   current,
@@ -198,8 +197,6 @@ const historyslice = createSlice({
   initialState,
   reducers: {
     setInvoiceStatus(state, { payload }) {
-      // console.log(payload);
-      
       const invoice = current(state.invoice).filter(
         (invoice) => invoice._id === payload._id
       )[0];
@@ -207,12 +204,8 @@ const historyslice = createSlice({
       const indx = current(state.invoice).findIndex(
         (invoice) => invoice._id === payload._id
       );
-      // console.log(invoice, indx);
-      
 
       state.invoice[indx] = { ...invoice, invoiceStatus: payload.status };
-      // console.log(current(state.invoiceById));
-      
       state.invoiceById = {...invoice, invoiceStatus: payload.status}
     },
   },

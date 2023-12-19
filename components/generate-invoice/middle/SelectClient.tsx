@@ -21,7 +21,15 @@ import {
 import { ChangeEvent, memo, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
-const SelectClient = () => {
+const SelectClient = ({
+  flag,
+  client,
+  invoiceType,
+}: {
+  flag?: boolean;
+  client?: string;
+  invoiceType?: string;
+}) => {
   const { user, isLoading } = useSelector<AppState>(
     (state) => state.user
   ) as userStateType;
@@ -65,8 +73,8 @@ const SelectClient = () => {
   }
 
   useEffect(() => {
-    onLoadClient();
-  }, []);
+    flag !== true && onLoadClient();
+  }, [flag]);
 
   useEffect(() => {
     if (
@@ -96,8 +104,9 @@ const SelectClient = () => {
             className="outline-none bg-transparent border-2 px-4 py-2 rounded-sm my-2 xs:text-xs sm:text-sm md:text-[10pt]"
             value={clientId}
             onChange={changeHandler}
+            disabled={flag ? true : false}
           >
-            {clients?.length !== 0 ? (
+            {clients?.length !== 0 && flag !== true ? (
               <>
                 <option value={"undefined"}>Select Client</option>
                 {clients?.map((client) => (
@@ -106,6 +115,8 @@ const SelectClient = () => {
                   </option>
                 ))}
               </>
+            ) : flag === true ? (
+              <option value={client}>{client}</option>
             ) : (
               <option value="">There are no clients</option>
             )}
@@ -124,11 +135,18 @@ const SelectClient = () => {
             id="select"
             onChange={changeInvoiceTypeHandler}
             className="outline-none bg-transparent border-2 px-4 py-2 rounded-sm my-2 xs:text-xs sm:text-sm md:text-[10pt] tracking-wider"
+            disabled={flag ? true : false}
           >
-            <option value="">Select project type</option>
-            <option value="monthly">Monthly</option>
-            <option value="hourly">Hourly</option>
-            <option value="fixedbudget">Fixed Budget</option>
+            {flag !== true ? (
+              <>
+                <option value="">Select project type</option>
+                <option value="monthly">Monthly</option>
+                <option value="hourly">Hourly</option>
+                <option value="fixedbudget">Fixed Budget</option>
+              </>
+            ) : (
+              <option value={invoiceType}>{invoiceType}</option>
+            )}
           </select>
         </form>
       </div>

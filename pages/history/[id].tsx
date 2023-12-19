@@ -155,30 +155,30 @@ function InvoiceHistoryDetail() {
               </div>
             </div>
           )}
-          <div className="grid grid-cols-4 gap-5 mt-8">
+          <div className="grid grid-cols-4 gap-5 my-8">
             <div>
-              <h2 className="font-semibold tracking-wider text-[#676769] text-md mt-2">
+              <h2 className="font-semibold tracking-wider text-center text-[#3f3f41] text-md mt-2">
                 Invoice Type:
               </h2>
-              <p className="text-lg mt-1">{invoiceById?.invoiceType}</p>
+              <p className="text-md capitalize text-zinc-700 tracking-wider text-center mt-1">{invoiceById?.invoiceType}</p>
             </div>
             <div>
-              <h2 className="font-semibold tracking-wider text-[#676769] text-md mt-2">
+              <h2 className="font-semibold tracking-wider text-center text-[#3f3f41] text-md mt-2">
                 Created on:
               </h2>
-              <p className="text-lg mt-1">{invoiceById?.createdOn}</p>
+              <p className="text-md capitalize tracking-wider text-center text-[#3f3f41] mt-1">{invoiceById?.createdOn}</p>
             </div>
             <div>
-              <h2 className="font-semibold tracking-wider text-[#676769] text-md mt-2">
+              <h2 className="font-semibold tracking-wider text-center text-[#3f3f41] text-md mt-2">
                 Due Date:
               </h2>
-              <p className="text-lg mt-1">{invoiceById?.dueDate}</p>
+              <p className="text-md capitalize tracking-wider text-center text-[#3f3f41] mt-1">{invoiceById?.dueDate}</p>
             </div>
             <div>
-              <h2 className="font-semibold tracking-wider text-[#676769] text-md mt-2">
+              <h2 className="font-semibold tracking-wider text-center text-[#3f3f41] text-md mt-2">
                 Bill Amount:
               </h2>
-              <p className="text-lg mt-1">
+              <p className="text-md capitalize tracking-wider text-center text-[#3f3f41] mt-1">
                 <FontAwesomeIcon icon={faIndianRupeeSign} />
                 {invoiceById?.GrandTotal}
               </p>

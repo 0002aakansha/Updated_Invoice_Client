@@ -244,6 +244,10 @@ select:hover option:hover {
   font-size: 10pt;
 }
 
+.ag-center-cols-viewport {
+  min-height: unset !important;
+}
+
 .badge {
   width: 150px;
   height: 150px;

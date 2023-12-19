@@ -9,9 +9,20 @@ import { faRupeeSign } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import PdfPreview from "../PdfPreview/PdfPreview";
 
-const Total = () => {
+const Total = ({
+  flag,
+  total,
+}: {
+  flag?: true;
+  total?: {
+    subtotal: number;
+    GST: { CGST: number; SGST: number } | number;
+    grandtotal: number;
+    tds: number;
+    discount: number;
+  };
+}) => {
   const { subtotal, GST, GrandTotal } = useSelector<AppState>(
     (state) => state.invoice
   ) as invoiceStateType;
@@ -20,7 +31,9 @@ const Total = () => {
   ) as clientStateType;
   const dispatch = useDispatch<AppDispatch>();
 
-  const [discount, setdiscount] = useState<string | number>("");
+  const [discount, setdiscount] = useState<string | number>(
+    total?.discount || ""
+  );
   const [discountedSubtotal, setDiscountedSubtotal] = useState(subtotal);
 
   useEffect(() => {
@@ -44,7 +57,7 @@ const Total = () => {
       <div className="flex justify-between space-x-12 font-semibold my-2">
         <h1 className="text-sm">Sub Total :</h1>
         <h5 className="bg-stone-100 text-stone-800 px-8 py-2 rounded-md text-sm text-start w-1/2">
-          {subtotal !== 0 ? subtotal : "0,0.0"}{" "}
+          {subtotal === 0 ? total?.subtotal || "0,0.0" : subtotal}{" "}
           <FontAwesomeIcon icon={faRupeeSign} />
         </h5>
       </div>
@@ -71,7 +84,7 @@ const Total = () => {
       <div className="flex justify-between space-x-12 font-semibold my-2">
         <h1 className="text-sm">TDS :</h1>
         <h5 className="bg-stone-100 text-stone-800 px-8 py-2 rounded-md text-sm text-start w-1/2">
-          {clientById?.tds !== 0 ? clientById?.tds : "0"}
+          {flag ? total?.tds : clientById?.tds !== 0 ? clientById?.tds : "0"}
           {"%"}
         </h5>
       </div>
@@ -80,14 +93,14 @@ const Total = () => {
           <div className="flex justify-between space-x-12 font-semibold my-2">
             <h1 className="text-sm">CGST@ 9% :</h1>
             <h5 className="bg-stone-100 text-stone-800 px-8 py-2 rounded-md text-sm text-start w-1/2">
-              {GST.CGST !== 0 ? GST.CGST : "0,0.0"}{" "}
+              {GST.CGST === 0 ? GST.CGST : "0,0.0"}{" "}
               <FontAwesomeIcon icon={faRupeeSign} />
             </h5>
           </div>
           <div className="flex justify-between space-x-12 font-semibold my-2">
             <h1 className="text-sm">SGST@ 9% :</h1>
             <h5 className="bg-stone-100 text-stone-800 px-8 py-2 rounded-md text-sm text-start w-1/2">
-              {GST.SGST !== 0 ? GST.SGST : "0,0.0"}{" "}
+              {GST.SGST === 0 ? GST.SGST : "0,0.0"}{" "}
               <FontAwesomeIcon icon={faRupeeSign} />
             </h5>
           </div>
@@ -106,7 +119,7 @@ const Total = () => {
           TOTAL :
         </h1>
         <h5 className="bg-[#5a51be] text-stone-100 px-8 py-2 rounded-md text-md font-semibold text-start w-1/2">
-          {GrandTotal !== 0 ? GrandTotal : "0,0.0"}{" "}
+          {GrandTotal === 0 ? total?.grandtotal || "0,0.0" : GrandTotal}{" "}
           <FontAwesomeIcon icon={faRupeeSign} />
         </h5>
       </div>

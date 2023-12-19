@@ -136,8 +136,6 @@ const GeneratePDF = () => {
   };
 
   const downloadPDF = () => {
-    console.log(subtotal, GrandTotal);
-
     if (pdfBlob) {
       const pdfUrl = URL.createObjectURL(pdfBlob);
       const a = document.createElement("a");
