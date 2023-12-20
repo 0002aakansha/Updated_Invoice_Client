@@ -171,7 +171,10 @@ const invoiceslice = createSlice({
           state.GrandTotal = +(state.subtotal + state.GST).toFixed(2);
         }
       }
-      if (state.tds)
+      console.log("tds: " + current(state));
+      console.log(current(state));
+
+      if (state.tds )
         state.GrandTotal = +(state.GrandTotal - state.tds).toFixed(2);
     },
     setTotalToZero(state) {

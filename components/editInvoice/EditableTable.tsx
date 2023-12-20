@@ -18,6 +18,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, AppState } from "../store/store";
 import {
   calculateGST,
+  calculateSubtotal,
   setDetailedProject,
   setInvoiceType,
 } from "../store/invoice";
@@ -87,6 +88,7 @@ const EditableTable = ({ invoice }: { invoice: invoiceType }) => {
   useEffect(() => {
     (() => dispatch(fetchClientProjects(invoice?.createdFor?._id)))();
     dispatch(setInvoiceType(invoice?.invoiceType));
+    dispatch(calculateSubtotal({flag: undefined, tds: invoice?.createdFor?.tds}))
     dispatch(
       calculateGST({
         userState: invoice.invoiceCreatedBy?.address?.state || "",

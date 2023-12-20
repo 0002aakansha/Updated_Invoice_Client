@@ -55,12 +55,8 @@ const Total = ({
   }, [discountedSubtotal, discount, clientById?.tds]);
 
   console.log(total);
-  console.log(typeof total?.GST);
-  console.log(typeof GST);
-  console.log(GST == 0 ? total?.GST?.CGST : GST.CGST);
-  console.log(GST.CGST == 0 ? true : false);
-  console.log(GST);
-  console.log(total?.GST);
+  console.log(GrandTotal);
+  console.log(total?.grandtotal);
 
   return (
     <div className="w-[35%]">
