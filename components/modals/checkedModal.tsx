@@ -106,7 +106,7 @@ const CheckedModal = ({ uniqueKey }: { uniqueKey: string }) => {
             flag: undefined,
             tds: client.clients.filter(
               (client) => client._id === project?.projectBelongsTo
-            )[0].tds,
+            )[0]?.tds,
           })
         );
 
@@ -180,7 +180,7 @@ const CheckedModal = ({ uniqueKey }: { uniqueKey: string }) => {
           flag: undefined,
           tds: client.clients.filter(
             (client) => client._id === project?.projectBelongsTo
-          )[0].tds,
+          )[0]?.tds,
         })
       );
 

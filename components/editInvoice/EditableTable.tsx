@@ -125,6 +125,8 @@ const EditableTable = ({ invoice }: { invoice: invoiceType }) => {
     );
   }, [invoice?.invoiceType, invoice?.projects, projects]);
 
+  console.log(invoice);
+
   return (
     <>
       <div className="flex justify-start mx-4 space-x-2">

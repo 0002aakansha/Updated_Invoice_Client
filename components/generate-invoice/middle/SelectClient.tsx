@@ -108,7 +108,7 @@ const SelectClient = ({
           >
             {clients?.length !== 0 && flag !== true ? (
               <>
-                <option value={"undefined"}>Select Client</option>
+                <option value={""}>Select Client</option>
                 {clients?.map((client) => (
                   <option key={client._id} value={client._id}>
                     {client.name.toUpperCase()}
