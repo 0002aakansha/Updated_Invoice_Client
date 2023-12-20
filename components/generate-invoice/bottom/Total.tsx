@@ -31,10 +31,12 @@ const Total = ({
   ) as clientStateType;
   const dispatch = useDispatch<AppDispatch>();
 
-  const [discount, setdiscount] = useState<string | number>(
-    total?.discount || ""
-  );
+  const [discount, setdiscount] = useState<string | number>("");
   const [discountedSubtotal, setDiscountedSubtotal] = useState(subtotal);
+
+  useEffect(() => {
+    setdiscount(() => total?.discount || "");
+  }, [total?.discount]);
 
   useEffect(() => {
     if (discount) {

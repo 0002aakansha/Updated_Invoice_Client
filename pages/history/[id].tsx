@@ -160,19 +160,25 @@ function InvoiceHistoryDetail() {
               <h2 className="font-semibold tracking-wider text-center text-[#3f3f41] text-md mt-2">
                 Invoice Type:
               </h2>
-              <p className="text-md capitalize text-zinc-700 tracking-wider text-center mt-1">{invoiceById?.invoiceType}</p>
+              <p className="text-md capitalize text-zinc-700 tracking-wider text-center mt-1">
+                {invoiceById?.invoiceType}
+              </p>
             </div>
             <div>
               <h2 className="font-semibold tracking-wider text-center text-[#3f3f41] text-md mt-2">
                 Created on:
               </h2>
-              <p className="text-md capitalize tracking-wider text-center text-[#3f3f41] mt-1">{invoiceById?.createdOn}</p>
+              <p className="text-md capitalize tracking-wider text-center text-[#3f3f41] mt-1">
+                {invoiceById?.createdOn}
+              </p>
             </div>
             <div>
               <h2 className="font-semibold tracking-wider text-center text-[#3f3f41] text-md mt-2">
                 Due Date:
               </h2>
-              <p className="text-md capitalize tracking-wider text-center text-[#3f3f41] mt-1">{invoiceById?.dueDate}</p>
+              <p className="text-md capitalize tracking-wider text-center text-[#3f3f41] mt-1">
+                {invoiceById?.dueDate}
+              </p>
             </div>
             <div>
               <h2 className="font-semibold tracking-wider text-center text-[#3f3f41] text-md mt-2">
@@ -219,13 +225,15 @@ function InvoiceHistoryDetail() {
                       : "0,0.0"}{" "}
                   </h5>
                 </div>
-                {invoiceById?.discount && (
+                {invoiceById?.discount ? (
                   <div className="flex justify-between space-x-12 font-semibold my-2">
                     <h1 className="text-sm">Discount :</h1>
                     <h5 className="bg-stone-100 text-stone-800 rounded-md text-sm text-start focus:border-gray-400 outline-none py-2 px-8 w-1/2">
                       {invoiceById?.discount}
                     </h5>
                   </div>
+                ) : (
+                  ""
                 )}
                 <div className="flex justify-between space-x-12 font-semibold my-2">
                   <h1 className="text-sm">TDS :</h1>

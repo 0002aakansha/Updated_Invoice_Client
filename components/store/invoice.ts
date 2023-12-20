@@ -112,6 +112,8 @@ const invoiceslice = createSlice({
       state,
       { payload }: { payload: { flag?: boolean; discount?: any; tds: number } }
     ) {
+      // state.subtotal = 0;
+
       if (payload?.flag) {
         state.subtotal = +payload.discount.toFixed(2);
       } else {
