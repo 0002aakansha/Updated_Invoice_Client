@@ -16,7 +16,11 @@ import "ag-grid-community/styles/ag-grid.css";
 import "ag-grid-community/styles/ag-theme-alpine.css";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, AppState } from "../store/store";
-import { setDetailedProject, setInvoiceType } from "../store/invoice";
+import {
+  calculateGST,
+  setDetailedProject,
+  setInvoiceType,
+} from "../store/invoice";
 import CheckedModal from "../modals/checkedModal";
 import { fetchClientProjects } from "../store/client";
 import { useCheckedProjectRowData } from "../hooks/useRowData";
@@ -83,6 +87,12 @@ const EditableTable = ({ invoice }: { invoice: invoiceType }) => {
   useEffect(() => {
     (() => dispatch(fetchClientProjects(invoice?.createdFor?._id)))();
     dispatch(setInvoiceType(invoice?.invoiceType));
+    dispatch(
+      calculateGST({
+        userState: invoice.invoiceCreatedBy?.address?.state || "",
+        clientState: invoice?.createdFor?.address?.state,
+      })
+    );
   }, [invoice?.createdFor?._id, invoice?.invoiceType]);
 
   useEffect(() => {
@@ -114,7 +124,6 @@ const EditableTable = ({ invoice }: { invoice: invoiceType }) => {
       )
     );
   }, [invoice?.invoiceType, invoice?.projects, projects]);
-
 
   return (
     <>

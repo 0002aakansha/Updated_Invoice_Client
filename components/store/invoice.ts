@@ -64,15 +64,22 @@ const invoiceslice = createSlice({
         (project) => project._id === payload._id
       );
 
+      console.log(payload);
+
       if (
         (state.invoiceType || payload.projectType) === "monthly" &&
         payload.period &&
         payload.workingDays &&
         payload.totalWorkingDays
       ) {
+        console.log("insdie if");
+
         const projectAmount = Number(project?.projectAmount);
         const workingDays = Number(payload?.workingDays);
         const totalWorkingDays = Number(payload?.totalWorkingDays);
+
+        console.log(project);
+        console.log(projectAmount, workingDays, totalWorkingDays);
 
         // formula
         const amount = (
@@ -112,8 +119,6 @@ const invoiceslice = createSlice({
       state,
       { payload }: { payload: { flag?: boolean; discount?: any; tds: number } }
     ) {
-      // state.subtotal = 0;
-
       if (payload?.flag) {
         state.subtotal = +payload.discount.toFixed(2);
       } else {
