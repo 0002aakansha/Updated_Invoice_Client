@@ -6,7 +6,7 @@ import { memo } from "react";
 import GeneratePDF from "./bottom/GeneratePDF";
 import InvoiceNumber from "./middle/InvoiceNumber";
 
-const TopHeader = () => {
+const TopHeader = ({ flag }: { flag?: boolean }) => {
   const { user, isLoading } = useSelector<AppState>(
     (state) => state.user
   ) as userStateType;

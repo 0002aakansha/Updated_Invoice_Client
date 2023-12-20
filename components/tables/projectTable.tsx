@@ -13,7 +13,10 @@ import UpdateProjectModal from "../modals/updateProjectModal";
 import AlertDialogExample from "../alerts/AlertDialog";
 import FullPageLoader from "../spinners/fullPageLoader";
 import { AgGridReact } from "ag-grid-react";
-import { useCheckedProjectRowData, useProjectRowData } from "../hooks/useRowData";
+import {
+  useCheckedProjectRowData,
+  useProjectRowData,
+} from "../hooks/useRowData";
 import "ag-grid-community/styles/ag-grid.css";
 import "ag-grid-community/styles/ag-theme-alpine.css";
 import { TbEditCircle } from "react-icons/tb";
@@ -116,7 +119,12 @@ const ProjectTable = () => {
       filter: "agTextColumnFilter",
       floatingFilter: true,
       cellClass: "centered-cell",
-      hide: invoiceType === "hourly" || invoiceType == "monthly" || invoiceType == '' ? false: true,
+      hide:
+        invoiceType === "hourly" ||
+        invoiceType == "monthly" ||
+        invoiceType == ""
+          ? false
+          : true,
     },
     {
       headerName: "Conversion rate",
@@ -154,6 +162,7 @@ const ProjectTable = () => {
             onClick={() => {
               setDeleteOpen(true);
               setId(params?.data?._id);
+              setcid(params?.data?.cid);
             }}
           />
         </div>

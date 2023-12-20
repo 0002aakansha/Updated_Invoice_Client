@@ -1,4 +1,4 @@
-import {
+import invoice, {
   calculateGST,
   calculateSubtotal,
   setDiscount,
@@ -9,9 +9,20 @@ import { faRupeeSign } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import PdfPreview from "../PdfPreview/PdfPreview";
 
-const Total = () => {
+const Total = ({
+  flag,
+  total,
+}: {
+  flag?: true;
+  total?: {
+    subtotal: number;
+    GST: { CGST: number; SGST: number } | number;
+    grandtotal: number;
+    tds: number;
+    discount: number;
+  };
+}) => {
   const { subtotal, GST, GrandTotal } = useSelector<AppState>(
     (state) => state.invoice
   ) as invoiceStateType;
@@ -22,6 +33,10 @@ const Total = () => {
 
   const [discount, setdiscount] = useState<string | number>("");
   const [discountedSubtotal, setDiscountedSubtotal] = useState(subtotal);
+
+  useEffect(() => {
+    setdiscount(() => total?.discount || "");
+  }, [total?.discount]);
 
   useEffect(() => {
     if (discount) {
@@ -39,12 +54,16 @@ const Total = () => {
     }
   }, [discountedSubtotal, discount, clientById?.tds]);
 
+  console.log(total);
+  console.log(GrandTotal);
+  console.log(total?.grandtotal);
+
   return (
     <div className="w-[35%]">
       <div className="flex justify-between space-x-12 font-semibold my-2">
         <h1 className="text-sm">Sub Total :</h1>
         <h5 className="bg-stone-100 text-stone-800 px-8 py-2 rounded-md text-sm text-start w-1/2">
-          {subtotal !== 0 ? subtotal : "0,0.0"}{" "}
+          {subtotal === 0 ? total?.subtotal || "0,0.0" : subtotal}{" "}
           <FontAwesomeIcon icon={faRupeeSign} />
         </h5>
       </div>
@@ -71,23 +90,24 @@ const Total = () => {
       <div className="flex justify-between space-x-12 font-semibold my-2">
         <h1 className="text-sm">TDS :</h1>
         <h5 className="bg-stone-100 text-stone-800 px-8 py-2 rounded-md text-sm text-start w-1/2">
-          {clientById?.tds !== 0 ? clientById?.tds : "0"}
+          {flag ? total?.tds : clientById?.tds !== 0 ? clientById?.tds : "0"}
           {"%"}
         </h5>
       </div>
-      {typeof GST === "object" ? (
+      {/* gst --start */}
+      {typeof GST === "object" || typeof total?.GST === "object" ? (
         <>
           <div className="flex justify-between space-x-12 font-semibold my-2">
             <h1 className="text-sm">CGST@ 9% :</h1>
             <h5 className="bg-stone-100 text-stone-800 px-8 py-2 rounded-md text-sm text-start w-1/2">
-              {GST.CGST !== 0 ? GST.CGST : "0,0.0"}{" "}
+              {GST.CGST ? GST.CGST : total?.GST?.CGST}{" "}
               <FontAwesomeIcon icon={faRupeeSign} />
             </h5>
           </div>
           <div className="flex justify-between space-x-12 font-semibold my-2">
             <h1 className="text-sm">SGST@ 9% :</h1>
             <h5 className="bg-stone-100 text-stone-800 px-8 py-2 rounded-md text-sm text-start w-1/2">
-              {GST.SGST !== 0 ? GST.SGST : "0,0.0"}{" "}
+              {GST.SGST ? GST.SGST : total?.GST?.SGST}{" "}
               <FontAwesomeIcon icon={faRupeeSign} />
             </h5>
           </div>
@@ -96,17 +116,18 @@ const Total = () => {
         <div className="flex justify-between space-x-12 font-semibold my-2">
           <h1 className="text-sm">GST@ 18% :</h1>
           <h5 className="bg-stone-100 text-stone-800 px-8 py-2 rounded-md text-sm text-start w-1/2">
-            {typeof GST === "number" && GST !== 0 ? GST : "0,0.0"}{" "}
+            {typeof GST === "number" && GST !== 0 ? GST : total?.GST}{" "}
             <FontAwesomeIcon icon={faRupeeSign} />
           </h5>
         </div>
       )}
+      {/* gst --end */}
       <div className="flex justify-between my-2">
         <h1 className="text-stone-800 py-2 rounded-md text-sm font-semibold text-start">
           TOTAL :
         </h1>
         <h5 className="bg-[#5a51be] text-stone-100 px-8 py-2 rounded-md text-md font-semibold text-start w-1/2">
-          {GrandTotal !== 0 ? GrandTotal : "0,0.0"}{" "}
+          {GrandTotal === 0 ? total?.grandtotal || "0,0.0" : GrandTotal}{" "}
           <FontAwesomeIcon icon={faRupeeSign} />
         </h5>
       </div>

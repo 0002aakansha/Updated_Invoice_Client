@@ -20,10 +20,7 @@ import {
   ModalFooter,
   ModalOverlay,
 } from "@chakra-ui/react";
-import {
-  postInvoiceHistory,
-  updateInvoice,
-} from "../store/invoiceHistory";
+import { postInvoiceHistory, updateInvoice } from "../store/invoiceHistory";
 import AlertDialogExample from "../alerts/AlertDialog";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCircle, faIndianRupeeSign } from "@fortawesome/free-solid-svg-icons";
@@ -40,6 +37,8 @@ import getFilteredInvoiceNumber, {
   getLocalStorage,
 } from "@/utils/invoiceNumber";
 import { useRouter } from "next/router";
+import EditInvoice from "../modals/editInvoice";
+import { LuFileEdit } from "react-icons/lu";
 
 const HistoryTable = () => {
   const [pdfBlob, setPdfBlob] = useState<Blob | MediaSource>();
@@ -47,7 +46,6 @@ const HistoryTable = () => {
   const [isPreviewOpen, onPreviewClose] = useState(false);
   const [isEditOpen, onEditClose] = useState(false);
   const [isAlertOpen, setAlertOpen] = useState<boolean>(false);
-  const [status, setStatus] = useState<string>();
   const [date, setDate] = useState<Date | null>(new Date());
   const [dueDate, setDueDate] = useState<Date | null>(new Date());
   const [amountReceived, setAmountReceived] = useState<number | string>(0);
@@ -55,6 +53,8 @@ const HistoryTable = () => {
   const dispatch = useDispatch<AppDispatch>();
   const [isUpdateOpen, onUpdateOpen] = useState<boolean>(false);
   const [isAmountReceivedOpen, onAmountReceivedOpen] = useState<boolean>(false);
+
+  const router = useRouter();
 
   // invoice number
   const { invoice, isLoading } = useSelector<AppState>(
@@ -91,8 +91,6 @@ const HistoryTable = () => {
     maxValidYear: new Date().getFullYear(),
     inRangeFloatingFilterDateFormat: "Do MMM YYYY",
   };
-
-  const router = useRouter();
 
   const onRowClick = (params: any) => {
     const id = params?.data?._id;
@@ -170,16 +168,6 @@ const HistoryTable = () => {
       cellClass: "centered-cell",
       width: 140,
     },
-    // {
-    //   headerName: "Projects",
-    //   field: "projects",
-    //   resizable: true,
-    //   headerClass: "custom-header",
-    //   cellClass: "centered-cell",
-    //   filter: "agTextColumnFilter",
-    //   suppressMenu: true,
-    //   floatingFilter: true,
-    // },
     {
       headerName: "Created On",
       field: "createdOn",
@@ -245,14 +233,6 @@ const HistoryTable = () => {
         );
       },
     },
-    // {
-    //   headerName: "GST",
-    //   field: "gst",
-    //   resizable: true,
-    //   headerClass: "custom-header",
-    //   filter: true,
-    //   cellClass: "centered-cell",
-    // },
     {
       headerName: "Total Amount",
       field: "total",
@@ -353,31 +333,29 @@ const HistoryTable = () => {
       headerName: "Actions",
       field: "actions",
       headerClass: "custom-header",
-      cellClass: "centered-cell",
       pinned: "right",
       resizable: true,
       lockPinned: true,
-      width: 170,
+      // width: 170,
       cellRenderer: (params: any) => (
         <div className="md:p-2 sm:pr-0 sm:pl-0 text-center cursor-pointer space-x-8 flex">
           <span className="block" title="Repeat">
             <GrRotateRight
-              className="text-lg text-blue-700 bg-blue-100 rounded-full cursor-pointer"
+              className="text-lg text-zinc-700 bg-zinc-200 rounded-full cursor-pointer"
               onClick={() => {
                 setId(params?.data?._id);
                 onEditClose(true);
               }}
             />
           </span>
-          {/* <span title="Edit">
-            <TbEditCircle
-              className="text-xl text-slate-500 cursor-pointer"
-              onClick={() => {
-                setId(params?.data?._id);
-                onUpdateOpen(true);
-              }}
+          <span title="Edit">
+            <LuFileEdit
+              className="text-lg text-blue-700 bg-blue-100 rounded-full cursor-pointer"
+              onClick={() =>
+                router.push(`/history/invoice/${params?.data?._id}`)
+              }
             />
-          </span> */}
+          </span>
           <span className="block" title="Remove">
             <AiOutlineDelete
               className="text-lg text-red-500 bg-red-100 rounded-full cursor-pointer"
@@ -656,6 +634,7 @@ const HistoryTable = () => {
           </div>
         </>
       )}
+      {/* repeat Invoice */}
       {isEditOpen && (
         <Modal isOpen={isEditOpen} onClose={() => onEditClose(false)}>
           <ModalOverlay />
@@ -748,46 +727,11 @@ const HistoryTable = () => {
           </ModalContent>
         </Modal>
       )}
-      {/* {isUpdateOpen && (
-        <Modal isOpen={isUpdateOpen} onClose={() => onUpdateOpen(false)}>
-          <ModalOverlay />
-          <ModalContent>
-            <ModalBody>
-              <form action="" onSubmit={updateHandler} className="my-4">
-                <div className="flex flex-col my-2">
-                  <label htmlFor="" className="font-semibold text-lg">
-                    Status
-                  </label>
-                  <select
-                    className="border-2 mt-2 px-4 py-2 rounded-sm outline-none bg-white"
-                    value={status}
-                    onChange={(e) => setStatus(e.target.value)}
-                  >
-                    <option value="raised">Raised</option>
-                    <option value="cleared">Cleared</option>
-                  </select>
-                </div>
-                <ModalFooter>
-                  <Button
-                    className="bg-stone-200"
-                    mr={3}
-                    onClick={() => onUpdateOpen(false)}
-                  >
-                    Close
-                  </Button>
-                  <Button
-                    type="submit"
-                    className="bg-[#5a51be] text-stone-100 px-4 py-2 hover:bg-[#6960cc]"
-                    colorScheme="purple"
-                  >
-                    Update
-                  </Button>
-                </ModalFooter>
-              </form>
-            </ModalBody>
-          </ModalContent>
-        </Modal>
-      )} */}
+      {/* edit invoice */}
+      {isUpdateOpen && (
+        <EditInvoice isOpen={isUpdateOpen} onClose={onUpdateOpen} />
+      )}
+      {/* pdf preview */}
       {isPreviewOpen && (
         <Modal
           isOpen={isPreviewOpen}
@@ -822,6 +766,7 @@ const HistoryTable = () => {
           </ModalContent>
         </Modal>
       )}
+      {/* delete invoice */}
       {isAlertOpen && (
         <AlertDialogExample
           _id={invoiceData?._id || ""}
@@ -830,6 +775,7 @@ const HistoryTable = () => {
           filter="invoiceDelete"
         />
       )}
+      {/* amount received edit */}
       {isAmountReceivedOpen && (
         <Modal
           isOpen={isAmountReceivedOpen}

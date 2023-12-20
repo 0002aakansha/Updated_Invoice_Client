@@ -8,6 +8,7 @@ import { client } from "@/axios/instance/client";
 import { getCookie } from "@/utils/cookies";
 
 const initialState: projectStateType = {
+  uniqueKey: "",
   projects: [],
   isLoading: false,
   created: false,
@@ -97,7 +98,7 @@ export const UpdateProject = createAsyncThunk(
           rate: project.rate,
           projectAmount: project.projectAmount,
           projectCycle: project.projectCycle,
-          active: project.active
+          active: project.active,
         }),
       });
 
@@ -153,6 +154,9 @@ const projectslice = createSlice({
     },
     setUpdate(state) {
       state.updated = false;
+    },
+    setUniqueKey(state, { payload }) {
+      state.uniqueKey = payload;
     },
   },
   extraReducers: (builder) => {
@@ -249,5 +253,5 @@ const projectslice = createSlice({
   },
 });
 
-export const { setCreate, setUpdate } = projectslice.actions;
+export const { setCreate, setUpdate, setUniqueKey } = projectslice.actions;
 export default projectslice.reducer;

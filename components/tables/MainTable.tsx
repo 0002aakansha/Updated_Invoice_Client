@@ -1,4 +1,4 @@
-import { SetStateAction, useState } from "react";
+import { SetStateAction, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchProjects } from "../store/project";
 import { AppDispatch, AppState } from "../store/store";
@@ -6,11 +6,15 @@ import { fetchClient } from "../store/client";
 import ClientTable from "./clientTable";
 import ProjectTable from "./projectTable";
 import { invoiceStateType } from "@/types/types";
-import { setInvoiceType, updateSpecificField, updatedChecked } from "../store/invoice";
+import {
+  setInvoiceType,
+  updateSpecificField,
+  updatedChecked,
+} from "../store/invoice";
 
 const MainTable = () => {
   const [select, setSelect] = useState("clients");
-  const [projectType, setProjectType] = useState("monthly")
+  const [projectType, setProjectType] = useState("monthly");
   const dispatch = useDispatch<AppDispatch>();
   const invoice = useSelector<AppState>(
     (state) => state.invoice
@@ -18,30 +22,36 @@ const MainTable = () => {
 
   const changeHandler = async (e: { target: { value: string } }) => {
     setSelect(e.target.value);
-    console.log(e.target.value);
 
     e.target.value === "clients"
       ? await dispatch(fetchClient())
       : await dispatch(fetchProjects());
   };
 
-  const projectViewHandler= (e: { target: { value: any } }) => {
+  const projectViewHandler = (e: { target: { value: any } }) => {
     dispatch(setInvoiceType(e.target.value));
     invoice.detailedProject.map((project) => {
       dispatch(updatedChecked({ indx: project._id, checked: false }));
       dispatch(updateSpecificField({ indx: project._id }));
     });
-  }
+  };
+
+  useEffect(() => {
+    dispatch(setInvoiceType("monthly"));
+  }, [dispatch]);
 
   return (
     <div className=" bg-white p-4 rounded-md">
       <div className="flex justify-between">
-        <h1 className="text-xl text-[#5a51be] uppercase font-bold mt-4 mb-8 p-1">{`${select === "clients" ? "All Clients" : "All Projects"
-          }`}</h1>
+        <h1 className="text-xl text-[#5a51be] uppercase font-bold mt-4 mb-8 p-1">{`${
+          select === "clients" ? "All Clients" : "All Projects"
+        }`}</h1>
 
         {select === "projects" && (
           <div className="flex items-center">
-            <span className="text-sm tracking-wider text-stone-700 mr-2">Select Project Type:</span>
+            <span className="text-sm tracking-wider text-stone-700 mr-2">
+              Select Project Type:
+            </span>
             <select
               id="select"
               onChange={projectViewHandler}
@@ -67,7 +77,9 @@ const MainTable = () => {
                 id="purple-radio"
                 className="accent-[#5a51be] cursor-pointer"
               />
-              <span className="text-sm tracking-wider text-stone-700">View Clients</span>
+              <span className="text-sm tracking-wider text-stone-700">
+                View Clients
+              </span>
             </label>
 
             <label className="space-x-2 flex items-center">
@@ -78,7 +90,9 @@ const MainTable = () => {
                 onChange={changeHandler}
                 className="accent-[#5a51be] cursor-pointer"
               />
-              <span className="text-sm tracking-wider text-stone-700">View Projects</span>
+              <span className="text-sm tracking-wider text-stone-700">
+                View Projects
+              </span>
             </label>
           </form>
         </div>

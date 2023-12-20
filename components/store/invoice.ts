@@ -59,19 +59,27 @@ const invoiceslice = createSlice({
       const project = current(state.detailedProject).filter(
         (project) => project._id === payload._id
       )[0];
+
       const projectIndx = current(state.detailedProject).findIndex(
         (project) => project._id === payload._id
       );
 
+      console.log(payload);
+
       if (
-        state.invoiceType === "monthly" &&
+        (state.invoiceType || payload.projectType) === "monthly" &&
         payload.period &&
         payload.workingDays &&
         payload.totalWorkingDays
       ) {
+        console.log("insdie if");
+
         const projectAmount = Number(project?.projectAmount);
         const workingDays = Number(payload?.workingDays);
         const totalWorkingDays = Number(payload?.totalWorkingDays);
+
+        console.log(project);
+        console.log(projectAmount, workingDays, totalWorkingDays);
 
         // formula
         const amount = (
@@ -83,7 +91,10 @@ const invoiceslice = createSlice({
           ...payload,
           amount: Number(amount).toFixed(2),
         };
-      } else if (state.invoiceType === "hourly" && payload.hours) {
+      } else if (
+        (state.invoiceType || payload.projectType) === "hourly" &&
+        payload.hours
+      ) {
         const rate = Number(project?.rate?.rate);
         const currency = project?.rate?.currency;
         const hours = Number(payload?.hours);
@@ -126,7 +137,6 @@ const invoiceslice = createSlice({
       state,
       { payload }: { payload: { userState: string; clientState: string } }
     ) {
-      console.log(state.tds);
       if (payload.userState && payload.clientState) {
         if (
           payload?.userState?.toLowerCase() ===
@@ -161,7 +171,10 @@ const invoiceslice = createSlice({
           state.GrandTotal = +(state.subtotal + state.GST).toFixed(2);
         }
       }
-      if (state.tds)
+      console.log("tds: " + current(state));
+      console.log(current(state));
+
+      if (state.tds )
         state.GrandTotal = +(state.GrandTotal - state.tds).toFixed(2);
     },
     setTotalToZero(state) {

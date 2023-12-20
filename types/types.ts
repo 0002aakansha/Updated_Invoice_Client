@@ -1,6 +1,6 @@
 export interface dataProps {
   _id: string;
-  id: number;
+  id?: number;
   indx?: number;
   projectType?: string;
   description: string;
@@ -11,7 +11,7 @@ export interface dataProps {
   amount?: string | number;
   projectAmount?: number;
   projectCycle?: string | number;
-  rate?: { currency: string; rate: string };
+  rate?: { currency: string; rate: number | undefined };
   conversionRate?: number;
   checked?: boolean;
   projectBelongsTo?: string;
@@ -105,6 +105,7 @@ export interface userStateType {
 }
 
 export interface projectStateType {
+  uniqueKey?: string;
   projects: projectType[];
   created: boolean;
   isLoading: boolean;
